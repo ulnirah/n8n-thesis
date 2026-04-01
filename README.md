@@ -24,6 +24,7 @@ The project builds an automated n8n workflow that processes open IFC/BIM models 
 | 5 | Benchmark robustness via fault injection | 🔲 Not started |
 | 6 | Check QTO robustness across extraction methods | 🔲 Not started |
 | 7 | Deliver final package | 🔲 Not started |
+
 ---
 ## Repository Structure
 ```
@@ -42,6 +43,7 @@ n8n-thesis/
     ├── risk-rules-table.md    # Risk screening logic
     └── validation-ruleset.md  # IFC validation rules
 ```
+
 ---
 ## Tools & Technologies        
 - **n8n** — workflow automation and orchestration        
@@ -49,8 +51,17 @@ n8n-thesis/
 - **DDC CAD-to-data toolkit** — IFC/Revit conversion and validation        
 - **Python** — BQI scoring, fault injection, Spearman correlation        
 - **GitHub** — version control and model storage        
+
 ---
-## Key References
-- DDC Toolkit: https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto        
-- buildingSMART Sample IFC Files (IFC4 & IFC4.3): https://github.com/buildingSMART/Sample-Test-Files        
-- buildingSMART Community Sample Files: https://github.com/buildingsmart-community/Community-Sample-Test-Files        
+## Project Resources
+
+| Resource | Description | Link |
+|---|---|---|
+| DDC CAD-to-data toolkit | Core pipeline — IFC/Revit conversion, validation, QTO, and n8n workflows (includes Windows executable converters) | [cad2data-Revit-IFC-DWG-DGN](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN) |
+| n8n-skills | n8n skillset for building flawless n8n workflows | [n8n-skills](https://github.com/czlonkowski/n8n-skills) |
+
+---
+## Sample IFC Models
+Baseline IFC files downloaded from:
+- buildingSMART Sample Test Files (IFC4 & IFC4.3): https://github.com/buildingSMART/Sample-Test-Files
+- buildingSMART Community Sample Files: https://github.com/buildingsmart-community/Community-Sample-Test-Files
