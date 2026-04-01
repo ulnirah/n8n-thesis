@@ -1,10 +1,10 @@
 # Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N
 
 **Author:** Aulia Annisa Rahmatillah        
-**Programme:** EMJM NORISK — Erasmus Mundus Joint Master's in Risk Assessment and Management of Civil Infrastructures  
+**Programme:** The International Masters in Risk Assessment and Management of Civil Infrastructures – NORISK  
 **University:** Technical University of Catalonia (UPC), Barcelona, Spain  
-**Supervisor:** Seyedmilad Komarizadehasl  
-**Co-supervisor:** Mahyad Komarizadehasl  
+**Supervisor:** Seyedmilad Komarizadehasl 
+**Co-supervisor:** Mahyad Komarizadeh
 
 ---
 
