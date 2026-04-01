@@ -21,7 +21,7 @@ The project builds an automated n8n workflow that processes open IFC/BIM models 
 
 | # | Task | Status |
 |---|------|--------|
-| 1 | Select and prepare BIM inputs (IFC sample models) | 🔲 In progress |
+| 1 | Select and prepare BIM inputs (IFC sample models) | ✅ Done |
 | 2 | Build end-to-end n8n workflow (trigger → validate → extract → report) | 🔲 Not started |
 | 3 | Define BIM Quality Index (BQI) | 🔲 Not started |
 | 4 | Develop uncertainty-aware risk screening model | 🔲 Not started |
