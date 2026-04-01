@@ -8,8 +8,9 @@
 ---
 ## Overview
 This repository contains all materials for the thesis:
-> *Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers*
-The project builds an automated n8n workflow that processes open IFC/BIM models to produce uncertainty-aware risk registers — without requiring field monitoring data.
+> *Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers*        
+
+The project builds an automated n8n workflow that processes open IFC/BIM models to produce uncertainty-aware risk registers — without requiring field monitoring data.        
 ---
 ## Thesis Tasks
 | # | Task | Status |
@@ -40,13 +41,14 @@ n8n-thesis/
     └── validation-ruleset.md  # IFC validation rules
 ```
 ---
-## Tools & Technologies
-- **n8n** — workflow automation and orchestration
-- **IFC / ifcopenshell** — BIM data extraction and QTO
-- **DDC CAD-to-data toolkit** — IFC/Revit conversion and validation
-- **Python** — BQI scoring, fault injection, Spearman correlation
-- **GitHub** — version control and model storage
+## Tools & Technologies        
+- **n8n** — workflow automation and orchestration        
+- **IFC / ifcopenshell** — BIM data extraction and QTO        
+- **DDC CAD-to-data toolkit** — IFC/Revit conversion and validation        
+- **Python** — BQI scoring, fault injection, Spearman correlation        
+- **GitHub** — version control and model storage        
 ---
 ## Key References
-- DDC Toolkit: https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto
-- buildingSMART Sample IFC Files: https://github.com/buildingsmart-community/Community-Sample-Test-Files
+- DDC Toolkit: https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto        
+- buildingSMART Sample IFC Files (IFC4 & IFC4.3): https://github.com/buildingSMART/Sample-Test-Files        
+- buildingSMART Community Sample Files: https://github.com/buildingsmart-community/Community-Sample-Test-Files        
