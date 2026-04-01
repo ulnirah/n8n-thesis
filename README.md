@@ -50,7 +50,7 @@ n8n-thesis/
 - **IFC / ifcopenshell** — BIM data extraction and QTO        
 - **DDC CAD-to-data toolkit** — IFC/Revit conversion and validation        
 - **Python** — BQI scoring, fault injection, Spearman correlation        
-- **GitHub** — version control and model storage        
+- **GitHub** — version control and model storage
 
 ---
 ## Project Resources
