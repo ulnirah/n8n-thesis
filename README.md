@@ -1,14 +1,14 @@
 # Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N
 
-**Author:** Aulia Annisa Rahmatillah        
-**Programme:** The International Masters in Risk Assessment and Management of Civil Infrastructures – NORISK          
-**University:** Technical University of Catalonia (UPC), Barcelona, Spain        
-**Supervisor:** Seyedmilad Komarizadehasl        
-**Co-supervisor:** Mahyad Komary        
+**Author:** Aulia Annisa Rahmatillah      
+**Programme:** The International Masters in Risk Assessment and Management of Civil Infrastructures – NORISK        
+**University:** Technical University of Catalonia (UPC), Barcelona, Spain      
+**Supervisor:** Seyedmilad Komarizadehasl      
+**Co-supervisor:** Mahyad Komary      
 ---
 ## Overview
 This repository contains all materials for the thesis:
-> *Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers*  
+> *Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers* 
 The project builds an automated n8n workflow that processes open IFC/BIM models to produce uncertainty-aware risk registers — without requiring field monitoring data.        
 ---
 ## Thesis Tasks
