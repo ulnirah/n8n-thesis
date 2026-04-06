@@ -43,11 +43,13 @@ This thesis builds on the DDC toolkit as infrastructure. The table below clarifi
 | IFC → XLSX conversion | DDC (`IfcExporter.exe`) | Converts IFC files to structured Excel data |
 | Basic IFC validation | DDC (`n8n_4`) | Schema compliance, property fill rates |
 | QTO extraction to HTML | DDC (`n8n_9`) | Quantity take-off report generation |
+| Batch processing | DDC (`n8n_3`) | Processes multiple files in one run |
+| ETL extract + parse | DDC (`n8n_8`) | Extracts and parses XLSX for downstream use |
 | **BQI scoring formula** | **Original** | Weighted scoring of BIM trustworthiness per element and per model |
 | **Uncertainty-aware risk screening** | **Original** | Likelihood + consequence proxies from BIM-only data |
 | **Confidence bounds from BQI** | **Original** | Missing-data penalties and conservative screening |
 | **Fault injection methodology** | **Original** | Controlled error injection and robustness benchmarking |
-| **QTO robustness analysis** | **Original** | Spearman correlation between two extraction methods |
+| **QTO robustness analysis** | **Original** | Spearman rank correlation between two extraction methods |
 | **Explainable risk register** | **Original** | Auditable output linking risk scores to BIM data quality |
 
 ---
@@ -56,33 +58,60 @@ This thesis builds on the DDC toolkit as infrastructure. The table below clarifi
 
 ```
 n8n-thesis/
+├── README.md                           ← You are here
+│
 ├── sample-models/
-│   ├── baseline/               # Clean original IFC files (reference models)
-│   └── fault-injected/         # Broken variants for robustness testing (Task 5)
+│   ├── README.md                       ← Describes each IFC file and fault types
+│   ├── baseline/                       ← 8 clean original IFC files (reference models)
+│   └── fault-injected/                 ← Broken variants for robustness testing (Task 5)
 │
 ├── workflows/
-│   ├── ddc-base/               # Original DDC workflows (unchanged reference)
-│   │   ├── n8n_1_basic_conversion.json
-│   │   ├── n8n_4_validation.json
-│   │   └── n8n_9_qto_report.json
-│   └── thesis/                 # Adapted and custom workflows (this thesis)
-│       ├── n8n_ifc_validation_adapted.json
-│       ├── n8n_qto_extraction.json
-│       └── n8n_risk_register.json
+│   ├── README.md                       ← Explains ddc-base vs thesis split
+│   ├── ddc-base/                       ← All 9 original DDC workflows (unchanged reference)
+│   │   └── README.md                   ← What each DDC workflow does and its thesis relevance
+│   └── thesis/                         ← Adapted and custom workflows for this thesis
+│       └── README.md                   ← What was changed, why, and what is new
 │
 ├── outputs/
-│   ├── qto/                    # QTO results (CSV/JSON)
-│   ├── bqi/                    # BQI scores and confidence labels
-│   └── reports/                # PDF/HTML risk reports
+│   ├── README.md                       ← Explains output types and file naming convention
+│   ├── qto/                            ← QTO results (CSV/JSON)
+│   ├── bqi/                            ← BQI scores and confidence labels
+│   └── reports/                        ← PDF/HTML risk reports
 │
-├── scripts/                    # Python scripts (ifcopenshell, QTO comparison)
+├── scripts/
+│   ├── README.md                       ← Describes each Python script and its purpose
+│   └── (Python scripts — ifcopenshell, QTO comparison, fault injection)
 │
 └── docs/
-    ├── bqi-definition.md           # BQI scoring formula and rules
-    ├── risk-rules-table.md         # Risk screening logic
-    ├── validation-ruleset.md       # IFC validation rules
-    └── ddc-adaptation-notes.md     # What was changed from DDC base workflows
+    ├── README.md                       ← Guide to all documentation files
+    ├── bqi-definition.md               ← BQI scoring formula and rules
+    ├── risk-rules-table.md             ← Risk screening logic
+    ├── validation-ruleset.md           ← IFC validation rules
+    └── ddc-adaptation-notes.md         ← What was changed from DDC base workflows and why
 ```
+
+---
+
+## How the Pipeline Works
+
+```
+IFC File
+   ↓
+[DDC IfcExporter] ──────────────────────→ XLSX (element data)
+   ↓                                           ↓
+[n8n_4 Validation] ──→ Validation Report    [n8n_9 QTO] ──→ QTO Report
+   ↓                                           ↓
+[BQI Scoring] ────────────────────────────────┘
+   ↓
+BQI Score + Confidence Label
+   ↓
+[Risk Screening Model]
+   ↓
+Uncertainty-Aware Risk Register + PDF Report
+```
+
+**DDC toolkit handles:** conversion, validation, QTO extraction
+**This thesis adds:** BQI scoring, risk screening, uncertainty propagation, fault injection benchmarking
 
 ---
 
@@ -92,8 +121,11 @@ n8n-thesis/
 |------|---------------------|
 | **n8n** | Workflow automation and orchestration — runs the entire pipeline |
 | **DDC IfcExporter** | Converts IFC files to XLSX for downstream processing |
+| **DDC n8n_1** | Base single-file conversion workflow |
+| **DDC n8n_3** | Base batch conversion workflow — used for fault injection testing (Task 5) |
 | **DDC n8n_4** | Base validation workflow — adapted for IFC schema and property checks |
-| **DDC n8n_9** | Base QTO workflow — adapted for IFC element types (IfcWall, IfcSlab, etc.) |
+| **DDC n8n_8** | Base ETL extract workflow — used as QTO Method 1 input (Task 6) |
+| **DDC n8n_9** | Base QTO workflow — adapted for IFC element types |
 | **IFC / ifcopenshell** | BIM data extraction and second QTO method (Task 6 comparison) |
 | **Python** | BQI scoring, fault injection, Spearman rank correlation |
 | **GitHub** | Version control and model storage |
@@ -102,12 +134,23 @@ n8n-thesis/
 
 ## Sample IFC Models
 
-Baseline IFC files sourced from:
+8 baseline IFC files are stored in `sample-models/baseline/`, sourced from official buildingSMART repositories:
 
 - buildingSMART Sample Test Files (IFC4 & IFC4.3): https://github.com/buildingSMART/Sample-Test-Files
 - buildingSMART Community Sample Files: https://github.com/buildingsmart-community/Community-Sample-Test-Files
 
-All baseline models are stored in `sample-models/baseline/`. Fault-injected variants (Task 5) will be generated programmatically and stored in `sample-models/fault-injected/`.
+| File | Schema | Type |
+|------|--------|------|
+| `IFC4-Building-Architecture.ifc` | IFC 4.0.2.1 | Building — Architecture |
+| `IFC4-Building-Structural.ifc` | IFC 4.0.2.1 | Building — Structural |
+| `IFC4-Infra-Bridge.ifc` | IFC 4.0.2.1 | Infrastructure — Bridge |
+| `IFC4-Infra-Road.ifc` | IFC 4.0.2.1 | Infrastructure — Road |
+| `IFC4-wall-with-opening-and-window.ifc` | IFC 4.0.2.1 | Building — Wall detail |
+| `IFC43-Building-Structural.ifc` | IFC 4.3 | Building — Structural |
+| `IFC43-Infra-Bridge.ifc` | IFC 4.3 | Infrastructure — Bridge |
+| `IFC43-Infra-Road.ifc` | IFC 4.3 | Infrastructure — Road |
+
+Fault-injected variants (Task 5) will be generated programmatically and stored in `sample-models/fault-injected/`.
 
 ---
 
@@ -127,5 +170,6 @@ All baseline models are stored in `sample-models/baseline/`. Fault-injected vari
 |------|--------|
 | Apr 2026 | Repository created, folder structure established |
 | Apr 2026 | Task 1 complete — 8 baseline IFC files added (IFC4 + IFC4.3) |
-| Apr 2026 | DDC workflows studied and documented |
-| — | Task 2 in progress — adapting DDC workflows for IFC inputs |
+| Apr 2026 | All 9 DDC workflows uploaded to workflows/ddc-base/ |
+| Apr 2026 | All folder READMEs created |
+| Apr 2026 | Task 2 in progress — adapting DDC workflows for IFC inputs |
