@@ -1,4 +1,3 @@
-# Imports and Setup
 import sys
 import json
 import os
@@ -14,7 +13,6 @@ except ImportError:
     }))
     sys.exit(1)
 
-# Element Types to Extract
 ELEMENT_TYPES = [
     "IfcWall", "IfcWallStandardCase",
     "IfcSlab", "IfcSlabStandardCase",
@@ -37,7 +35,6 @@ ELEMENT_TYPES = [
     "IfcReinforcingBar", "IfcReinforcingMesh",
 ]
 
-# Argument and File Validation
 def main():
     if len(sys.argv) < 2:
         print(json.dumps({"error": "Usage: python3 extract_ifc.py <path_to_ifc_file>"}))
@@ -55,8 +52,7 @@ def main():
         print(json.dumps({"error": f"Failed to open IFC file: {str(e)}"}))
         sys.exit(1)
 
-# Element Extraction Loop
-schema = model.schema
+    schema = model.schema
     elements_rows, properties_rows, quantities_rows, materials_rows = [], [], [], []
     seen_gids = set()
 
@@ -76,12 +72,12 @@ schema = model.schema
             etype = el.is_a()
 
             elements_rows.append({
-                "GlobalId":   gid,
-                "Name":       name,
-                "Type":       etype,
+                "GlobalId":    gid,
+                "Name":        name,
+                "Type":        etype,
                 "Description": el.Description or "",
-                "ObjectType": getattr(el, "ObjectType", "") or "",
-                "Tag":        getattr(el, "Tag", "") or "",
+                "ObjectType":  getattr(el, "ObjectType", "") or "",
+                "Tag":         getattr(el, "Tag", "") or "",
             })
 
             for pset_name, props in ifcopenshell.util.element.get_psets(el).items():
@@ -109,8 +105,7 @@ schema = model.schema
                     "Material": material.Name if hasattr(material, "Name") else str(material),
                 })
 
-# Spatial Hierarchy
-spatial_rows = []
+    spatial_rows = []
     for entity_type in ["IfcProject", "IfcSite", "IfcBuilding", "IfcBuildingStorey"]:
         try:
             for elem in model.by_type(entity_type):
@@ -120,15 +115,16 @@ spatial_rows = []
                     parent_gid  = parent.GlobalId
                     parent_name = parent.Name or ""
                 spatial_rows.append({
-                    "GlobalId": elem.GlobalId, "Name": elem.Name or "",
-                    "Type": elem.is_a(),
-                    "ParentGlobalId": parent_gid, "ParentName": parent_name,
+                    "GlobalId":      elem.GlobalId,
+                    "Name":          elem.Name or "",
+                    "Type":          elem.is_a(),
+                    "ParentGlobalId": parent_gid,
+                    "ParentName":    parent_name,
                 })
         except Exception:
             continue
 
-# Serialization and Output
-def safe_value(v):
+    def safe_value(v):
         if isinstance(v, (int, float, bool, str)) or v is None:
             return v if v is not None else ""
         return str(v)
@@ -145,10 +141,10 @@ def safe_value(v):
         "materials":  materials_rows,
         "spatial":    spatial_rows,
         "metadata": {
-            "source_file":           os.path.basename(ifc_path),
-            "schema":                schema,
-            "extraction_timestamp":  datetime.now().isoformat(),
-            "pipeline":              "ifcopenshell",
+            "source_file":          os.path.basename(ifc_path),
+            "schema":               schema,
+            "extraction_timestamp": datetime.now().isoformat(),
+            "pipeline":             "ifcopenshell",
             "counts": {
                 "elements":         len(elements_rows),
                 "properties":       len(properties_rows),
@@ -158,7 +154,6 @@ def safe_value(v):
             },
         },
     }))
-
 
 if __name__ == "__main__":
     main()
