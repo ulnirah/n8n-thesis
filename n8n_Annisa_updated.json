@@ -346,7 +346,7 @@
     },
     {
       "parameters": {
-        "command": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts' | Out-Null; $b64 = 'aW1wb3J0IHN5cwppbXBvcnQganNvbgppbXBvcnQgb3MKZnJvbSBkYXRldGltZSBpbXBvcnQgZGF0ZXRpbWUKCnRyeToKICAgIGltcG9ydCBpZmNvcGVuc2hlbGwKICAgIGltcG9ydCBpZmNvcGVuc2hlbGwudXRpbC5lbGVtZW50CmV4Y2VwdCBJbXBvcnRFcnJvcjoKICAgIHByaW50KGpzb24uZHVtcHMoewogICAgICAgICJlcnJvciI6ICJpZmNvcGVuc2hlbGwgbm90IGluc3RhbGxlZC4gUnVuOiBwaXAgaW5zdGFsbCBpZmNvcGVuc2hlbGwiLAogICAgICAgICJlbGVtZW50cyI6IFtdLCAicHJvcGVydGllcyI6IFtdLCAicXVhbnRpdGllcyI6IFtdLCAibWF0ZXJpYWxzIjogW10KICAgIH0pKQogICAgc3lzLmV4aXQoMSkKCkVMRU1FTlRfVFlQRVMgPSBbCiAgICAiSWZjV2FsbCIsICJJZmNXYWxsU3RhbmRhcmRDYXNlIiwKICAgICJJZmNTbGFiIiwgIklmY1NsYWJTdGFuZGFyZENhc2UiLAogICAgIklmY0JlYW0iLCAiSWZjQmVhbVN0YW5kYXJkQ2FzZSIsCiAgICAiSWZjQ29sdW1uIiwgIklmY0NvbHVtblN0YW5kYXJkQ2FzZSIsCiAgICAiSWZjUm9vZiIsICJJZmNDaGltbmV5IiwKICAgICJJZmNTdGFpciIsICJJZmNTdGFpckZsaWdodCIsCiAgICAiSWZjUmFtcCIsICJJZmNSYW1wRmxpZ2h0IiwKICAgICJJZmNEb29yIiwgIklmY1dpbmRvdyIsCiAgICAiSWZjQ292ZXJpbmciLCAiSWZjUmFpbGluZyIsCiAgICAiSWZjUGxhdGUiLCAiSWZjTWVtYmVyIiwKICAgICJJZmNGb290aW5nIiwgIklmY1BpbGUiLAogICAgIklmY0J1aWxkaW5nRWxlbWVudFByb3h5IiwKICAgICJJZmNGdXJuaXR1cmUiLCAiSWZjRnVybmlzaGluZ0VsZW1lbnQiLAogICAgIklmY1NwYWNlIiwgIklmY1NwYXRpYWxab25lIiwgIklmY1pvbmUiLAogICAgIklmY0JlYXJpbmciLCAiSWZjRGVlcEZvdW5kYXRpb24iLAogICAgIklmY0NvdXJzZSIsICJJZmNFYXJ0aHdvcmtzRWxlbWVudCIsCiAgICAiSWZjUGF2ZW1lbnQiLCAiSWZjUmFpbCIsICJJZmNTdXJmYWNlRmVhdHVyZSIsCiAgICAiSWZjVGVuZG9uIiwgIklmY1RlbmRvbkFuY2hvciIsICJJZmNUZW5kb25Db25kdWl0IiwKICAgICJJZmNSZWluZm9yY2luZ0JhciIsICJJZmNSZWluZm9yY2luZ01lc2giLApdCgpkZWYgbWFpbigpOgogICAgaWYgbGVuKHN5cy5hcmd2KSA8IDI6CiAgICAgICAgcHJpbnQoanNvbi5kdW1wcyh7ImVycm9yIjogIlVzYWdlOiBweXRob24zIGV4dHJhY3RfaWZjLnB5IDxwYXRoX3RvX2lmY19maWxlPiJ9KSkKICAgICAgICBzeXMuZXhpdCgxKQoKICAgIGlmY19wYXRoID0gc3lzLmFyZ3ZbMV0KCiAgICBpZiBub3Qgb3MucGF0aC5leGlzdHMoaWZjX3BhdGgpOgogICAgICAgIHByaW50KGpzb24uZHVtcHMoeyJlcnJvciI6IGYiRmlsZSBub3QgZm91bmQ6IHtpZmNfcGF0aH0ifSkpCiAgICAgICAgc3lzLmV4aXQoMSkKCiAgICB0cnk6CiAgICAgICAgbW9kZWwgPSBpZmNvcGVuc2hlbGwub3BlbihpZmNfcGF0aCkKICAgIGV4Y2VwdCBFeGNlcHRpb24gYXMgZToKICAgICAgICBwcmludChqc29uLmR1bXBzKHsiZXJyb3IiOiBmIkZhaWxlZCB0byBvcGVuIElGQyBmaWxlOiB7c3RyKGUpfSJ9KSkKICAgICAgICBzeXMuZXhpdCgxKQoKICAgIHNjaGVtYSA9IG1vZGVsLnNjaGVtYQogICAgZWxlbWVudHNfcm93cywgcHJvcGVydGllc19yb3dzLCBxdWFudGl0aWVzX3Jvd3MsIG1hdGVyaWFsc19yb3dzID0gW10sIFtdLCBbXSwgW10KICAgIHNlZW5fZ2lkcyA9IHNldCgpCgogICAgZm9yIGlmY190eXBlIGluIEVMRU1FTlRfVFlQRVM6CiAgICAgICAgdHJ5OgogICAgICAgICAgICB0eXBlX2VsZW1lbnRzID0gbW9kZWwuYnlfdHlwZShpZmNfdHlwZSkKICAgICAgICBleGNlcHQgRXhjZXB0aW9uOgogICAgICAgICAgICBjb250aW51ZQoKICAgICAgICBmb3IgZWwgaW4gdHlwZV9lbGVtZW50czoKICAgICAgICAgICAgZ2lkID0gZWwuR2xvYmFsSWQKICAgICAgICAgICAgaWYgZ2lkIGluIHNlZW5fZ2lkczoKICAgICAgICAgICAgICAgIGNvbnRpbnVlCiAgICAgICAgICAgIHNlZW5fZ2lkcy5hZGQoZ2lkKQoKICAgICAgICAgICAgbmFtZSAgPSBlbC5OYW1lIG9yICIiCiAgICAgICAgICAgIGV0eXBlID0gZWwuaXNfYSgpCgogICAgICAgICAgICBlbGVtZW50c19yb3dzLmFwcGVuZCh7CiAgICAgICAgICAgICAgICAiR2xvYmFsSWQiOiAgICBnaWQsCiAgICAgICAgICAgICAgICAiTmFtZSI6ICAgICAgICBuYW1lLAogICAgICAgICAgICAgICAgIlR5cGUiOiAgICAgICAgZXR5cGUsCiAgICAgICAgICAgICAgICAiRGVzY3JpcHRpb24iOiBlbC5EZXNjcmlwdGlvbiBvciAiIiwKICAgICAgICAgICAgICAgICJPYmplY3RUeXBlIjogIGdldGF0dHIoZWwsICJPYmplY3RUeXBlIiwgIiIpIG9yICIiLAogICAgICAgICAgICAgICAgIlRhZyI6ICAgICAgICAgZ2V0YXR0cihlbCwgIlRhZyIsICIiKSBvciAiIiwKICAgICAgICAgICAgfSkKCiAgICAgICAgICAgIGZvciBwc2V0X25hbWUsIHByb3BzIGluIGlmY29wZW5zaGVsbC51dGlsLmVsZW1lbnQuZ2V0X3BzZXRzKGVsKS5pdGVtcygpOgogICAgICAgICAgICAgICAgZm9yIHByb3BfbmFtZSwgcHJvcF92YWwgaW4gcHJvcHMuaXRlbXMoKToKICAgICAgICAgICAgICAgICAgICBpZiBwcm9wX25hbWUgPT0gImlkIjoKICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWUKICAgICAgICAgICAgICAgICAgICBwcm9wZXJ0aWVzX3Jvd3MuYXBwZW5kKHsKICAgICAgICAgICAgICAgICAgICAgICAgIkdsb2JhbElkIjogZ2lkLCAiTmFtZSI6IG5hbWUsICJUeXBlIjogZXR5cGUsCiAgICAgICAgICAgICAgICAgICAgICAgICJQcm9wZXJ0eVNldCI6IHBzZXRfbmFtZSwgIlByb3BlcnR5IjogcHJvcF9uYW1lLCAiVmFsdWUiOiBwcm9wX3ZhbCwKICAgICAgICAgICAgICAgICAgICB9KQoKICAgICAgICAgICAgZm9yIHFzZXRfbmFtZSwgcXMgaW4gaWZjb3BlbnNoZWxsLnV0aWwuZWxlbWVudC5nZXRfcHNldHMoZWwsIHF0b3Nfb25seT1UcnVlKS5pdGVtcygpOgogICAgICAgICAgICAgICAgZm9yIHFfbmFtZSwgcV92YWwgaW4gcXMuaXRlbXMoKToKICAgICAgICAgICAgICAgICAgICBpZiBxX25hbWUgPT0gImlkIjoKICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWUKICAgICAgICAgICAgICAgICAgICBxdWFudGl0aWVzX3Jvd3MuYXBwZW5kKHsKICAgICAgICAgICAgICAgICAgICAgICAgIkdsb2JhbElkIjogZ2lkLCAiTmFtZSI6IG5hbWUsICJUeXBlIjogZXR5cGUsCiAgICAgICAgICAgICAgICAgICAgICAgICJRdWFudGl0eVNldCI6IHFzZXRfbmFtZSwgIlF1YW50aXR5IjogcV9uYW1lLCAiVmFsdWUiOiBxX3ZhbCwKICAgICAgICAgICAgICAgICAgICB9KQoKICAgICAgICAgICAgbWF0ZXJpYWwgPSBpZmNvcGVuc2hlbGwudXRpbC5lbGVtZW50LmdldF9tYXRlcmlhbChlbCkKICAgICAgICAgICAgaWYgbWF0ZXJpYWw6CiAgICAgICAgICAgICAgICBtYXRlcmlhbHNfcm93cy5hcHBlbmQoewogICAgICAgICAgICAgICAgICAgICJHbG9iYWxJZCI6IGdpZCwgIk5hbWUiOiBuYW1lLCAiVHlwZSI6IGV0eXBlLAogICAgICAgICAgICAgICAgICAgICJNYXRlcmlhbCI6IG1hdGVyaWFsLk5hbWUgaWYgaGFzYXR0cihtYXRlcmlhbCwgIk5hbWUiKSBlbHNlIHN0cihtYXRlcmlhbCksCiAgICAgICAgICAgICAgICB9KQoKICAgIHNwYXRpYWxfcm93cyA9IFtdCiAgICBmb3IgZW50aXR5X3R5cGUgaW4gWyJJZmNQcm9qZWN0IiwgIklmY1NpdGUiLCAiSWZjQnVpbGRpbmciLCAiSWZjQnVpbGRpbmdTdG9yZXkiXToKICAgICAgICB0cnk6CiAgICAgICAgICAgIGZvciBlbGVtIGluIG1vZGVsLmJ5X3R5cGUoZW50aXR5X3R5cGUpOgogICAgICAgICAgICAgICAgcGFyZW50X2dpZCwgcGFyZW50X25hbWUgPSAiIiwgIiIKICAgICAgICAgICAgICAgIGlmIGhhc2F0dHIoZWxlbSwgIkRlY29tcG9zZXMiKSBhbmQgZWxlbS5EZWNvbXBvc2VzOgogICAgICAgICAgICAgICAgICAgIHBhcmVudCA9IGVsZW0uRGVjb21wb3Nlc1swXS5SZWxhdGluZ09iamVjdAogICAgICAgICAgICAgICAgICAgIHBhcmVudF9naWQgID0gcGFyZW50Lkdsb2JhbElkCiAgICAgICAgICAgICAgICAgICAgcGFyZW50X25hbWUgPSBwYXJlbnQuTmFtZSBvciAiIgogICAgICAgICAgICAgICAgc3BhdGlhbF9yb3dzLmFwcGVuZCh7CiAgICAgICAgICAgICAgICAgICAgIkdsb2JhbElkIjogICAgICBlbGVtLkdsb2JhbElkLAogICAgICAgICAgICAgICAgICAgICJOYW1lIjogICAgICAgICAgZWxlbS5OYW1lIG9yICIiLAogICAgICAgICAgICAgICAgICAgICJUeXBlIjogICAgICAgICAgZWxlbS5pc19hKCksCiAgICAgICAgICAgICAgICAgICAgIlBhcmVudEdsb2JhbElkIjogcGFyZW50X2dpZCwKICAgICAgICAgICAgICAgICAgICAiUGFyZW50TmFtZSI6ICAgIHBhcmVudF9uYW1lLAogICAgICAgICAgICAgICAgfSkKICAgICAgICBleGNlcHQgRXhjZXB0aW9uOgogICAgICAgICAgICBjb250aW51ZQoKICAgIGRlZiBzYWZlX3ZhbHVlKHYpOgogICAgICAgIGlmIGlzaW5zdGFuY2UodiwgKGludCwgZmxvYXQsIGJvb2wsIHN0cikpIG9yIHYgaXMgTm9uZToKICAgICAgICAgICAgcmV0dXJuIHYgaWYgdiBpcyBub3QgTm9uZSBlbHNlICIiCiAgICAgICAgcmV0dXJuIHN0cih2KQoKICAgIGZvciByb3cgaW4gcHJvcGVydGllc19yb3dzOgogICAgICAgIHJvd1siVmFsdWUiXSA9IHNhZmVfdmFsdWUocm93WyJWYWx1ZSJdKQogICAgZm9yIHJvdyBpbiBxdWFudGl0aWVzX3Jvd3M6CiAgICAgICAgcm93WyJWYWx1ZSJdID0gc2FmZV92YWx1ZShyb3dbIlZhbHVlIl0pCgogICAgcHJpbnQoanNvbi5kdW1wcyh7CiAgICAgICAgImVsZW1lbnRzIjogICBlbGVtZW50c19yb3dzLAogICAgICAgICJwcm9wZXJ0aWVzIjogcHJvcGVydGllc19yb3dzLAogICAgICAgICJxdWFudGl0aWVzIjogcXVhbnRpdGllc19yb3dzLAogICAgICAgICJtYXRlcmlhbHMiOiAgbWF0ZXJpYWxzX3Jvd3MsCiAgICAgICAgInNwYXRpYWwiOiAgICBzcGF0aWFsX3Jvd3MsCiAgICAgICAgIm1ldGFkYXRhIjogewogICAgICAgICAgICAic291cmNlX2ZpbGUiOiAgICAgICAgICBvcy5wYXRoLmJhc2VuYW1lKGlmY19wYXRoKSwKICAgICAgICAgICAgInNjaGVtYSI6ICAgICAgICAgICAgICAgc2NoZW1hLAogICAgICAgICAgICAiZXh0cmFjdGlvbl90aW1lc3RhbXAiOiBkYXRldGltZS5ub3coKS5pc29mb3JtYXQoKSwKICAgICAgICAgICAgInBpcGVsaW5lIjogICAgICAgICAgICAgImlmY29wZW5zaGVsbCIsCiAgICAgICAgICAgICJjb3VudHMiOiB7CiAgICAgICAgICAgICAgICAiZWxlbWVudHMiOiAgICAgICAgIGxlbihlbGVtZW50c19yb3dzKSwKICAgICAgICAgICAgICAgICJwcm9wZXJ0aWVzIjogICAgICAgbGVuKHByb3BlcnRpZXNfcm93cyksCiAgICAgICAgICAgICAgICAicXVhbnRpdGllcyI6ICAgICAgIGxlbihxdWFudGl0aWVzX3Jvd3MpLAogICAgICAgICAgICAgICAgIm1hdGVyaWFscyI6ICAgICAgICBsZW4obWF0ZXJpYWxzX3Jvd3MpLAogICAgICAgICAgICAgICAgInNwYXRpYWxfZW50aXRpZXMiOiBsZW4oc3BhdGlhbF9yb3dzKSwKICAgICAgICAgICAgfSwKICAgICAgICB9LAogICAgfSkpCgppZiBfX25hbWVfXyA9PSAiX19tYWluX18iOgogICAgbWFpbigpCg=='; $bytes = [System.Convert]::FromBase64String($b64); [System.IO.File]::WriteAllBytes('C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts\\extract_ifc.py', $bytes); Write-Output 'extract_ifc.py written'\""
+        "command": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts'; Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ulnirah/n8n-thesis/main/scripts/extract_ifc.py' -Headers @{Authorization='token {{ $env.N8N_GITHUB_TOKEN }}'} -OutFile 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts\\extract_ifc.py'\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -478,7 +478,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "const EXPOSURE = {\n  IfcRoof: 0.9, IfcChimney: 0.8, IfcPavement: 0.75, IfcRail: 0.7,\n  IfcFooting: 0.65, IfcPile: 0.6,\n  IfcWall: { base: 0.45, ext: 0.4 }, IfcWallStandardCase: { base: 0.45, ext: 0.4 },\n  IfcSlab: { base: 0.45, ext: 0.3 }, IfcSlabStandardCase: { base: 0.45, ext: 0.3 },\n  IfcColumn: { base: 0.45, ext: 0.3 }, IfcColumnStandardCase: { base: 0.45, ext: 0.3 },\n  IfcBeam: { base: 0.35, ext: 0.2 }, IfcBeamStandardCase: { base: 0.35, ext: 0.2 },\n  IfcDoor: { base: 0.35, ext: 0.3 }, IfcWindow: { base: 0.35, ext: 0.35 },\n  IfcStair: { base: 0.3, ext: 0.2 }, IfcStairFlight: { base: 0.3, ext: 0.2 },\n  IfcRamp: { base: 0.3, ext: 0.2 }, IfcRampFlight: { base: 0.3, ext: 0.2 },\n  IfcCovering: { base: 0.25, ext: 0.2 }, IfcRailing: { base: 0.25, ext: 0.2 },\n  IfcMember: 0.3, IfcPlate: 0.3,\n  IfcReinforcingBar: 0.35, IfcReinforcingMesh: 0.35, IfcTendon: 0.3,\n  IfcFurniture: 0.1, IfcFurnishingElement: 0.1, IfcSpace: 0.1,\n};\n\nconst output = [];\nfor (const item of $input.all()) {\n  if (item.json._type !== 'bqi_scored') { output.push(item); continue; }\n\n  const type = item.json.Category || '';\n  const spec = EXPOSURE[type];\n\n  const isExternal = Object.entries(item.json)\n    .filter(([k]) => k.includes('IsExternal'))\n    .some(([, v]) => v === true || v === 'True' || String(v) === '1');\n\n  let exposure;\n  if (typeof spec === 'number') {\n    exposure = spec;\n  } else if (spec) {\n    exposure = spec.base + (isExternal ? spec.ext : 0);\n  } else {\n    exposure = isExternal ? 0.25 : 0.15;\n  }\n\n  output.push({ json: {\n    ...item.json,\n    exposure_score: Math.round(Math.min(1, exposure) * 1000) / 1000,\n    is_external: isExternal,\n  }});\n}\nreturn output;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -487,12 +487,11 @@
         1232
       ],
       "id": "be3031b7-17ab-4b97-b839-9505449d5c33",
-      "name": "R1: Exposure lookup",
-      "notes": "Code JS — maps element type + location tag → exposure score"
+      "name": "R1: Exposure lookup"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "const SUSCEPTIBILITY = {\n  IfcRoof: 0.8, IfcChimney: 0.7, IfcPavement: 0.7, IfcFooting: 0.65, IfcPile: 0.6,\n  IfcRail: 0.6, IfcWall: 0.5, IfcWallStandardCase: 0.5,\n  IfcSlab: 0.5, IfcSlabStandardCase: 0.5,\n  IfcColumn: 0.45, IfcColumnStandardCase: 0.45,\n  IfcBeam: 0.45, IfcBeamStandardCase: 0.45,\n  IfcDoor: 0.4, IfcWindow: 0.4, IfcStair: 0.4, IfcStairFlight: 0.4,\n  IfcCovering: 0.4, IfcMember: 0.35, IfcPlate: 0.35,\n  IfcReinforcingBar: 0.35, IfcReinforcingMesh: 0.35, IfcTendon: 0.3,\n  IfcRailing: 0.3, IfcRamp: 0.3, IfcRampFlight: 0.3,\n  IfcFurniture: 0.15, IfcFurnishingElement: 0.15, IfcSpace: 0.1,\n};\n\nfunction materialMod(mat) {\n  if (!mat) return 0;\n  const m = mat.toLowerCase();\n  if (m.includes('wood') || m.includes('timber')) return 0.15;\n  if (m.includes('masonry') || m.includes('brick')) return 0.10;\n  if (m.includes('steel') || m.includes('metal')) return 0.05;\n  return 0;\n}\n\nfunction bqiMod(bqi) {\n  if (bqi >= 0.85) return -0.05;\n  if (bqi < 0.60)  return  0.10;\n  return 0;\n}\n\nconst output = [];\nfor (const item of $input.all()) {\n  if (item.json.exposure_score === undefined) { output.push(item); continue; }\n\n  const susc = SUSCEPTIBILITY[item.json.Category] ?? 0.3;\n  const raw  = item.json.exposure_score * (susc + materialMod(item.json.Material))\n               + bqiMod(item.json.bqi_score || 0);\n\n  output.push({ json: {\n    ...item.json,\n    likelihood: Math.round(Math.min(1, Math.max(0, raw)) * 1000) / 1000,\n    defect_susceptibility: susc,\n  }});\n}\nreturn output;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -501,12 +500,11 @@
         1232
       ],
       "id": "504865ef-be31-499d-b3e6-d992103a78b7",
-      "name": "R2: Likelihood proxy",
-      "notes": "Code JS — exposure × defect susceptibility rules"
+      "name": "R2: Likelihood proxy"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "const CRITICALITY = {\n  IfcColumn: 1.0, IfcColumnStandardCase: 1.0,\n  IfcFooting: 1.0, IfcPile: 1.0,\n  IfcBeam: 0.9, IfcBeamStandardCase: 0.9,\n  IfcSlab: 0.9, IfcSlabStandardCase: 0.9,\n  IfcWall: 0.8, IfcWallStandardCase: 0.8, IfcRoof: 0.8, IfcRail: 0.8,\n  IfcTendon: 0.75, IfcReinforcingBar: 0.7, IfcReinforcingMesh: 0.65,\n  IfcStair: 0.7, IfcStairFlight: 0.7, IfcPavement: 0.65, IfcChimney: 0.6,\n  IfcMember: 0.6, IfcRamp: 0.55, IfcRampFlight: 0.55, IfcPlate: 0.5,\n  IfcCovering: 0.4, IfcRailing: 0.4, IfcDoor: 0.35, IfcWindow: 0.35,\n  IfcFurniture: 0.1, IfcFurnishingElement: 0.1, IfcSpace: 0.2,\n};\n\nfunction qtoExtent(elem) {\n  const keys = Object.keys(elem);\n  for (const kw of ['NetVolume','GrossVolume','NetArea','GrossArea','NetSideArea',\n                    'NetFloorArea','GrossPlannedArea','Length','Depth','Width']) {\n    const k = keys.find(x => x.includes(kw));\n    if (k && elem[k]) return parseFloat(elem[k]) || 0;\n  }\n  return 0;\n}\n\nconst scorable = $input.all().filter(i => i.json.likelihood !== undefined);\nconst others   = $input.all().filter(i => i.json.likelihood === undefined);\nconst maxExt   = Math.max(1, ...scorable.map(i => qtoExtent(i.json)));\n\nconst output = [];\nfor (const item of others) output.push(item);\n\nfor (const item of scorable) {\n  const crit  = CRITICALITY[item.json.Category] ?? 0.3;\n  const ext   = qtoExtent(item.json);\n  const normE = ext > 0 ? Math.min(1, ext / maxExt) : 0.5;\n  const cons  = Math.min(1, crit * (0.7 + 0.3 * normE));\n\n  output.push({ json: {\n    ...item.json,\n    consequence: Math.round(cons * 1000) / 1000,\n    element_criticality: crit,\n    qto_extent: ext,\n  }});\n}\nreturn output;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -515,12 +513,11 @@
         1232
       ],
       "id": "d24d05b5-9c6b-4f9e-9e25-333eb6f5696e",
-      "name": "R3: Consequence proxy",
-      "notes": "Code JS — element role/criticality × QTO (extent)"
+      "name": "R3: Consequence proxy"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "const CONF_MULT = { high: 1.0, medium: 1.10, low: 1.25 };\n\nconst output = [];\nfor (const item of $input.all()) {\n  if (item.json.consequence === undefined) { output.push(item); continue; }\n\n  const L    = item.json.likelihood  || 0;\n  const C    = item.json.consequence || 0;\n  const mult = CONF_MULT[item.json.bqi_confidence] ?? 1.25;\n\n  output.push({ json: {\n    ...item.json,\n    risk_score:       Math.round(Math.min(1, L * C * mult) * 1000) / 1000,\n    risk_multiplier:  mult,\n    _type:            'risk_element',\n  }});\n}\nreturn output;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -529,12 +526,11 @@
         1232
       ],
       "id": "0de01e38-7de3-48f0-a35b-68c2061a8591",
-      "name": "R4: BQI penalty + risk score",
-      "notes": "Code JS — combine L×C, apply BQI confidence bounds"
+      "name": "R4: BQI penalty + risk score"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "const all       = $input.all();\nconst others    = all.filter(i => i.json._type !== 'risk_element');\nconst riskItems = all.filter(i => i.json._type === 'risk_element');\n\nriskItems.sort((a, b) => (b.json.risk_score || 0) - (a.json.risk_score || 0));\n\nconst scores = [...riskItems].map(i => i.json.risk_score || 0).sort((a, b) => a - b);\nconst n      = scores.length;\nconst HIGH_T = n > 0 ? Math.max(scores[Math.floor(n * 0.75)] ?? 0, 0.40) : 0.40;\nconst LOW_T  = n > 0 ? Math.max(scores[Math.floor(n * 0.25)] ?? 0, 0.15) : 0.15;\n\nconst labeled = riskItems.map((item, idx) => {\n  const s     = item.json.risk_score || 0;\n  const label = s >= HIGH_T ? 'High' : s >= LOW_T ? 'Medium' : 'Low';\n  return { json: {\n    ...item.json,\n    risk_label:      label,\n    risk_rank:       idx + 1,\n    risk_percentile: Math.round((1 - idx / Math.max(n, 1)) * 100),\n    zone:            item.json.is_external ? 'Exterior' : 'Interior',\n    location_tag:    item.json.is_external ? 'Exterior' : 'Interior',\n  }};\n});\n\nreturn [...others, ...labeled];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -548,7 +544,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "const all = $input.all();\n\n// Pass all typed items through; add zone/location_tag for HTML report\nreturn all.map(item => {\n  if (item.json._type !== 'risk_element') return item;\n  return { json: {\n    ...item.json,\n    zone:         item.json.zone         || (item.json.is_external ? 'Exterior' : 'Interior'),\n    location_tag: item.json.location_tag || (item.json.is_external ? 'Exterior' : 'Interior'),\n  }};\n});"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -557,8 +553,7 @@
         1232
       ],
       "id": "013c9041-7cbf-402e-a989-98d7f2292b7c",
-      "name": "O1: Format risk register",
-      "notes": "Code JS — assemble final register object with all fields"
+      "name": "O1: Format risk register"
     },
     {
       "parameters": {
