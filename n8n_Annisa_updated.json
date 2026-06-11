@@ -2,21 +2,10 @@
   "name": "n8n_Annisa_error_trigger",
   "nodes": [
     {
-      "parameters": {},
-      "id": "07dabaa6-c5e5-498d-99bf-a7b833f36a63",
-      "name": "When clicking ‘Execute workflow’",
-      "type": "n8n-nodes-base.manualTrigger",
-      "position": [
-        -2864,
-        1424
-      ],
-      "typeVersion": 1
-    },
-    {
       "parameters": {
         "content": "## Block 1 - Pipeline A: DDC converter\nPipeline A: DDC IFC converter\n- Converts .ifc to .xlsx\n- Parses the wide table\n- Filters out spatial entities (IfcProject, IfcSite, IfcBuilding, IfcBuildingStorey)\n\n\nFull float precision preserved.",
         "height": 512,
-        "width": 2624,
+        "width": 2832,
         "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -32,7 +21,7 @@
       "parameters": {
         "content": "## Block 2 - Pipeline B: IfcOpenShell\nPipeline B: IfcOpenShell Python extraction. \n- Downloads script from GitHub\n- Runs ifcopenshell to extract elements, properties, quantities, materials as JSON\n\n\nResolves material names (not just IDs).",
         "height": 336,
-        "width": 2624,
+        "width": 2832,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -43,6 +32,154 @@
       ],
       "id": "149055d0-b3b1-453b-87d6-c6331bb4e8ba",
       "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Block 0 - Setup",
+        "height": 480,
+        "width": 816,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2864,
+        1104
+      ],
+      "id": "2e8a220d-78bc-4819-a7b0-b252ba5caf36",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers\nDataDrivenConstruction [GitHub](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto)\nN8N Thesis Documentation [N8N-Thesis](https://github.com/ulnirah/n8n-thesis)",
+        "height": 240,
+        "width": 816,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2880,
+        832
+      ],
+      "id": "1accfe73-f1ff-459b-94a3-4392f6dc2b93",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Block 3: QTO comparison\n- Spearman SRCC\n- Delta analysis",
+        "height": 272,
+        "width": 576,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        912,
+        1120
+      ],
+      "id": "96e725b4-8e2e-4ebc-98eb-3a642593f9ab",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "## Block 4: BQI scoring\n- Completeness\n- Validity\n- QTO trust",
+        "height": 304,
+        "width": 352,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        1104
+      ],
+      "id": "5c4e7c44-ea48-4ef3-966f-f104012264e4",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "## Block 5: Risk screening\n- Likelihood\n- Consequence\n- BQI penalty",
+        "height": 288,
+        "width": 1040
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1984,
+        1104
+      ],
+      "id": "3a817abf-5b05-4e23-9527-1a698cfba52e",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## Block 7: Output generation\n- Risk register\n- BQI summary\n- PDF report",
+        "height": 272,
+        "width": 1264,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3152,
+        1120
+      ],
+      "id": "b134a796-59a6-4500-b0d7-9175c7a095d3",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {},
+      "id": "07dabaa6-c5e5-498d-99bf-a7b833f36a63",
+      "name": "0.0: Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        -2576,
+        1424
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9cbd4ec9-df24-41e8-b47a-720a4cdb733b",
+              "name": "path_to_converter",
+              "type": "string",
+              "value": "C:\\Users\\milad.komary\\Desktop\\N8N\\DDC_Converters_Windows_Packages\\DDC_CONVERTER_IFC\\IfcExporter.exe"
+            },
+            {
+              "id": "aa834467-80fb-476a-bac1-6728478834f0",
+              "name": "project_file",
+              "type": "string",
+              "value": "C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\sample-models\\baseline\\IFC43-Infra-Road.ifc"
+            },
+            {
+              "id": "4e4f5e6f-7a8b-4c5d-9e0f-1a2b3c4d5e6f",
+              "name": "group_by",
+              "type": "string",
+              "value": "Category"
+            },
+            {
+              "id": "5f6a7b8c-9d0e-4f1a-2b3c-4d5e6f7a8b9c",
+              "name": "country",
+              "type": "string",
+              "value": "Spain"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fc8bc447-da03-41dd-9807-0a3317a335e9",
+      "name": "0.1: Config",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -2352,
+        1424
+      ],
+      "typeVersion": 3.4,
+      "notesInFlow": true
     },
     {
       "parameters": {
@@ -135,11 +272,40 @@
     },
     {
       "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status-id",
+              "name": "status",
+              "type": "string",
+              "value": "File already exists - skipping conversion"
+            },
+            {
+              "id": "xlsx-filename-id",
+              "name": "xlsx_filename",
+              "type": "string",
+              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "726f6628-448a-4347-865f-835dfd6e6604",
+      "name": "1.3a: Skip (file exists)",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        -848,
+        864
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
         "executeOnce": false,
         "command": "=\"{{$node[\"0.1: Config\"].json[\"path_to_converter\"]}}\" \"{{$node[\"0.1: Config\"].json[\"project_file\"]}}\""
       },
       "id": "55d1b893-c86f-4089-8a51-a9de0af4d89e",
-      "name": "1.4: Run DDC",
+      "name": "1.4: Run DDC converter",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
         -1296,
@@ -167,7 +333,7 @@
                 "operation": "exists",
                 "rightType": "any"
               },
-              "leftValue": "={{ $node[\"1.4: Run DDC\"].json.error }}",
+              "leftValue": "={{ $node[\"1.4: Run DDC converter\"].json.error }}",
               "rightValue": ""
             }
           ],
@@ -176,7 +342,7 @@
         "options": {}
       },
       "id": "12ed46d2-f4f3-4d9d-a70a-cca6b2d63287",
-      "name": "1.5: DDC OK?",
+      "name": "1.5: DDC Converter OK?",
       "type": "n8n-nodes-base.if",
       "position": [
         -1072,
@@ -192,13 +358,13 @@
               "id": "error-message-id",
               "name": "error_message",
               "type": "string",
-              "value": "=Extraction failed: {{ $node[\"1.4: Run DDC\"].json.error || \"Unknown error\" }}"
+              "value": "=Extraction failed: {{ $node[\"1.4: Run DDC converter\"].json.error || \"Unknown error\" }}"
             },
             {
               "id": "error-code-id",
               "name": "error_code",
               "type": "number",
-              "value": "={{ $node[\"1.4: Run DDC\"].json.code || -1 }}"
+              "value": "={{ $node[\"1.4: Run DDC converter\"].json.code || -1 }}"
             },
             {
               "id": "xlsx-filename-error",
@@ -211,40 +377,11 @@
         "options": {}
       },
       "id": "84fa3e31-8696-4e77-91ca-1c388eca03ce",
-      "name": "1.5a: DDC error",
+      "name": "1.5a: DDC Converter error",
       "type": "n8n-nodes-base.set",
       "position": [
         -848,
         1056
-      ],
-      "typeVersion": 3.4
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "status-id",
-              "name": "status",
-              "type": "string",
-              "value": "File already exists - skipping conversion"
-            },
-            {
-              "id": "xlsx-filename-id",
-              "name": "xlsx_filename",
-              "type": "string",
-              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "726f6628-448a-4347-865f-835dfd6e6604",
-      "name": "1.3a: Skip",
-      "type": "n8n-nodes-base.set",
-      "position": [
-        -848,
-        864
       ],
       "typeVersion": 3.4
     },
@@ -346,287 +483,6 @@
     },
     {
       "parameters": {
-        "command": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts'; Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ulnirah/n8n-thesis/main/scripts/extract_ifc.py' -Headers @{Authorization='token {{ $env.N8N_GITHUB_TOKEN }}'} -OutFile 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts\\extract_ifc.py'\""
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        -624,
-        1392
-      ],
-      "id": "beacdc5e-3328-4144-8f25-aa2a6f6191c0",
-      "name": "2.1: Download script"
-    },
-    {
-      "parameters": {
-        "content": "## Block 0 - Setup and IFC Version Detect",
-        "height": 480,
-        "width": 832,
-        "color": 7
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -2896,
-        1104
-      ],
-      "id": "2e8a220d-78bc-4819-a7b0-b252ba5caf36",
-      "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
-        "content": "# Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers\nDataDrivenConstruction [GitHub](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto)\nN8N Thesis Documentation [N8N-Thesis](https://github.com/ulnirah/n8n-thesis)",
-        "height": 240,
-        "width": 832,
-        "color": 7
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -2896,
-        832
-      ],
-      "id": "1accfe73-f1ff-459b-94a3-4392f6dc2b93",
-      "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
-        "content": "## Block 3: QTO comparison\n- Spearman SRCC\n- Delta analysis",
-        "height": 272,
-        "width": 576,
-        "color": 4
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        704,
-        1120
-      ],
-      "id": "96e725b4-8e2e-4ebc-98eb-3a642593f9ab",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
-        "content": "## Block 4: BQI scoring\n- Completeness\n- Validity\n- QTO trust",
-        "height": 304,
-        "width": 352,
-        "color": 3
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1376,
-        1104
-      ],
-      "id": "5c4e7c44-ea48-4ef3-966f-f104012264e4",
-      "name": "Sticky Note5"
-    },
-    {
-      "parameters": {
-        "content": "## Block 6: Risk screening\n- Likelihood\n- Consequence\n- BQI penalty",
-        "height": 288,
-        "width": 1040
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1776,
-        1104
-      ],
-      "id": "3a817abf-5b05-4e23-9527-1a698cfba52e",
-      "name": "Sticky Note6"
-    },
-    {
-      "parameters": {
-        "content": "## Block 7: Output generation\n- Risk register\n- BQI summary\n- PDF report",
-        "height": 272,
-        "width": 1264,
-        "color": 7
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        2944,
-        1120
-      ],
-      "id": "b134a796-59a6-4500-b0d7-9175c7a095d3",
-      "name": "Sticky Note8"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        720,
-        1232
-      ],
-      "id": "a666afcb-e2fb-47be-9864-e5ad6b62b982",
-      "name": "3.1: Merge A+B"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Input Parsing\nconst allItems = $input.all();\n\nconst qtoSummary = allItems.find(i => i.json._type === 'qto_summary');\nconst qtoComparisons = allItems.filter(i => i.json._type === 'qto_comparison');\nconst elements = allItems.filter(i => i.json._type === 'element');\n\nconst srccLookup = {};\nif (qtoSummary?.json.srcc_results) {\n  for (const s of qtoSummary.json.srcc_results) {\n    srccLookup[s.QtoField] = s.SRCC;\n  }\n}\n\nconst qtoByGid = {};\nfor (const comp of qtoComparisons) {\n  const gid = comp.json.GlobalId;\n  if (!qtoByGid[gid]) qtoByGid[gid] = [];\n  qtoByGid[gid].push(comp.json);\n}\n\n// Weights and Rules\nconst WEIGHTS = {\n  completeness:  0.35,\n  validity:      0.25,\n  qto_coverage:  0.20,\n  qto_agreement: 0.20,\n};\n\nconst REQUIRED_PROPS = {\n  IfcWall:                  ['IsExternal', 'LoadBearing'],\n  IfcWallStandardCase:      ['IsExternal', 'LoadBearing'],\n  IfcSlab:                  ['IsExternal', 'LoadBearing'],\n  IfcSlabStandardCase:      ['IsExternal', 'LoadBearing'],\n  IfcBeam:                  ['IsExternal', 'LoadBearing'],\n  IfcColumn:                ['IsExternal', 'LoadBearing'],\n  IfcRoof:                  ['IsExternal'],\n  IfcDoor:                  ['IsExternal', 'FireRating'],\n  IfcWindow:                ['IsExternal'],\n  IfcSpace:                 ['IsExternal', 'GrossPlannedArea'],\n  IfcChimney:               [],\n  IfcFurniture:             [],\n  IfcBuildingElementProxy:  [],\n  IfcSpatialZone:           [],\n  IfcZone:                  [],\n};\n\nconst EXPECTED_QTO = {\n  IfcWall:             ['NetVolume', 'Width', 'Length', 'NetSideArea'],\n  IfcWallStandardCase: ['NetVolume', 'Width', 'Length', 'NetSideArea'],\n  IfcSlab:             ['NetVolume', 'Depth', 'NetArea'],\n  IfcSlabStandardCase: ['NetVolume', 'Depth', 'NetArea'],\n  IfcBeam:             ['NetVolume', 'Length'],\n  IfcColumn:           ['NetVolume', 'Length'],\n  IfcRoof:             [],\n  IfcSpace:            [],\n};\n\n// Scoring Function\nfunction scoreElement(elem) {\n  const type = elem.Category || elem.Type || '';\n  const gid  = elem.GlobalId;\n\n  // Completeness\n  const required = REQUIRED_PROPS[type] || [];\n  const missingProps = required.filter(prop =>\n    !Object.keys(elem).some(k => k.includes(prop) && elem[k] != null && elem[k] !== '')\n  );\n  const completenessScore = required.length > 0\n    ? (required.length - missingProps.length) / required.length : 1.0;\n\n  // Validity\n  const propKeys = Object.keys(elem).filter(k => k.startsWith('[Pset_'));\n  const invalidProps = propKeys.filter(k => {\n    const v = elem[k];\n    return v === '' || v === null || v === undefined || v === \"['UNSET']\" || v === 'UNSET' || v === 'N/A';\n  });\n  const validityScore = propKeys.length > 0\n    ? (propKeys.length - invalidProps.length) / propKeys.length : 1.0;\n\n  // QTO Coverage\n  const expectedQto = EXPECTED_QTO[type] || [];\n  const missingQto = expectedQto.filter(qty =>\n    !Object.keys(elem).some(k => k.includes(qty) && elem[k] != null && elem[k] !== '')\n  );\n  const qtoCoverageScore = expectedQto.length > 0\n    ? (expectedQto.length - missingQto.length) / expectedQto.length : 1.0;\n\n  // QTO Agreement\n  const qtoComps = qtoByGid[gid] || [];\n  const qtoAgreementScore = qtoComps.length > 0\n    ? qtoComps.filter(c => c.Match === 'exact' || c.Match === 'negligible').length / qtoComps.length\n    : 1.0;\n\n  // Final BQI\n  const bqi =\n    WEIGHTS.completeness  * completenessScore  +\n    WEIGHTS.validity      * validityScore      +\n    WEIGHTS.qto_coverage  * qtoCoverageScore   +\n    WEIGHTS.qto_agreement * qtoAgreementScore;\n\n  const confidence = bqi >= 0.85 ? 'high' : bqi >= 0.60 ? 'medium' : 'low';\n\n  const penalties = [];\n  if (completenessScore  < 0.5) penalties.push('incomplete_properties');\n  if (validityScore      < 0.5) penalties.push('invalid_values');\n  if (qtoCoverageScore   < 0.5) penalties.push('missing_qto');\n  if (qtoAgreementScore  < 0.5) penalties.push('qto_disagreement');\n  if (!elem.Material || elem.Material === '') penalties.push('no_material');\n\n  return {\n    _type:          'bqi_scored',\n    GlobalId:       gid,\n    Name:           elem.Name || '',\n    Category:       type,\n    Material:       elem.Material || '',\n    ObjectType:     elem.ObjectType || '',\n    bqi_score:      Math.round(bqi * 1000) / 1000,\n    bqi_confidence: confidence,\n    score_completeness:  Math.round(completenessScore * 100) / 100,\n    score_validity:      Math.round(validityScore * 100) / 100,\n    score_qto_coverage:  Math.round(qtoCoverageScore * 100) / 100,\n    score_qto_agreement: Math.round(qtoAgreementScore * 100) / 100,\n    missing_properties: missingProps,\n    invalid_properties: invalidProps,\n    missing_qto:        missingQto,\n    penalties,\n    ...Object.fromEntries(Object.entries(elem).filter(([k]) => k.startsWith('[Qto_'))),\n    ...Object.fromEntries(Object.entries(elem).filter(([k]) => k.startsWith('[Pset_'))),\n  };\n}\n\n// Run and Output\nconst elementsToScore = (() => {\n  const b = allItems.filter(i => i.json._type === 'element' && i.json.pipeline === 'B_ifcopenshell');\n  return b.length > 0 ? b : allItems.filter(i => i.json._type === 'element' && i.json.pipeline === 'A_ddc');\n})();\n\nconst output = [];\nif (qtoSummary) output.push(qtoSummary);\nfor (const elem of elementsToScore) output.push({ json: scoreElement(elem.json) });\n\nconst scored = output.filter(i => i.json._type === 'bqi_scored');\nconst avgBqi = scored.length > 0\n  ? scored.reduce((s, i) => s + i.json.bqi_score, 0) / scored.length : 0;\n\noutput.unshift({ json: {\n  _type:                 'bqi_model_summary',\n  model_bqi:             Math.round(avgBqi * 1000) / 1000,\n  model_confidence:      avgBqi >= 0.85 ? 'high' : avgBqi >= 0.60 ? 'medium' : 'low',\n  total_elements_scored: scored.length,\n  distribution: {\n    high:   scored.filter(i => i.json.bqi_confidence === 'high').length,\n    medium: scored.filter(i => i.json.bqi_confidence === 'medium').length,\n    low:    scored.filter(i => i.json.bqi_confidence === 'low').length,\n  },\n  weights_used: WEIGHTS,\n}});\n\nreturn output;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1616,
-        1232
-      ],
-      "id": "cbb220c6-de91-4094-ae28-42da9a98ae69",
-      "name": "4.1: BQI scoring"
-    },
-    {
-      "parameters": {
-        "jsCode": "const EXPOSURE = {\n  IfcRoof: 0.9, IfcChimney: 0.8, IfcPavement: 0.75, IfcRail: 0.7,\n  IfcFooting: 0.65, IfcPile: 0.6,\n  IfcWall: { base: 0.45, ext: 0.4 }, IfcWallStandardCase: { base: 0.45, ext: 0.4 },\n  IfcSlab: { base: 0.45, ext: 0.3 }, IfcSlabStandardCase: { base: 0.45, ext: 0.3 },\n  IfcColumn: { base: 0.45, ext: 0.3 }, IfcColumnStandardCase: { base: 0.45, ext: 0.3 },\n  IfcBeam: { base: 0.35, ext: 0.2 }, IfcBeamStandardCase: { base: 0.35, ext: 0.2 },\n  IfcDoor: { base: 0.35, ext: 0.3 }, IfcWindow: { base: 0.35, ext: 0.35 },\n  IfcStair: { base: 0.3, ext: 0.2 }, IfcStairFlight: { base: 0.3, ext: 0.2 },\n  IfcRamp: { base: 0.3, ext: 0.2 }, IfcRampFlight: { base: 0.3, ext: 0.2 },\n  IfcCovering: { base: 0.25, ext: 0.2 }, IfcRailing: { base: 0.25, ext: 0.2 },\n  IfcMember: 0.3, IfcPlate: 0.3,\n  IfcReinforcingBar: 0.35, IfcReinforcingMesh: 0.35, IfcTendon: 0.3,\n  IfcFurniture: 0.1, IfcFurnishingElement: 0.1, IfcSpace: 0.1,\n};\n\nconst output = [];\nfor (const item of $input.all()) {\n  if (item.json._type !== 'bqi_scored') { output.push(item); continue; }\n\n  const type = item.json.Category || '';\n  const spec = EXPOSURE[type];\n\n  const isExternal = Object.entries(item.json)\n    .filter(([k]) => k.includes('IsExternal'))\n    .some(([, v]) => v === true || v === 'True' || String(v) === '1');\n\n  let exposure;\n  if (typeof spec === 'number') {\n    exposure = spec;\n  } else if (spec) {\n    exposure = spec.base + (isExternal ? spec.ext : 0);\n  } else {\n    exposure = isExternal ? 0.25 : 0.15;\n  }\n\n  output.push({ json: {\n    ...item.json,\n    exposure_score: Math.round(Math.min(1, exposure) * 1000) / 1000,\n    is_external: isExternal,\n  }});\n}\nreturn output;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1840,
-        1232
-      ],
-      "id": "be3031b7-17ab-4b97-b839-9505449d5c33",
-      "name": "5.1: Exposure"
-    },
-    {
-      "parameters": {
-        "jsCode": "const SUSCEPTIBILITY = {\n  IfcRoof: 0.8, IfcChimney: 0.7, IfcPavement: 0.7, IfcFooting: 0.65, IfcPile: 0.6,\n  IfcRail: 0.6, IfcWall: 0.5, IfcWallStandardCase: 0.5,\n  IfcSlab: 0.5, IfcSlabStandardCase: 0.5,\n  IfcColumn: 0.45, IfcColumnStandardCase: 0.45,\n  IfcBeam: 0.45, IfcBeamStandardCase: 0.45,\n  IfcDoor: 0.4, IfcWindow: 0.4, IfcStair: 0.4, IfcStairFlight: 0.4,\n  IfcCovering: 0.4, IfcMember: 0.35, IfcPlate: 0.35,\n  IfcReinforcingBar: 0.35, IfcReinforcingMesh: 0.35, IfcTendon: 0.3,\n  IfcRailing: 0.3, IfcRamp: 0.3, IfcRampFlight: 0.3,\n  IfcFurniture: 0.15, IfcFurnishingElement: 0.15, IfcSpace: 0.1,\n};\n\nfunction materialMod(mat) {\n  if (!mat) return 0;\n  const m = mat.toLowerCase();\n  if (m.includes('wood') || m.includes('timber')) return 0.15;\n  if (m.includes('masonry') || m.includes('brick')) return 0.10;\n  if (m.includes('steel') || m.includes('metal')) return 0.05;\n  return 0;\n}\n\nfunction bqiMod(bqi) {\n  if (bqi >= 0.85) return -0.05;\n  if (bqi < 0.60)  return  0.10;\n  return 0;\n}\n\nconst output = [];\nfor (const item of $input.all()) {\n  if (item.json.exposure_score === undefined) { output.push(item); continue; }\n\n  const susc = SUSCEPTIBILITY[item.json.Category] ?? 0.3;\n  const raw  = item.json.exposure_score * (susc + materialMod(item.json.Material))\n               + bqiMod(item.json.bqi_score || 0);\n\n  output.push({ json: {\n    ...item.json,\n    likelihood: Math.round(Math.min(1, Math.max(0, raw)) * 1000) / 1000,\n    defect_susceptibility: susc,\n  }});\n}\nreturn output;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2064,
-        1232
-      ],
-      "id": "504865ef-be31-499d-b3e6-d992103a78b7",
-      "name": "5.2: Likelihood"
-    },
-    {
-      "parameters": {
-        "jsCode": "const CRITICALITY = {\n  IfcColumn: 1.0, IfcColumnStandardCase: 1.0,\n  IfcFooting: 1.0, IfcPile: 1.0,\n  IfcBeam: 0.9, IfcBeamStandardCase: 0.9,\n  IfcSlab: 0.9, IfcSlabStandardCase: 0.9,\n  IfcWall: 0.8, IfcWallStandardCase: 0.8, IfcRoof: 0.8, IfcRail: 0.8,\n  IfcTendon: 0.75, IfcReinforcingBar: 0.7, IfcReinforcingMesh: 0.65,\n  IfcStair: 0.7, IfcStairFlight: 0.7, IfcPavement: 0.65, IfcChimney: 0.6,\n  IfcMember: 0.6, IfcRamp: 0.55, IfcRampFlight: 0.55, IfcPlate: 0.5,\n  IfcCovering: 0.4, IfcRailing: 0.4, IfcDoor: 0.35, IfcWindow: 0.35,\n  IfcFurniture: 0.1, IfcFurnishingElement: 0.1, IfcSpace: 0.2,\n};\n\nfunction qtoExtent(elem) {\n  const keys = Object.keys(elem);\n  for (const kw of ['NetVolume','GrossVolume','NetArea','GrossArea','NetSideArea',\n                    'NetFloorArea','GrossPlannedArea','Length','Depth','Width']) {\n    const k = keys.find(x => x.includes(kw));\n    if (k && elem[k]) return parseFloat(elem[k]) || 0;\n  }\n  return 0;\n}\n\nconst scorable = $input.all().filter(i => i.json.likelihood !== undefined);\nconst others   = $input.all().filter(i => i.json.likelihood === undefined);\nconst maxExt   = Math.max(1, ...scorable.map(i => qtoExtent(i.json)));\n\nconst output = [];\nfor (const item of others) output.push(item);\n\nfor (const item of scorable) {\n  const crit  = CRITICALITY[item.json.Category] ?? 0.3;\n  const ext   = qtoExtent(item.json);\n  const normE = ext > 0 ? Math.min(1, ext / maxExt) : 0.5;\n  const cons  = Math.min(1, crit * (0.7 + 0.3 * normE));\n\n  output.push({ json: {\n    ...item.json,\n    consequence: Math.round(cons * 1000) / 1000,\n    element_criticality: crit,\n    qto_extent: ext,\n  }});\n}\nreturn output;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2288,
-        1232
-      ],
-      "id": "d24d05b5-9c6b-4f9e-9e25-333eb6f5696e",
-      "name": "5.3: Consequence"
-    },
-    {
-      "parameters": {
-        "jsCode": "const CONF_MULT = { high: 1.0, medium: 1.10, low: 1.25 };\n\nconst output = [];\nfor (const item of $input.all()) {\n  if (item.json.consequence === undefined) { output.push(item); continue; }\n\n  const L    = item.json.likelihood  || 0;\n  const C    = item.json.consequence || 0;\n  const mult = CONF_MULT[item.json.bqi_confidence] ?? 1.25;\n\n  output.push({ json: {\n    ...item.json,\n    risk_score:       Math.round(Math.min(1, L * C * mult) * 1000) / 1000,\n    risk_multiplier:  mult,\n    _type:            'risk_element',\n  }});\n}\nreturn output;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2512,
-        1232
-      ],
-      "id": "0de01e38-7de3-48f0-a35b-68c2061a8591",
-      "name": "5.4: Risk score"
-    },
-    {
-      "parameters": {
-        "jsCode": "const all       = $input.all();\nconst others    = all.filter(i => i.json._type !== 'risk_element');\nconst riskItems = all.filter(i => i.json._type === 'risk_element');\n\nriskItems.sort((a, b) => (b.json.risk_score || 0) - (a.json.risk_score || 0));\n\nconst scores = [...riskItems].map(i => i.json.risk_score || 0).sort((a, b) => a - b);\nconst n      = scores.length;\nconst HIGH_T = n > 0 ? Math.max(scores[Math.floor(n * 0.75)] ?? 0, 0.40) : 0.40;\nconst LOW_T  = n > 0 ? Math.max(scores[Math.floor(n * 0.25)] ?? 0, 0.15) : 0.15;\n\nconst labeled = riskItems.map((item, idx) => {\n  const s     = item.json.risk_score || 0;\n  const label = s >= HIGH_T ? 'High' : s >= LOW_T ? 'Medium' : 'Low';\n  return { json: {\n    ...item.json,\n    risk_label:      label,\n    risk_rank:       idx + 1,\n    risk_percentile: Math.round((1 - idx / Math.max(n, 1)) * 100),\n    zone:            item.json.is_external ? 'Exterior' : 'Interior',\n    location_tag:    item.json.is_external ? 'Exterior' : 'Interior',\n  }};\n});\n\nreturn [...others, ...labeled];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2736,
-        1232
-      ],
-      "id": "cfe2b15a-549a-487f-856e-1081e5b80af6",
-      "name": "5.5: Rank + label",
-      "notes": "Code JS — sort, assign High/Med/Low label"
-    },
-    {
-      "parameters": {
-        "jsCode": "const all = $input.all();\n\n// Pass all typed items through; add zone/location_tag for HTML report\nreturn all.map(item => {\n  if (item.json._type !== 'risk_element') return item;\n  return { json: {\n    ...item.json,\n    zone:         item.json.zone         || (item.json.is_external ? 'Exterior' : 'Interior'),\n    location_tag: item.json.location_tag || (item.json.is_external ? 'Exterior' : 'Interior'),\n  }};\n});"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2960,
-        1232
-      ],
-      "id": "013c9041-7cbf-402e-a989-98d7f2292b7c",
-      "name": "6.1: Format register"
-    },
-    {
-      "parameters": {
-        "jsCode": "const allItems = $input.all();\n\nlet projectFilePath = '';\ntry {\n  projectFilePath = $node['0.1: Config'].json.project_file || '';\n} catch(e) {\n  projectFilePath = 'Unknown Project';\n}\nconst projectFileName = projectFilePath.split('\\\\').pop().split('/').pop().replace(/\\.[^/.]+$/, '');\n\nconst modelSummary  = allItems.find(i => i.json._type === 'bqi_model_summary') || { json: {} };\nconst riskElements  = allItems.filter(i => i.json._type === 'risk_element');\nconst qtoSummary    = allItems.find(i => i.json._type === 'qto_summary') || { json: {} };\n\nconst modelBQI        = +(modelSummary.json.model_bqi   || 0).toFixed(3);\nconst modelConf       = modelSummary.json.model_confidence || 'low';\nconst totalScored     = modelSummary.json.total_elements_scored || allItems.length;\nconst dist            = modelSummary.json.distribution || { high: 0, medium: 0, low: 0 };\nconst weights         = modelSummary.json.weights_used || { completeness: 0.35, validity: 0.25, qto_coverage: 0.20, qto_agreement: 0.20 };\n\nconst highRisk   = riskElements.filter(i => i.json.risk_label === 'High').length   || dist.high   || 0;\nconst medRisk    = riskElements.filter(i => i.json.risk_label === 'Medium').length || dist.medium || 0;\nconst lowRisk    = riskElements.filter(i => i.json.risk_label === 'Low').length    || dist.low    || 0;\nconst top10      = riskElements\n  .sort((a,b) => (b.json.risk_score||0) - (a.json.risk_score||0))\n  .slice(0, 10);\n\nconst srccResults = qtoSummary.json.srcc_results || [];\nconst avgSRCC     = srccResults.length\n  ? (srccResults.reduce((s,r) => s + (r.SRCC||0), 0) / srccResults.length).toFixed(3)\n  : 'N/A';\n\nfunction confColor(conf) {\n  if (conf === 'high')   return '#009a44';\n  if (conf === 'medium') return '#ffa726';\n  return '#dc3545';\n}\nfunction riskColor(label) {\n  if (label === 'High')   return '#dc3545';\n  if (label === 'Medium') return '#ffa726';\n  return '#66bb6a';\n}\nfunction bqiBar(score) {\n  const pct = Math.round((score||0) * 100);\n  const col = score >= 0.7 ? '#009a44' : score >= 0.4 ? '#ffa726' : '#dc3545';\n  return `<div style=\"background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px\"><div style=\"height:100%;width:${pct}%;background:${col};border-radius:3px\"></div></div>`;\n}\n\nconst distData    = JSON.stringify([highRisk, medRisk, lowRisk]);\nconst bqiWeights  = JSON.stringify(Object.entries(weights).map(([k,v]) => ({ label: k.replace('_',' '), value: +(v*100).toFixed(0) })));\nconst srccChartData = JSON.stringify(srccResults.slice(0,8).map(r => ({ field: (r.QtoField||'').replace('[Qto_','').replace(']',''), srcc: +(r.SRCC||0).toFixed(3) })));\nconst top10Data   = JSON.stringify(top10.map(i => ({ id: (i.json.GlobalId||'').slice(0,8), score: +(i.json.risk_score||0).toFixed(3), bqi: +(i.json.bqi_score||0).toFixed(3), label: i.json.risk_label||'Low', type: i.json.Category||i.json._type||'' })));\n\nconst riskRows = top10.map((item, idx) => {\n  const d = item.json;\n  const label = d.risk_label || 'Low';\n  return `<tr>\n    <td>${idx+1}</td>\n    <td style=\"font-family:monospace;font-size:11px\">${(d.GlobalId||'—').slice(0,16)}</td>\n    <td>${d.Category || d.ifc_type || '—'}</td>\n    <td>${(d.zone || d.location_tag || '—')}</td>\n    <td>${(+(d.bqi_score||0)).toFixed(2)} ${bqiBar(d.bqi_score)}</td>\n    <td>${d.bqi_confidence || '—'}</td>\n    <td>${(+(d.likelihood||0)).toFixed(2)}</td>\n    <td>${(+(d.consequence||0)).toFixed(2)}</td>\n    <td><strong>${(+(d.risk_score||0)).toFixed(3)}</strong></td>\n    <td><span style=\"display:inline-block;padding:2px 8px;background:${riskColor(label)};color:white;font-size:11px;font-weight:600;border-radius:2px\">${label.toUpperCase()}</span></td>\n  </tr>`;\n}).join('') || `<tr><td colspan=\"10\" style=\"text-align:center;color:#999;padding:20px\">Risk screening stubs (R1–R5) not yet implemented — placeholder data</td></tr>`;\n\nconst weightRows = Object.entries(weights).map(([k,v]) =>\n  `<tr><td>${k.replace(/_/g,' ')}</td><td>${(v*100).toFixed(0)}%</td><td>${bqiBar(v)}</td></tr>`\n).join('');\n\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Uncertainty-Aware Risk Register | ${projectFileName}</title>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js\"><\\/script>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:Arial,'Helvetica Neue',sans-serif;background:#f5f5f5;color:#2e2e38;font-size:13px;line-height:1.6}\n.container{max-width:1200px;margin:0 auto;padding:40px 20px}\n.header{border-bottom:3px solid #0061a0;padding-bottom:20px;margin-bottom:30px;background:#fff;padding:24px 30px;border-left:6px solid #0061a0}\n.header h1{font-size:26px;font-weight:300;color:#0061a0;margin-bottom:6px}\n.header .subtitle{color:#696969;font-size:13px}\n.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}\n.kpi-card{background:#fff;border:1px solid #e0e0e0;padding:20px;border-top:4px solid #ccc}\n.kpi-card.blue{border-top-color:#0061a0}\n.kpi-card.green{border-top-color:#009a44}\n.kpi-card.amber{border-top-color:#ffa726}\n.kpi-card.red{border-top-color:#dc3545}\n.kpi-value{font-size:32px;font-weight:300;color:#0061a0;line-height:1;margin-bottom:6px}\n.kpi-label{font-size:11px;color:#696969;text-transform:uppercase;letter-spacing:.5px;font-weight:600}\n.kpi-sub{font-size:11px;color:#999;margin-top:4px}\n.section{background:#fff;border:1px solid #e0e0e0;margin-bottom:24px}\n.section-header{background:#fafafa;padding:14px 20px;border-bottom:1px solid #e0e0e0}\n.section-header h2{font-size:15px;font-weight:600;color:#2e2e38;margin:0}\n.section-header p{font-size:12px;color:#696969;margin-top:3px}\n.section-body{padding:20px}\n.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px}\n.chart-box{background:#fff;border:1px solid #e0e0e0;padding:16px}\n.chart-box h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#2e2e38}\n.chart-box.wide{grid-column:1/-1}\ntable{width:100%;border-collapse:collapse;font-size:12px}\nth{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:600;color:#2e2e38;border-bottom:2px solid #e0e0e0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}\ntd{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#4a4a4a;vertical-align:middle}\ntr:hover{background:#fafafa}\n.conf-badge{display:inline-block;padding:2px 7px;border-radius:2px;font-size:11px;font-weight:600}\n.alert-box{border-left:4px solid #ffa726;background:#fff8e1;padding:16px 20px;margin-bottom:24px;font-size:13px}\n.alert-box strong{color:#e65100}\n.footer{margin-top:40px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#999;font-size:11px}\n@media(max-width:768px){.charts-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}}\n@media print{body{background:white}.container{padding:10px}}\n</style>\n</head>\n<body>\n<div class=\"container\">\n\n  <!-- Header -->\n  <div class=\"header\">\n    <h1>Uncertainty-Aware Risk Register</h1>\n    <div class=\"subtitle\">\n      Project: <strong>${projectFileName}</strong> &nbsp;|&nbsp;\n      BIM Quality Index (BQI) + Risk Screening &nbsp;|&nbsp;\n      Generated: ${new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}\n    </div>\n  </div>\n\n  ${totalScored === 0 ? `\n  <div class=\"alert-box\">\n    <strong>⚠ Placeholder data:</strong> Risk screening nodes R1–R5 and BQI node C5 are not yet fully implemented.\n    The report structure is correct — scores will populate once those nodes are built.\n  </div>` : ''}\n\n  <!-- KPI Cards -->\n  <div class=\"kpi-grid\">\n    <div class=\"kpi-card blue\">\n      <div class=\"kpi-value\">${modelBQI}</div>\n      <div class=\"kpi-label\">Model BQI Score</div>\n      <div class=\"kpi-sub\" style=\"color:${confColor(modelConf)};font-weight:600\">${modelConf.toUpperCase()} confidence</div>\n    </div>\n    <div class=\"kpi-card red\">\n      <div class=\"kpi-value\">${highRisk}</div>\n      <div class=\"kpi-label\">High-Risk Elements</div>\n      <div class=\"kpi-sub\">require immediate attention</div>\n    </div>\n    <div class=\"kpi-card amber\">\n      <div class=\"kpi-value\">${medRisk}</div>\n      <div class=\"kpi-label\">Medium-Risk Elements</div>\n      <div class=\"kpi-sub\">monitor closely</div>\n    </div>\n    <div class=\"kpi-card green\">\n      <div class=\"kpi-value\">${totalScored}</div>\n      <div class=\"kpi-label\">Elements Scored</div>\n      <div class=\"kpi-sub\">avg SRCC: ${avgSRCC}</div>\n    </div>\n  </div>\n\n  <!-- Charts row -->\n  <div class=\"charts-grid\">\n    <div class=\"chart-box\">\n      <h3>Risk distribution</h3>\n      <canvas id=\"riskDist\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>BQI weight breakdown</h3>\n      <canvas id=\"bqiWeights\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>QTO pipeline agreement (SRCC)</h3>\n      <canvas id=\"srccBar\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box wide\">\n      <h3>Top 10 risk elements — risk score vs BQI score</h3>\n      <canvas id=\"riskBqiScatter\" height=\"120\"></canvas>\n    </div>\n  </div>\n\n  <!-- Risk Register Table -->\n  <div class=\"section\">\n    <div class=\"section-header\">\n      <h2>Risk Register — Top 10 Screened Elements</h2>\n      <p>Ranked by risk score (Likelihood × Consequence), adjusted by BQI confidence bounds</p>\n    </div>\n    <div class=\"section-body\" style=\"padding:0;overflow-x:auto\">\n      <table>\n        <thead>\n          <tr>\n            <th>#</th><th>GlobalId</th><th>IFC Type</th><th>Zone</th>\n            <th>BQI Score</th><th>Confidence</th>\n            <th>Likelihood</th><th>Consequence</th><th>Risk Score</th><th>Level</th>\n          </tr>\n        </thead>\n        <tbody>${riskRows}</tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- BQI Summary + Pipeline comparison -->\n  <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px\">\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>BQI Scoring Weights</h2>\n        <p>Dimensions and their contribution to the final BQI score</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>Dimension</th><th>Weight</th><th>Contribution</th></tr></thead>\n          <tbody>${weightRows}</tbody>\n        </table>\n      </div>\n    </div>\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>Pipeline A vs B — QTO Comparison</h2>\n        <p>Spearman SRCC per quantity field (1.0 = perfect agreement)</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>QTO Field</th><th>SRCC</th><th>Agreement</th></tr></thead>\n          <tbody>\n            ${srccResults.length\n              ? srccResults.slice(0,8).map(r => {\n                  const srcc = +(r.SRCC||0).toFixed(3);\n                  const label = srcc >= 0.8 ? 'Strong' : srcc >= 0.5 ? 'Moderate' : 'Weak';\n                  const col   = srcc >= 0.8 ? '#009a44' : srcc >= 0.5 ? '#ffa726' : '#dc3545';\n                  return `<tr><td style=\"font-size:11px;font-family:monospace\">${(r.QtoField||'').replace('[Qto_','').replace(']',' ').slice(0,28)}</td><td>${srcc}</td><td><span style=\"color:${col};font-weight:600\">${label}</span></td></tr>`;\n                }).join('')\n              : `<tr><td colspan=\"3\" style=\"text-align:center;color:#999;padding:16px\">QTO comparison pending — Block 3 not yet run</td></tr>`\n            }\n          </tbody>\n        </table>\n      </div>\n    </div>\n\n  </div>\n\n  <!-- Footer -->\n  <div class=\"footer\">\n    <p><strong>Uncertainty-Aware Risk Screening from Imperfect BIM</strong> &nbsp;|&nbsp; EMJM NORISK Thesis &nbsp;|&nbsp; ${new Date().toLocaleString()}</p>\n    <p style=\"margin-top:6px\">Pipeline A: DDC Converter &nbsp;|&nbsp; Pipeline B: IfcOpenShell &nbsp;|&nbsp; Orchestrated via n8n v2.7.5</p>\n  </div>\n\n</div>\n<script>\nconst distData    = ${distData};\nconst bqiWeights  = ${bqiWeights};\nconst srccData    = ${srccChartData};\nconst top10Data   = ${top10Data};\n\nChart.defaults.font.family = 'Arial,sans-serif';\nChart.defaults.font.size = 11;\n\n// Risk distribution doughnut\nnew Chart(document.getElementById('riskDist'), {\n  type: 'doughnut',\n  data: {\n    labels: ['High', 'Medium', 'Low'],\n    datasets: [{ data: distData, backgroundColor: ['#dc3545','#ffa726','#66bb6a'], borderColor:'#fff', borderWidth:2 }]\n  },\n  options: { responsive:true, maintainAspectRatio:false, cutout:'55%',\n    plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, padding:10 } } } }\n});\n\n// BQI weights horizontal bar\nnew Chart(document.getElementById('bqiWeights'), {\n  type: 'bar',\n  data: {\n    labels: bqiWeights.map(d => d.label),\n    datasets: [{ label:'Weight %', data: bqiWeights.map(d => d.value),\n      backgroundColor: ['#0061a0','#00a19a','#460073','#009a44'], borderWidth:0 }]\n  },\n  options: { indexAxis:'y', responsive:true, maintainAspectRatio:false,\n    plugins:{ legend:{ display:false } },\n    scales:{ x:{ max:50, ticks:{ callback: v => v+'%' } }, y:{ grid:{ display:false } } } }\n});\n\n// SRCC bar\nif (srccData.length) {\n  new Chart(document.getElementById('srccBar'), {\n    type: 'bar',\n    data: {\n      labels: srccData.map(d => d.field.slice(0,14)),\n      datasets: [{ label:'SRCC', data: srccData.map(d => d.srcc),\n        backgroundColor: srccData.map(d => d.srcc >= 0.8 ? '#009a44' : d.srcc >= 0.5 ? '#ffa726' : '#dc3545'),\n        borderWidth:0 }]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ display:false } },\n      scales:{ y:{ min:0, max:1, ticks:{ stepSize:.2 } }, x:{ grid:{ display:false },\n        ticks:{ font:{ size:9 } } } } }\n  });\n} else {\n  document.getElementById('srccBar').parentElement.innerHTML += '<p style=\"color:#999;font-size:12px;text-align:center;padding:20px\">Run Block 3 first</p>';\n}\n\n// Risk vs BQI scatter\nif (top10Data.length) {\n  new Chart(document.getElementById('riskBqiScatter'), {\n    type: 'scatter',\n    data: {\n      datasets: [\n        { label:'High',   data: top10Data.filter(d=>d.label==='High').map(d=>({x:d.bqi,y:d.score,id:d.id})),   backgroundColor:'#dc3545', pointRadius:6 },\n        { label:'Medium', data: top10Data.filter(d=>d.label==='Medium').map(d=>({x:d.bqi,y:d.score,id:d.id})), backgroundColor:'#ffa726', pointRadius:6 },\n        { label:'Low',    data: top10Data.filter(d=>d.label==='Low').map(d=>({x:d.bqi,y:d.score,id:d.id})),    backgroundColor:'#66bb6a', pointRadius:6 }\n      ]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ position:'top' }, tooltip:{ callbacks:{ label: ctx => ctx.raw.id+' | BQI:'+ctx.raw.x+' Risk:'+ctx.raw.y } } },\n      scales:{\n        x:{ min:0, max:1, title:{ display:true, text:'BQI Score (0=poor, 1=complete)' } },\n        y:{ min:0, title:{ display:true, text:'Risk Score' } }\n      }\n    }\n  });\n}\n<\\/script>\n</body>\n</html>`;\n\nreturn [{\n  json: {\n    html: html,\n    report_type: 'risk-register-bqi',\n    project: projectFileName,\n    timestamp: new Date().toISOString(),\n    summary: {\n      model_bqi: modelBQI,\n      model_confidence: modelConf,\n      total_elements: totalScored,\n      high_risk: highRisk,\n      medium_risk: medRisk,\n      low_risk: lowRisk,\n      avg_srcc: avgSRCC\n    }\n  }\n}];"
-      },
-      "id": "17e826f4-961e-44ae-a7d4-24c2a5998488",
-      "name": "6.2: Build HTML",
-      "type": "n8n-nodes-base.code",
-      "position": [
-        3184,
-        1232
-      ],
-      "typeVersion": 2,
-      "notes": "Code JS — adapt from n8n_Annisa_Learn pattern (Chart.js, comparison table)"
-    },
-    {
-      "parameters": {
-        "jsCode": "const html     = $node['6.2: Build HTML'].json.html;\nconst projFile = $node['0.1: Config'].json.project_file || \n                 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output\\\\report';\n\nconst dir = 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output';\nconst stamp    = new Date().toISOString().slice(0, 10);\nconst baseName = `RiskRegister_${stamp}`;\nconst htmlPath = `${dir}\\\\${baseName}.html`;\nconst pdfPath  = `${dir}\\\\${baseName}.pdf`;\n\nreturn [{\n  json: {\n    html_path: htmlPath,\n    pdf_path:  pdfPath,\n    base_name: baseName,\n    directory: dir\n  },\n  binary: {\n    data: {\n      data:     Buffer.from(html, 'utf8').toString('base64'),\n      mimeType: 'text/html',\n      fileName: `${baseName}.html`\n    }\n  }\n}];"
-      },
-      "id": "bb97d0cc-ce11-4f0b-8e07-2ae9c3f25f8e",
-      "name": "6.4: HTML → binary",
-      "type": "n8n-nodes-base.code",
-      "position": [
-        3632,
-        1232
-      ],
-      "typeVersion": 2,
-      "notes": "Code JS — Buffer.from(html, 'utf8') → binary item"
-    },
-    {
-      "parameters": {
-        "operation": "write",
-        "fileName": "={{ $json.html_path }}",
-        "dataPropertyName": "=data",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        3856,
-        1232
-      ],
-      "id": "f2f9be55-0afb-4a86-a8f6-e618058c15dc",
-      "name": "6.5: Write HTML"
-    },
-    {
-      "parameters": {
-        "command": "=powershell -Command \"& 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe' --headless --disable-gpu --print-to-pdf='{{ $node['6.4: HTML → binary'].json.pdf_path }}' '{{ $node['6.4: HTML → binary'].json.html_path }}'\""
-      },
-      "id": "154ace5c-0fd7-474c-955d-ec5dea7a3767",
-      "name": "6.6: Export PDF",
-      "type": "n8n-nodes-base.executeCommand",
-      "position": [
-        4080,
-        1232
-      ],
-      "typeVersion": 1
-    },
-    {
-      "parameters": {
-        "command": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\output'\""
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        3408,
-        1232
-      ],
-      "id": "04a197a6-bcb9-45af-9bfa-257108d845bf",
-      "name": "6.3: Create output dir"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": false,
@@ -715,49 +571,20 @@
         1056
       ],
       "id": "1d83a52d-72da-4a94-b110-f3ad7c70ace0",
-      "name": "1.11: Tag [PA]"
+      "name": "1.11: Tag as Pipeline A"
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "9cbd4ec9-df24-41e8-b47a-720a4cdb733b",
-              "name": "path_to_converter",
-              "type": "string",
-              "value": "C:\\Users\\milad.komary\\Desktop\\N8N\\DDC_Converters_Windows_Packages\\DDC_CONVERTER_IFC\\IfcExporter.exe"
-            },
-            {
-              "id": "aa834467-80fb-476a-bac1-6728478834f0",
-              "name": "project_file",
-              "type": "string",
-              "value": "C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\sample-models\\baseline\\IFC43-Infra-Road.ifc"
-            },
-            {
-              "id": "4e4f5e6f-7a8b-4c5d-9e0f-1a2b3c4d5e6f",
-              "name": "group_by",
-              "type": "string",
-              "value": "Category"
-            },
-            {
-              "id": "5f6a7b8c-9d0e-4f1a-2b3c-4d5e6f7a8b9c",
-              "name": "country",
-              "type": "string",
-              "value": "Spain"
-            }
-          ]
-        },
-        "options": {}
+        "command": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts'; Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ulnirah/n8n-thesis/main/scripts/extract_ifc.py' -Headers @{Authorization='token {{ $env.N8N_GITHUB_TOKEN }}'} -OutFile 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts\\extract_ifc.py'\""
       },
-      "id": "fc8bc447-da03-41dd-9807-0a3317a335e9",
-      "name": "0.1: Config",
-      "type": "n8n-nodes-base.set",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
       "position": [
-        -2640,
-        1136
+        -624,
+        1392
       ],
-      "typeVersion": 3.4,
-      "notesInFlow": true
+      "id": "beacdc5e-3328-4144-8f25-aa2a6f6191c0",
+      "name": "2.1: Download script"
     },
     {
       "parameters": {
@@ -804,6 +631,19 @@
     },
     {
       "parameters": {
+        "jsCode": "const all = $input.all();\nconst meta = all.find(i => i.json._type === 'metadata');\n\nconst schema  = meta?.json?.schema || 'IFC4';\nconst categories = new Set(all.filter(i => i.json.Category).map(i => i.json.Category));\nconst spatialTypes = new Set(\n  (meta?.json?.counts ? all : [])\n    .filter(i => i.json._type === 'spatial_entity' || i.json.ParentGlobalId !== undefined)\n    .map(i => i.json.Type)\n);\n\nlet domain = 'Building'; // default\n\nif (schema === 'IFC4X3' || schema === 'IFC4x3' || schema === 'IFC4X3_ADD2') {\n  const hasRail     = categories.has('IfcRail') || categories.has('IfcRailway') \n                   || spatialTypes.has('IfcRailway');\n  const hasRoad     = categories.has('IfcPavement') || categories.has('IfcKerb') \n                   || spatialTypes.has('IfcRoad');\n  const hasBridge   = categories.has('IfcBearing') || categories.has('IfcDeepFoundation')\n                   || spatialTypes.has('IfcBridge');\n  const hasBuilding = spatialTypes.has('IfcBuilding') || categories.has('IfcWall') \n                   || categories.has('IfcSlab');\n\n  const matches = [hasRail, hasRoad, hasBridge, hasBuilding].filter(Boolean).length;\n\n  if      (matches > 1) domain = 'Mixed';\n  else if (hasRail)     domain = 'Rail';\n  else if (hasRoad)     domain = 'Road';\n  else if (hasBridge)   domain = 'Bridge';\n  else if (hasBuilding) domain = 'Building';\n  else                  domain = 'Unknown';\n}\n\n// Inject domain into every item so R1-R3 can read it without cross-node references\nreturn all.map(item => ({\n  json: { ...item.json, ifc_schema: schema, ifc_domain: domain }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        1392
+      ],
+      "id": "1ce83aba-15a8-494c-82e5-f7957bbc959d",
+      "name": "2.5: Detect domain"
+    },
+    {
+      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -830,7 +670,7 @@
       "type": "n8n-nodes-base.filter",
       "typeVersion": 2.3,
       "position": [
-        272,
+        480,
         1392
       ],
       "id": "cbfb8fc2-92b4-4953-80e6-5826df42015d",
@@ -860,33 +700,227 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        496,
+        704,
         1392
       ],
       "id": "0395f235-c46f-49d4-82b3-1af0c4e20211",
-      "name": "2.7: Tag [PB]"
+      "name": "2.7: Tag as Pipeline B"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        928,
+        1232
+      ],
+      "id": "a666afcb-e2fb-47be-9864-e5ad6b62b982",
+      "name": "3.1: Merge A+B"
     },
     {
       "parameters": {
-        "jsCode": "// Input Parsing and Validation\nconst allItems = $input.all();\n\nconst pipelineA = allItems.filter(i => i.json.pipeline === 'A_ddc');\nconst pipelineB = allItems.filter(i => i.json.pipeline === 'B_ifcopenshell');\n\nif (pipelineA.length === 0 || pipelineB.length === 0) {\n  return [{ json: {\n    error: 'Missing pipeline data',\n    pipelineA_count: pipelineA.length,\n    pipelineB_count: pipelineB.length,\n  }}];\n}\n\nconst lookupA = {};\nconst lookupB = {};\npipelineA.forEach(i => { lookupA[i.json.GlobalId] = i.json; });\npipelineB.forEach(i => { lookupB[i.json.GlobalId] = i.json; });\n\nconst sharedGids = Object.keys(lookupA).filter(gid =>  lookupB[gid]);\nconst onlyA      = Object.keys(lookupA).filter(gid => !lookupB[gid]);\nconst onlyB      = Object.keys(lookupB).filter(gid => !lookupA[gid]);\n\n// QTO Comparison Per Element\nconst qtoPattern = /^\\[Qto_/;\nconst comparisons = [];\nconst allDeltas   = [];\n\nfor (const gid of sharedGids) {\n  const a = lookupA[gid];\n  const b = lookupB[gid];\n\n  const allQtoFields = [...new Set([\n    ...Object.keys(a).filter(k => qtoPattern.test(k)),\n    ...Object.keys(b).filter(k => qtoPattern.test(k)),\n  ])];\n\n  for (const field of allQtoFields) {\n    const valA = parseFloat(a[field]);\n    const valB = parseFloat(b[field]);\n    const hasA = !isNaN(valA);\n    const hasB = !isNaN(valB);\n\n    let delta = null, pctDiff = null, match = 'missing';\n\n    if (hasA && hasB) {\n      delta   = valB - valA;\n      pctDiff = valA !== 0 ? (Math.abs(delta) / Math.abs(valA)) * 100 : 0;\n      match   = Math.abs(delta) < 1e-10 ? 'exact'       :\n                pctDiff < 0.01          ? 'negligible'  :\n                pctDiff < 1.0           ? 'minor'       : 'significant';\n      allDeltas.push({ gid, field, valA, valB, delta, pctDiff });\n    } else {\n      match = hasA ? 'only_in_A' : 'only_in_B';\n    }\n\n    comparisons.push({\n      GlobalId: gid,\n      Name:     a.Name     || b.Name     || '',\n      Type:     a.Category || b.Category || '',\n      QtoField: field,\n      Value_A:  hasA ? valA : null,\n      Value_B:  hasB ? valB : null,\n      Delta:    delta,\n      PctDiff:  pctDiff,\n      Match:    match,\n    });\n  }\n}\n\n// Spearman Rank Correlation (SRCC)\nfunction spearmanRank(values) {\n  const sorted = values.map((v, i) => ({ val: v, idx: i })).sort((a, b) => a.val - b.val);\n  const ranks  = new Array(values.length);\n  let i = 0;\n  while (i < sorted.length) {\n    let j = i;\n    while (j < sorted.length && sorted[j].val === sorted[i].val) j++;\n    const avgRank = (i + j + 1) / 2;\n    for (let k = i; k < j; k++) ranks[sorted[k].idx] = avgRank;\n    i = j;\n  }\n  return ranks;\n}\n\nfunction calcSRCC(ranksA, ranksB) {\n  const n = ranksA.length;\n  if (n < 3) return null;\n  const dSquaredSum = ranksA.reduce((sum, rA, i) => sum + (rA - ranksB[i]) ** 2, 0);\n  return 1 - (6 * dSquaredSum) / (n * (n * n - 1));\n}\n\n// SRCC Per QTO Field\nconst qtoGroups = {};\nfor (const comp of comparisons) {\n  if (comp.Value_A !== null && comp.Value_B !== null) {\n    if (!qtoGroups[comp.QtoField]) qtoGroups[comp.QtoField] = [];\n    qtoGroups[comp.QtoField].push(comp);\n  }\n}\n\nconst srccResults = [];\nfor (const [field, items] of Object.entries(qtoGroups)) {\n  if (items.length < 3) {\n    srccResults.push({ QtoField: field, ElementCount: items.length, SRCC: null,\n      Note: 'Too few elements for SRCC (need >= 3)' });\n    continue;\n  }\n\n  const ranksA = spearmanRank(items.map(i => i.Value_A));\n  const ranksB = spearmanRank(items.map(i => i.Value_B));\n  const srcc   = calcSRCC(ranksA, ranksB);\n  const srccR  = srcc !== null ? Math.round(srcc * 10000) / 10000 : null;\n\n  srccResults.push({\n    QtoField:    field,\n    ElementCount: items.length,\n    SRCC:        srccR,\n    RankStable:  srcc !== null && srcc >= 0.95,\n    Note:        srcc === 1.0  ? 'Perfect rank agreement'              :\n                 srcc >= 0.95  ? 'Strong rank agreement'               :\n                 srcc >= 0.80  ? 'Moderate — risk rankings may differ' :\n                                 'Weak — significant rank instability',\n  });\n}\n\n// Summary and Output\nconst totalComps  = comparisons.filter(c => c.Value_A !== null && c.Value_B !== null).length;\nconst exactMatches = comparisons.filter(c => c.Match === 'exact').length;\nconst maxDelta    = allDeltas.length > 0\n  ? allDeltas.reduce((max, d) => Math.abs(d.delta) > Math.abs(max.delta) ? d : max)\n  : null;\n\nconst output = [];\n\noutput.push({ json: {\n  _type:                  'qto_summary',\n  total_elements_A:       pipelineA.length,\n  total_elements_B:       pipelineB.length,\n  shared_elements:        sharedGids.length,\n  only_in_A:              onlyA.length,\n  only_in_B:              onlyB.length,\n  total_qto_comparisons:  totalComps,\n  exact_matches:          exactMatches,\n  exact_match_pct:        totalComps > 0 ? Math.round((exactMatches / totalComps) * 10000) / 100 : 0,\n  max_delta: maxDelta ? {\n    element: maxDelta.gid, field: maxDelta.field,\n    delta:   maxDelta.delta, pctDiff: maxDelta.pctDiff,\n  } : null,\n  srcc_results: srccResults,\n}});\n\nfor (const comp of comparisons) {\n  output.push({ json: { _type: 'qto_comparison', ...comp } });\n}\n\n// Pass element items through so C5 can score them\nfor (const item of allItems) {\n  if (item.json._type === 'element') output.push(item);\n}\n\nreturn output;"
+        "jsCode": "// Input Parsing and Validation\nconst allItems = $input.all();\n\nconst pipelineA = allItems.filter(i => i.json.pipeline === 'A_ddc');\nconst pipelineB = allItems.filter(i => i.json.pipeline === 'B_ifcopenshell');\n\nif (pipelineA.length === 0 || pipelineB.length === 0) {\n  return [{ json: {\n    error: 'Missing pipeline data',\n    pipelineA_count: pipelineA.length,\n    pipelineB_count: pipelineB.length,\n  }}];\n}\n\nconst lookupA = {};\nconst lookupB = {};\npipelineA.forEach(i => { lookupA[i.json.GlobalId] = i.json; });\npipelineB.forEach(i => { lookupB[i.json.GlobalId] = i.json; });\n\nconst sharedGids = Object.keys(lookupA).filter(gid =>  lookupB[gid]);\nconst onlyA      = Object.keys(lookupA).filter(gid => !lookupB[gid]);\nconst onlyB      = Object.keys(lookupB).filter(gid => !lookupA[gid]);\n\n// QTO Comparison Per Element\nconst qtoPattern = /^\\[Qto_/;\nconst comparisons = [];\nconst allDeltas   = [];\n\nfor (const gid of sharedGids) {\n  const a = lookupA[gid];\n  const b = lookupB[gid];\n\n  const allQtoFields = [...new Set([\n    ...Object.keys(a).filter(k => qtoPattern.test(k)),\n    ...Object.keys(b).filter(k => qtoPattern.test(k)),\n  ])];\n\n  for (const field of allQtoFields) {\n    const valA = parseFloat(a[field]);\n    const valB = parseFloat(b[field]);\n    const hasA = !isNaN(valA);\n    const hasB = !isNaN(valB);\n\n    let delta = null, pctDiff = null, match = 'missing';\n\n    if (hasA && hasB) {\n      delta   = valB - valA;\n      pctDiff = valA !== 0 ? (Math.abs(delta) / Math.abs(valA)) * 100 : 0;\n      match   = Math.abs(delta) < 1e-10 ? 'exact'       :\n                pctDiff < 0.01          ? 'negligible'  :\n                pctDiff < 1.0           ? 'minor'       : 'significant';\n      allDeltas.push({ gid, field, valA, valB, delta, pctDiff });\n    } else {\n      match = hasA ? 'only_in_A' : 'only_in_B';\n    }\n\n    comparisons.push({\n      GlobalId: gid,\n      Name:     a.Name     || b.Name     || '',\n      Type:     a.Category || b.Category || '',\n      QtoField: field,\n      Value_A:  hasA ? valA : null,\n      Value_B:  hasB ? valB : null,\n      Delta:    delta,\n      PctDiff:  pctDiff,\n      Match:    match,\n    });\n  }\n}\n\n// Spearman Rank Correlation (SRCC)\nfunction spearmanRank(values) {\n  const sorted = values.map((v, i) => ({ val: v, idx: i })).sort((a, b) => a.val - b.val);\n  const ranks  = new Array(values.length);\n  let i = 0;\n  while (i < sorted.length) {\n    let j = i;\n    while (j < sorted.length && sorted[j].val === sorted[i].val) j++;\n    const avgRank = (i + j + 1) / 2;\n    for (let k = i; k < j; k++) ranks[sorted[k].idx] = avgRank;\n    i = j;\n  }\n  return ranks;\n}\n\nfunction calcSRCC(ranksA, ranksB) {\n  const n = ranksA.length;\n  if (n < 3) return null;\n  const dSquaredSum = ranksA.reduce((sum, rA, i) => sum + (rA - ranksB[i]) ** 2, 0);\n  return 1 - (6 * dSquaredSum) / (n * (n * n - 1));\n}\n\n// SRCC Per QTO Field\nconst qtoGroups = {};\nfor (const comp of comparisons) {\n  if (comp.Value_A !== null && comp.Value_B !== null) {\n    if (!qtoGroups[comp.QtoField]) qtoGroups[comp.QtoField] = [];\n    qtoGroups[comp.QtoField].push(comp);\n  }\n}\n\nconst srccResults = [];\nfor (const [field, items] of Object.entries(qtoGroups)) {\n  if (items.length < 3) {\n    srccResults.push({ QtoField: field, ElementCount: items.length, SRCC: null,\n      Note: 'Too few elements for SRCC (need >= 3)' });\n    continue;\n  }\n\n  const ranksA = spearmanRank(items.map(i => i.Value_A));\n  const ranksB = spearmanRank(items.map(i => i.Value_B));\n  const srcc   = calcSRCC(ranksA, ranksB);\n  const srccR  = srcc !== null ? Math.round(srcc * 10000) / 10000 : null;\n\n  srccResults.push({\n    QtoField:    field,\n    ElementCount: items.length,\n    SRCC:        srccR,\n    RankStable:  srcc !== null && srcc >= 0.95,\n    Note:        srcc === 1.0  ? 'Perfect rank agreement'              :\n                 srcc >= 0.95  ? 'Strong rank agreement'               :\n                 srcc >= 0.80  ? 'Moderate \u2014 risk rankings may differ' :\n                                 'Weak \u2014 significant rank instability',\n  });\n}\n\n// Summary and Output\nconst totalComps  = comparisons.filter(c => c.Value_A !== null && c.Value_B !== null).length;\nconst exactMatches = comparisons.filter(c => c.Match === 'exact').length;\nconst maxDelta    = allDeltas.length > 0\n  ? allDeltas.reduce((max, d) => Math.abs(d.delta) > Math.abs(max.delta) ? d : max)\n  : null;\n\nconst output = [];\n\noutput.push({ json: {\n  _type:                  'qto_summary',\n  total_elements_A:       pipelineA.length,\n  total_elements_B:       pipelineB.length,\n  shared_elements:        sharedGids.length,\n  only_in_A:              onlyA.length,\n  only_in_B:              onlyB.length,\n  total_qto_comparisons:  totalComps,\n  exact_matches:          exactMatches,\n  exact_match_pct:        totalComps > 0 ? Math.round((exactMatches / totalComps) * 10000) / 100 : 0,\n  max_delta: maxDelta ? {\n    element: maxDelta.gid, field: maxDelta.field,\n    delta:   maxDelta.delta, pctDiff: maxDelta.pctDiff,\n  } : null,\n  srcc_results: srccResults,\n}});\n\nfor (const comp of comparisons) {\n  output.push({ json: { _type: 'qto_comparison', ...comp } });\n}\n\n// Pass element items through so 4.1 BQI scoring can score them\nfor (const item of allItems) {\n  if (item.json._type === 'element') output.push(item);\n}\n\nreturn output;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1120,
+        1328,
         1232
       ],
       "id": "04c265b2-0f83-4fe7-92fb-ae1d97c88578",
       "name": "3.2: QTO comparison"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input Parsing\nconst allItems = $input.all();\n\nconst qtoSummary = allItems.find(i => i.json._type === 'qto_summary');\nconst qtoComparisons = allItems.filter(i => i.json._type === 'qto_comparison');\nconst elements = allItems.filter(i => i.json._type === 'element');\n\nconst srccLookup = {};\nif (qtoSummary?.json.srcc_results) {\n  for (const s of qtoSummary.json.srcc_results) {\n    srccLookup[s.QtoField] = s.SRCC;\n  }\n}\n\nconst qtoByGid = {};\nfor (const comp of qtoComparisons) {\n  const gid = comp.json.GlobalId;\n  if (!qtoByGid[gid]) qtoByGid[gid] = [];\n  qtoByGid[gid].push(comp.json);\n}\n\n// Weights and Rules\nconst WEIGHTS = {\n  completeness:  0.35,\n  validity:      0.25,\n  qto_coverage:  0.20,\n  qto_agreement: 0.20,\n};\n\nconst REQUIRED_PROPS = {\n  IfcWall:                  ['IsExternal', 'LoadBearing'],\n  IfcWallStandardCase:      ['IsExternal', 'LoadBearing'],\n  IfcSlab:                  ['IsExternal', 'LoadBearing'],\n  IfcSlabStandardCase:      ['IsExternal', 'LoadBearing'],\n  IfcBeam:                  ['IsExternal', 'LoadBearing'],\n  IfcColumn:                ['IsExternal', 'LoadBearing'],\n  IfcRoof:                  ['IsExternal'],\n  IfcDoor:                  ['IsExternal', 'FireRating'],\n  IfcWindow:                ['IsExternal'],\n  IfcSpace:                 ['IsExternal', 'GrossPlannedArea'],\n  IfcChimney:               [],\n  IfcFurniture:             [],\n  IfcBuildingElementProxy:  [],\n  IfcSpatialZone:           [],\n  IfcZone:                  [],\n};\n\nconst EXPECTED_QTO = {\n  IfcWall:             ['NetVolume', 'Width', 'Length', 'NetSideArea'],\n  IfcWallStandardCase: ['NetVolume', 'Width', 'Length', 'NetSideArea'],\n  IfcSlab:             ['NetVolume', 'Depth', 'NetArea'],\n  IfcSlabStandardCase: ['NetVolume', 'Depth', 'NetArea'],\n  IfcBeam:             ['NetVolume', 'Length'],\n  IfcColumn:           ['NetVolume', 'Length'],\n  IfcRoof:             [],\n  IfcSpace:            [],\n};\n\n// Scoring Function\nfunction scoreElement(elem) {\n  const type = elem.Category || elem.Type || '';\n  const gid  = elem.GlobalId;\n\n  // Completeness\n  const required = REQUIRED_PROPS[type] || [];\n  const missingProps = required.filter(prop =>\n    !Object.keys(elem).some(k => k.includes(prop) && elem[k] != null && elem[k] !== '')\n  );\n  const completenessScore = required.length > 0\n    ? (required.length - missingProps.length) / required.length : 1.0;\n\n  // Validity\n  const propKeys = Object.keys(elem).filter(k => k.startsWith('[Pset_'));\n  const invalidProps = propKeys.filter(k => {\n    const v = elem[k];\n    return v === '' || v === null || v === undefined || v === \"['UNSET']\" || v === 'UNSET' || v === 'N/A';\n  });\n  const validityScore = propKeys.length > 0\n    ? (propKeys.length - invalidProps.length) / propKeys.length : 1.0;\n\n  // QTO Coverage\n  const expectedQto = EXPECTED_QTO[type] || [];\n  const missingQto = expectedQto.filter(qty =>\n    !Object.keys(elem).some(k => k.includes(qty) && elem[k] != null && elem[k] !== '')\n  );\n  const qtoCoverageScore = expectedQto.length > 0\n    ? (expectedQto.length - missingQto.length) / expectedQto.length : 1.0;\n\n  // QTO Agreement\n  const qtoComps = qtoByGid[gid] || [];\n  const qtoAgreementScore = qtoComps.length > 0\n    ? qtoComps.filter(c => c.Match === 'exact' || c.Match === 'negligible').length / qtoComps.length\n    : 1.0;\n\n  // Final BQI\n  const bqi =\n    WEIGHTS.completeness  * completenessScore  +\n    WEIGHTS.validity      * validityScore      +\n    WEIGHTS.qto_coverage  * qtoCoverageScore   +\n    WEIGHTS.qto_agreement * qtoAgreementScore;\n\n  const confidence = bqi >= 0.85 ? 'high' : bqi >= 0.60 ? 'medium' : 'low';\n\n  const penalties = [];\n  if (completenessScore  < 0.5) penalties.push('incomplete_properties');\n  if (validityScore      < 0.5) penalties.push('invalid_values');\n  if (qtoCoverageScore   < 0.5) penalties.push('missing_qto');\n  if (qtoAgreementScore  < 0.5) penalties.push('qto_disagreement');\n  if (!elem.Material || elem.Material === '') penalties.push('no_material');\n\n  return {\n    _type:          'bqi_scored',\n    GlobalId:       gid,\n    Name:           elem.Name || '',\n    Category:       type,\n    Material:       elem.Material || '',\n    ObjectType:     elem.ObjectType || '',\n    bqi_score:      Math.round(bqi * 1000) / 1000,\n    bqi_confidence: confidence,\n    score_completeness:  Math.round(completenessScore * 100) / 100,\n    score_validity:      Math.round(validityScore * 100) / 100,\n    score_qto_coverage:  Math.round(qtoCoverageScore * 100) / 100,\n    score_qto_agreement: Math.round(qtoAgreementScore * 100) / 100,\n    missing_properties: missingProps,\n    invalid_properties: invalidProps,\n    missing_qto:        missingQto,\n    penalties,\n    ...Object.fromEntries(Object.entries(elem).filter(([k]) => k.startsWith('[Qto_'))),\n    ...Object.fromEntries(Object.entries(elem).filter(([k]) => k.startsWith('[Pset_'))),\n  };\n}\n\n// Run and Output\nconst elementsToScore = (() => {\n  const b = allItems.filter(i => i.json._type === 'element' && i.json.pipeline === 'B_ifcopenshell');\n  return b.length > 0 ? b : allItems.filter(i => i.json._type === 'element' && i.json.pipeline === 'A_ddc');\n})();\n\nconst output = [];\nif (qtoSummary) output.push(qtoSummary);\nfor (const elem of elementsToScore) output.push({ json: scoreElement(elem.json) });\n\nconst scored = output.filter(i => i.json._type === 'bqi_scored');\nconst avgBqi = scored.length > 0\n  ? scored.reduce((s, i) => s + i.json.bqi_score, 0) / scored.length : 0;\n\noutput.unshift({ json: {\n  _type:                 'bqi_model_summary',\n  model_bqi:             Math.round(avgBqi * 1000) / 1000,\n  model_confidence:      avgBqi >= 0.85 ? 'high' : avgBqi >= 0.60 ? 'medium' : 'low',\n  total_elements_scored: scored.length,\n  distribution: {\n    high:   scored.filter(i => i.json.bqi_confidence === 'high').length,\n    medium: scored.filter(i => i.json.bqi_confidence === 'medium').length,\n    low:    scored.filter(i => i.json.bqi_confidence === 'low').length,\n  },\n  weights_used: WEIGHTS,\n}});\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1824,
+        1232
+      ],
+      "id": "cbb220c6-de91-4094-ae28-42da9a98ae69",
+      "name": "4.1: BQI scoring"
+    },
+    {
+      "parameters": {
+        "jsCode": "// \u2500\u2500 Exposure lookup tables \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst EXPOSURE_BUILDING = {\n  IfcRoof: 0.9, IfcChimney: 0.8, IfcStair: 0.6, IfcRamp: 0.55,\n  IfcWall: { base: 0.45, ext: 0.40 }, IfcWallStandardCase: { base: 0.45, ext: 0.40 },\n  IfcWindow: { base: 0.50, ext: 0.45 }, IfcDoor: { base: 0.40, ext: 0.35 },\n  IfcColumn: 0.55, IfcBeam: 0.50, IfcSlab: 0.55,\n  IfcFooting: 0.65, IfcPile: 0.60,\n  IfcPlate: 0.45, IfcMember: 0.40,\n  IfcCovering: 0.35, IfcCurtainWall: { base: 0.60, ext: 0.55 },\n  IfcFurnishingElement: 0.10, IfcFlowTerminal: 0.20, IfcFlowSegment: 0.25,\n};\n\nconst EXPOSURE_ROAD = {\n  IfcPavement: 0.85, IfcKerb: 0.70, IfcRoadPart: 0.75,\n  IfcEarthworksFill: 0.60, IfcEarthworksCut: 0.55,\n  IfcCourse: 0.80, IfcSignal: 0.50, IfcSign: 0.45,\n  IfcBridgePart: 0.65, IfcCivilElement: 0.55,\n};\n\nconst EXPOSURE_RAIL = {\n  IfcRail: 0.80, IfcTrackElement: 0.75, IfcRailway: 0.65,\n  IfcFacilityPart: 0.60, IfcCivilElement: 0.55,\n  IfcEarthworksFill: 0.55, IfcSignal: 0.70, IfcSign: 0.40,\n};\n\nconst EXPOSURE_BRIDGE = {\n  IfcBridge: 0.90, IfcBridgePart: 0.85,\n  IfcBearing: 0.80, IfcCourse: 0.75,\n  IfcCivilElement: 0.70, IfcColumn: 0.65,\n  IfcBeam: 0.70, IfcSlab: 0.65,\n  IfcEarthworksFill: 0.50,\n};\n\nconst DEFAULT_EXPOSURE = 0.30;\n\nfunction selectTable(domain) {\n  if (domain === 'Road')   return { table: EXPOSURE_ROAD,   warn: false };\n  if (domain === 'Rail')   return { table: EXPOSURE_RAIL,   warn: false };\n  if (domain === 'Bridge') return { table: EXPOSURE_BRIDGE, warn: false };\n  const warn = (domain === 'Mixed' || domain === 'Unknown');\n  return { table: EXPOSURE_BUILDING, warn };\n}\n\nfunction resolveEntry(entry, isExternal) {\n  if (entry === undefined || entry === null) return null;\n  if (typeof entry === 'number') return entry;\n  if (typeof entry === 'object') return isExternal ? entry.ext : entry.base;\n  return null;\n}\n\nconst items = $input.all();\n\nreturn items.map(item => {\n  const type = item.json._type;\n  if (type !== 'risk_element' && type !== 'element') return { json: { ...item.json } };\n\n  const ifcType    = item.json.ifc_type;\n  const domain     = item.json.ifc_domain || 'Unknown';\n  const isExternal = item.json.properties?.IsExternal === true;\n\n  if (!ifcType) {\n    return { json: { ...item.json, exposure_score: DEFAULT_EXPOSURE, is_external: isExternal } };\n  }\n\n  const { table, warn } = selectTable(domain);\n  const entry    = table[ifcType];\n  const resolved = resolveEntry(entry, isExternal);\n  const exposureScore = resolved !== null ? resolved : DEFAULT_EXPOSURE;\n\n  const newFields = { exposure_score: exposureScore, is_external: isExternal };\n  if (warn) newFields.domain_warning = true;\n\n  return { json: { ...item.json, ...newFields } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        1232
+      ],
+      "id": "be3031b7-17ab-4b97-b839-9505449d5c33",
+      "name": "5.1: Exposure",
+      "notes": "Code JS \u2014 maps element type + location tag \u2192 exposure score"
+    },
+    {
+      "parameters": {
+        "jsCode": "// \u2500\u2500 Susceptibility lookup tables \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst SUSCEPTIBILITY_BUILDING = {\n  IfcRoof: 0.80, IfcChimney: 0.70, IfcWindow: 0.65, IfcDoor: 0.55,\n  IfcWall: 0.45, IfcWallStandardCase: 0.45, IfcSlab: 0.40,\n  IfcColumn: 0.35, IfcBeam: 0.35, IfcFooting: 0.30, IfcPile: 0.25,\n  IfcStair: 0.50, IfcRamp: 0.45, IfcCurtainWall: 0.60,\n  IfcCovering: 0.55, IfcPlate: 0.40, IfcMember: 0.35,\n  IfcFurnishingElement: 0.20, IfcFlowTerminal: 0.30, IfcFlowSegment: 0.25,\n};\n\nconst SUSCEPTIBILITY_ROAD = {\n  IfcPavement: 0.75, IfcKerb: 0.65, IfcRoadPart: 0.60,\n  IfcEarthworksFill: 0.55, IfcEarthworksCut: 0.50,\n  IfcCourse: 0.70, IfcSignal: 0.45, IfcSign: 0.40,\n  IfcBridgePart: 0.50, IfcCivilElement: 0.45,\n};\n\nconst SUSCEPTIBILITY_RAIL = {\n  IfcRail: 0.75, IfcTrackElement: 0.70, IfcRailway: 0.60,\n  IfcFacilityPart: 0.55, IfcCivilElement: 0.50,\n  IfcEarthworksFill: 0.50, IfcSignal: 0.65, IfcSign: 0.35,\n};\n\nconst SUSCEPTIBILITY_BRIDGE = {\n  IfcBridge: 0.80, IfcBridgePart: 0.75,\n  IfcBearing: 0.85, IfcCourse: 0.65,\n  IfcCivilElement: 0.60, IfcColumn: 0.55,\n  IfcBeam: 0.60, IfcSlab: 0.55,\n  IfcEarthworksFill: 0.45,\n};\n\nconst DEFAULT_SUSCEPTIBILITY = 0.30;\nconst DEFAULT_LIKELIHOOD     = 0.30;\n\nfunction selectTable(domain) {\n  if (domain === 'Road')   return { table: SUSCEPTIBILITY_ROAD,   warn: false };\n  if (domain === 'Rail')   return { table: SUSCEPTIBILITY_RAIL,   warn: false };\n  if (domain === 'Bridge') return { table: SUSCEPTIBILITY_BRIDGE, warn: false };\n  const warn = (domain === 'Mixed' || domain === 'Unknown');\n  return { table: SUSCEPTIBILITY_BUILDING, warn };\n}\n\nfunction materialModifier(material) {\n  if (!material || typeof material !== 'string') return 0;\n  const m = material.toLowerCase();\n  if (m.includes('wood'))    return 0.15;\n  if (m.includes('masonry')) return 0.10;\n  if (m.includes('steel'))   return 0.05;\n  return 0;\n}\n\nfunction bqiModifier(bqi) {\n  if (typeof bqi !== 'number') return 0;\n  if (bqi >= 0.8) return -0.05;\n  if (bqi <= 0.4) return  0.10;\n  return 0;\n}\n\nconst items = $input.all();\n\nreturn items.map(item => {\n  const type = item.json._type;\n  if (type !== 'risk_element' && type !== 'element') return { json: { ...item.json } };\n\n  const ifcType       = item.json.ifc_type;\n  const domain        = item.json.ifc_domain || 'Unknown';\n  const exposureScore = typeof item.json.exposure_score === 'number' ? item.json.exposure_score : 0.30;\n\n  if (!ifcType) {\n    return {\n      json: {\n        ...item.json,\n        likelihood_score:    DEFAULT_LIKELIHOOD,\n        susceptibility_base: DEFAULT_SUSCEPTIBILITY,\n        material_modifier:   0,\n        bqi_modifier:        0,\n      },\n    };\n  }\n\n  const { table, warn } = selectTable(domain);\n  const susceptibilityBase = table[ifcType] !== undefined ? table[ifcType] : DEFAULT_SUSCEPTIBILITY;\n\n  const matMod = materialModifier(item.json.material);\n  const bqiMod = bqiModifier(item.json.bqi_score);\n\n  const likelihood = Math.min(1, exposureScore * (susceptibilityBase + matMod) + bqiMod);\n\n  const newFields = {\n    likelihood_score:    Math.round(likelihood * 10000) / 10000,\n    susceptibility_base: susceptibilityBase,\n    material_modifier:   matMod,\n    bqi_modifier:        bqiMod,\n  };\n  if (warn) newFields.domain_warning = true;\n\n  return { json: { ...item.json, ...newFields } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        1232
+      ],
+      "id": "504865ef-be31-499d-b3e6-d992103a78b7",
+      "name": "5.2: Likelihood",
+      "notes": "Code JS \u2014 exposure \u00d7 defect susceptibility rules"
+    },
+    {
+      "parameters": {
+        "jsCode": "// \u2500\u2500 Criticality lookup tables \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst CRITICALITY_BUILDING = {\n  IfcColumn: 1.0, IfcFooting: 1.0, IfcPile: 1.0,\n  IfcBeam: 0.9, IfcSlab: 0.85, IfcWall: 0.80, IfcWallStandardCase: 0.80,\n  IfcRoof: 0.75, IfcStair: 0.65, IfcRamp: 0.60,\n  IfcWindow: 0.50, IfcDoor: 0.50, IfcCurtainWall: 0.55,\n  IfcCovering: 0.40, IfcPlate: 0.60, IfcMember: 0.65,\n  IfcChimney: 0.45, IfcFurnishingElement: 0.10, IfcFlowTerminal: 0.20,\n};\n\nconst CRITICALITY_ROAD = {\n  IfcPavement: 0.85, IfcKerb: 0.60, IfcRoadPart: 0.80,\n  IfcEarthworksFill: 0.70, IfcEarthworksCut: 0.65,\n  IfcCourse: 0.75, IfcSignal: 0.55, IfcSign: 0.40,\n  IfcBridgePart: 0.80, IfcCivilElement: 0.60,\n};\n\nconst CRITICALITY_RAIL = {\n  IfcRail: 0.95, IfcTrackElement: 0.90, IfcRailway: 0.85,\n  IfcFacilityPart: 0.70, IfcCivilElement: 0.65,\n  IfcEarthworksFill: 0.60, IfcSignal: 0.80, IfcSign: 0.45,\n};\n\nconst CRITICALITY_BRIDGE = {\n  IfcBridge: 1.0, IfcBridgePart: 0.95,\n  IfcBearing: 1.0, IfcCourse: 0.75,\n  IfcCivilElement: 0.80, IfcColumn: 0.90,\n  IfcBeam: 0.90, IfcSlab: 0.85,\n  IfcEarthworksFill: 0.60,\n};\n\nconst DEFAULT_CRITICALITY = 0.50;\nconst DEFAULT_CONSEQUENCE  = 0.30;\n\nfunction selectTable(domain) {\n  if (domain === 'Road')   return { table: CRITICALITY_ROAD,   warn: false };\n  if (domain === 'Rail')   return { table: CRITICALITY_RAIL,   warn: false };\n  if (domain === 'Bridge') return { table: CRITICALITY_BRIDGE, warn: false };\n  const warn = (domain === 'Mixed' || domain === 'Unknown');\n  return { table: CRITICALITY_BUILDING, warn };\n}\n\nconst QTO_PRIORITY = ['NetVolume','GrossVolume','NetArea','GrossArea','NetWeight','GrossWeight','Length'];\n\nfunction extractExtent(quantities) {\n  if (!quantities || typeof quantities !== 'object') return 0;\n  for (const key of QTO_PRIORITY) {\n    const val = quantities[key];\n    if (typeof val === 'number' && val > 0) return val;\n  }\n  return 0;\n}\n\nconst items = $input.all();\n\nconst riskIndices = [];\nconst extents     = [];\n\nitems.forEach((item, idx) => {\n  const type = item.json._type;\n  if (type === 'risk_element' || type === 'element') {\n    riskIndices.push(idx);\n    extents.push(extractExtent(item.json.quantities));\n  }\n});\n\nconst maxExtent = extents.length > 0 ? Math.max(...extents) : 0;\nconst extentByIndex = {};\nriskIndices.forEach((idx, i) => { extentByIndex[idx] = extents[i]; });\n\nreturn items.map((item, idx) => {\n  const type = item.json._type;\n  if (type !== 'risk_element' && type !== 'element') return { json: { ...item.json } };\n\n  const ifcType = item.json.ifc_type;\n  const domain  = item.json.ifc_domain || 'Unknown';\n  const extent  = extentByIndex[idx] ?? 0;\n\n  if (!ifcType) {\n    return {\n      json: {\n        ...item.json,\n        consequence_score: DEFAULT_CONSEQUENCE,\n        criticality_base:  DEFAULT_CRITICALITY,\n        qto_extent:        extent,\n      },\n    };\n  }\n\n  const { table, warn } = selectTable(domain);\n  const criticalityBase = table[ifcType] !== undefined ? table[ifcType] : DEFAULT_CRITICALITY;\n  const normalizedExtent = maxExtent > 0 ? extent / maxExtent : 0;\n  const consequence = criticalityBase * (0.7 + 0.3 * normalizedExtent);\n\n  const newFields = {\n    consequence_score: Math.round(consequence * 10000) / 10000,\n    criticality_base:  criticalityBase,\n    qto_extent:        extent,\n  };\n  if (warn) newFields.domain_warning = true;\n\n  return { json: { ...item.json, ...newFields } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        1232
+      ],
+      "id": "d24d05b5-9c6b-4f9e-9e25-333eb6f5696e",
+      "name": "5.3: Consequence",
+      "notes": "Code JS \u2014 element role/criticality \u00d7 QTO (extent)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const CONF_MULT = { high: 1.0, medium: 1.10, low: 1.25 };\n\nconst output = [];\nfor (const item of $input.all()) {\n  if (item.json.consequence === undefined) { output.push(item); continue; }\n\n  const L    = item.json.likelihood  || 0;\n  const C    = item.json.consequence || 0;\n  const mult = CONF_MULT[item.json.bqi_confidence] ?? 1.25;\n\n  output.push({ json: {\n    ...item.json,\n    risk_score:       Math.round(Math.min(1, L * C * mult) * 1000) / 1000,\n    risk_multiplier:  mult,\n    _type:            'risk_element',\n  }});\n}\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2720,
+        1232
+      ],
+      "id": "0de01e38-7de3-48f0-a35b-68c2061a8591",
+      "name": "5.4: Risk score",
+      "notes": "Code JS \u2014 combine L\u00d7C, apply BQI confidence bounds"
+    },
+    {
+      "parameters": {
+        "jsCode": "const all       = $input.all();\nconst others    = all.filter(i => i.json._type !== 'risk_element');\nconst riskItems = all.filter(i => i.json._type === 'risk_element');\n\nriskItems.sort((a, b) => (b.json.risk_score || 0) - (a.json.risk_score || 0));\n\nconst scores = [...riskItems].map(i => i.json.risk_score || 0).sort((a, b) => a - b);\nconst n      = scores.length;\nconst HIGH_T = n > 0 ? Math.max(scores[Math.floor(n * 0.75)] ?? 0, 0.40) : 0.40;\nconst LOW_T  = n > 0 ? Math.max(scores[Math.floor(n * 0.25)] ?? 0, 0.15) : 0.15;\n\nconst labeled = riskItems.map((item, idx) => {\n  const s     = item.json.risk_score || 0;\n  const label = s >= HIGH_T ? 'High' : s >= LOW_T ? 'Medium' : 'Low';\n  return { json: {\n    ...item.json,\n    risk_label:      label,\n    risk_rank:       idx + 1,\n    risk_percentile: Math.round((1 - idx / Math.max(n, 1)) * 100),\n    zone:            item.json.is_external ? 'Exterior' : 'Interior',\n    location_tag:    item.json.is_external ? 'Exterior' : 'Interior',\n  }};\n});\n\nreturn [...others, ...labeled];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2944,
+        1232
+      ],
+      "id": "cfe2b15a-549a-487f-856e-1081e5b80af6",
+      "name": "5.5: Rank + label",
+      "notes": "Code JS \u2014 sort, assign High/Med/Low label"
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = $input.all();\n\n// Pass all typed items through; add zone/location_tag for HTML report\nreturn all.map(item => {\n  if (item.json._type !== 'risk_element') return item;\n  return { json: {\n    ...item.json,\n    zone:         item.json.zone         || (item.json.is_external ? 'Exterior' : 'Interior'),\n    location_tag: item.json.location_tag || (item.json.is_external ? 'Exterior' : 'Interior'),\n  }};\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3168,
+        1232
+      ],
+      "id": "013c9041-7cbf-402e-a989-98d7f2292b7c",
+      "name": "6.1: Format register",
+      "notes": "Code JS \u2014 assemble final register object with all fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\n\nlet projectFilePath = '';\ntry {\n  projectFilePath = $node['0.1: Config'].json.project_file || '';\n} catch(e) {\n  projectFilePath = 'Unknown Project';\n}\nconst projectFileName = projectFilePath.split('\\\\').pop().split('/').pop().replace(/\\.[^/.]+$/, '');\n\nconst modelSummary  = allItems.find(i => i.json._type === 'bqi_model_summary') || { json: {} };\nconst riskElements  = allItems.filter(i => i.json._type === 'risk_element');\nconst qtoSummary    = allItems.find(i => i.json._type === 'qto_summary') || { json: {} };\n\nconst modelBQI        = +(modelSummary.json.model_bqi   || 0).toFixed(3);\nconst modelConf       = modelSummary.json.model_confidence || 'low';\nconst totalScored     = modelSummary.json.total_elements_scored || allItems.length;\nconst dist            = modelSummary.json.distribution || { high: 0, medium: 0, low: 0 };\nconst weights         = modelSummary.json.weights_used || { completeness: 0.35, validity: 0.25, qto_coverage: 0.20, qto_agreement: 0.20 };\n\nconst highRisk   = riskElements.filter(i => i.json.risk_label === 'High').length   || dist.high   || 0;\nconst medRisk    = riskElements.filter(i => i.json.risk_label === 'Medium').length || dist.medium || 0;\nconst lowRisk    = riskElements.filter(i => i.json.risk_label === 'Low').length    || dist.low    || 0;\nconst top10      = riskElements\n  .sort((a,b) => (b.json.risk_score||0) - (a.json.risk_score||0))\n  .slice(0, 10);\n\nconst srccResults = qtoSummary.json.srcc_results || [];\nconst avgSRCC     = srccResults.length\n  ? (srccResults.reduce((s,r) => s + (r.SRCC||0), 0) / srccResults.length).toFixed(3)\n  : 'N/A';\n\nfunction confColor(conf) {\n  if (conf === 'high')   return '#009a44';\n  if (conf === 'medium') return '#ffa726';\n  return '#dc3545';\n}\nfunction riskColor(label) {\n  if (label === 'High')   return '#dc3545';\n  if (label === 'Medium') return '#ffa726';\n  return '#66bb6a';\n}\nfunction bqiBar(score) {\n  const pct = Math.round((score||0) * 100);\n  const col = score >= 0.7 ? '#009a44' : score >= 0.4 ? '#ffa726' : '#dc3545';\n  return `<div style=\"background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px\"><div style=\"height:100%;width:${pct}%;background:${col};border-radius:3px\"></div></div>`;\n}\n\nconst distData    = JSON.stringify([highRisk, medRisk, lowRisk]);\nconst bqiWeights  = JSON.stringify(Object.entries(weights).map(([k,v]) => ({ label: k.replace('_',' '), value: +(v*100).toFixed(0) })));\nconst srccChartData = JSON.stringify(srccResults.slice(0,8).map(r => ({ field: (r.QtoField||'').replace('[Qto_','').replace(']',''), srcc: +(r.SRCC||0).toFixed(3) })));\nconst top10Data   = JSON.stringify(top10.map(i => ({ id: (i.json.GlobalId||'').slice(0,8), score: +(i.json.risk_score||0).toFixed(3), bqi: +(i.json.bqi_score||0).toFixed(3), label: i.json.risk_label||'Low', type: i.json.Category||i.json._type||'' })));\n\nconst riskRows = top10.map((item, idx) => {\n  const d = item.json;\n  const label = d.risk_label || 'Low';\n  return `<tr>\n    <td>${idx+1}</td>\n    <td style=\"font-family:monospace;font-size:11px\">${(d.GlobalId||'\u2014').slice(0,16)}</td>\n    <td>${d.Category || d.ifc_type || '\u2014'}</td>\n    <td>${(d.zone || d.location_tag || '\u2014')}</td>\n    <td>${(+(d.bqi_score||0)).toFixed(2)} ${bqiBar(d.bqi_score)}</td>\n    <td>${d.bqi_confidence || '\u2014'}</td>\n    <td>${(+(d.likelihood||0)).toFixed(2)}</td>\n    <td>${(+(d.consequence||0)).toFixed(2)}</td>\n    <td><strong>${(+(d.risk_score||0)).toFixed(3)}</strong></td>\n    <td><span style=\"display:inline-block;padding:2px 8px;background:${riskColor(label)};color:white;font-size:11px;font-weight:600;border-radius:2px\">${label.toUpperCase()}</span></td>\n  </tr>`;\n}).join('') || `<tr><td colspan=\"10\" style=\"text-align:center;color:#999;padding:20px\">Risk screening stubs (R1\u2013R5) not yet implemented \u2014 placeholder data</td></tr>`;\n\nconst weightRows = Object.entries(weights).map(([k,v]) =>\n  `<tr><td>${k.replace(/_/g,' ')}</td><td>${(v*100).toFixed(0)}%</td><td>${bqiBar(v)}</td></tr>`\n).join('');\n\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Uncertainty-Aware Risk Register | ${projectFileName}</title>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js\"><\\/script>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:Arial,'Helvetica Neue',sans-serif;background:#f5f5f5;color:#2e2e38;font-size:13px;line-height:1.6}\n.container{max-width:1200px;margin:0 auto;padding:40px 20px}\n.header{border-bottom:3px solid #0061a0;padding-bottom:20px;margin-bottom:30px;background:#fff;padding:24px 30px;border-left:6px solid #0061a0}\n.header h1{font-size:26px;font-weight:300;color:#0061a0;margin-bottom:6px}\n.header .subtitle{color:#696969;font-size:13px}\n.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}\n.kpi-card{background:#fff;border:1px solid #e0e0e0;padding:20px;border-top:4px solid #ccc}\n.kpi-card.blue{border-top-color:#0061a0}\n.kpi-card.green{border-top-color:#009a44}\n.kpi-card.amber{border-top-color:#ffa726}\n.kpi-card.red{border-top-color:#dc3545}\n.kpi-value{font-size:32px;font-weight:300;color:#0061a0;line-height:1;margin-bottom:6px}\n.kpi-label{font-size:11px;color:#696969;text-transform:uppercase;letter-spacing:.5px;font-weight:600}\n.kpi-sub{font-size:11px;color:#999;margin-top:4px}\n.section{background:#fff;border:1px solid #e0e0e0;margin-bottom:24px}\n.section-header{background:#fafafa;padding:14px 20px;border-bottom:1px solid #e0e0e0}\n.section-header h2{font-size:15px;font-weight:600;color:#2e2e38;margin:0}\n.section-header p{font-size:12px;color:#696969;margin-top:3px}\n.section-body{padding:20px}\n.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px}\n.chart-box{background:#fff;border:1px solid #e0e0e0;padding:16px}\n.chart-box h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#2e2e38}\n.chart-box.wide{grid-column:1/-1}\ntable{width:100%;border-collapse:collapse;font-size:12px}\nth{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:600;color:#2e2e38;border-bottom:2px solid #e0e0e0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}\ntd{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#4a4a4a;vertical-align:middle}\ntr:hover{background:#fafafa}\n.conf-badge{display:inline-block;padding:2px 7px;border-radius:2px;font-size:11px;font-weight:600}\n.alert-box{border-left:4px solid #ffa726;background:#fff8e1;padding:16px 20px;margin-bottom:24px;font-size:13px}\n.alert-box strong{color:#e65100}\n.footer{margin-top:40px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#999;font-size:11px}\n@media(max-width:768px){.charts-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}}\n@media print{body{background:white}.container{padding:10px}}\n</style>\n</head>\n<body>\n<div class=\"container\">\n\n  <!-- Header -->\n  <div class=\"header\">\n    <h1>Uncertainty-Aware Risk Register</h1>\n    <div class=\"subtitle\">\n      Project: <strong>${projectFileName}</strong> &nbsp;|&nbsp;\n      BIM Quality Index (BQI) + Risk Screening &nbsp;|&nbsp;\n      Generated: ${new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}\n    </div>\n  </div>\n\n  ${totalScored === 0 ? `\n  <div class=\"alert-box\">\n    <strong>\u26a0 Placeholder data:</strong> Risk screening nodes R1\u2013R5 and BQI node C5 are not yet fully implemented.\n    The report structure is correct \u2014 scores will populate once those nodes are built.\n  </div>` : ''}\n\n  <!-- KPI Cards -->\n  <div class=\"kpi-grid\">\n    <div class=\"kpi-card blue\">\n      <div class=\"kpi-value\">${modelBQI}</div>\n      <div class=\"kpi-label\">Model BQI Score</div>\n      <div class=\"kpi-sub\" style=\"color:${confColor(modelConf)};font-weight:600\">${modelConf.toUpperCase()} confidence</div>\n    </div>\n    <div class=\"kpi-card red\">\n      <div class=\"kpi-value\">${highRisk}</div>\n      <div class=\"kpi-label\">High-Risk Elements</div>\n      <div class=\"kpi-sub\">require immediate attention</div>\n    </div>\n    <div class=\"kpi-card amber\">\n      <div class=\"kpi-value\">${medRisk}</div>\n      <div class=\"kpi-label\">Medium-Risk Elements</div>\n      <div class=\"kpi-sub\">monitor closely</div>\n    </div>\n    <div class=\"kpi-card green\">\n      <div class=\"kpi-value\">${totalScored}</div>\n      <div class=\"kpi-label\">Elements Scored</div>\n      <div class=\"kpi-sub\">avg SRCC: ${avgSRCC}</div>\n    </div>\n  </div>\n\n  <!-- Charts row -->\n  <div class=\"charts-grid\">\n    <div class=\"chart-box\">\n      <h3>Risk distribution</h3>\n      <canvas id=\"riskDist\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>BQI weight breakdown</h3>\n      <canvas id=\"bqiWeights\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>QTO pipeline agreement (SRCC)</h3>\n      <canvas id=\"srccBar\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box wide\">\n      <h3>Top 10 risk elements \u2014 risk score vs BQI score</h3>\n      <canvas id=\"riskBqiScatter\" height=\"120\"></canvas>\n    </div>\n  </div>\n\n  <!-- Risk Register Table -->\n  <div class=\"section\">\n    <div class=\"section-header\">\n      <h2>Risk Register \u2014 Top 10 Screened Elements</h2>\n      <p>Ranked by risk score (Likelihood \u00d7 Consequence), adjusted by BQI confidence bounds</p>\n    </div>\n    <div class=\"section-body\" style=\"padding:0;overflow-x:auto\">\n      <table>\n        <thead>\n          <tr>\n            <th>#</th><th>GlobalId</th><th>IFC Type</th><th>Zone</th>\n            <th>BQI Score</th><th>Confidence</th>\n            <th>Likelihood</th><th>Consequence</th><th>Risk Score</th><th>Level</th>\n          </tr>\n        </thead>\n        <tbody>${riskRows}</tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- BQI Summary + Pipeline comparison -->\n  <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px\">\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>BQI Scoring Weights</h2>\n        <p>Dimensions and their contribution to the final BQI score</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>Dimension</th><th>Weight</th><th>Contribution</th></tr></thead>\n          <tbody>${weightRows}</tbody>\n        </table>\n      </div>\n    </div>\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>Pipeline A vs B \u2014 QTO Comparison</h2>\n        <p>Spearman SRCC per quantity field (1.0 = perfect agreement)</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>QTO Field</th><th>SRCC</th><th>Agreement</th></tr></thead>\n          <tbody>\n            ${srccResults.length\n              ? srccResults.slice(0,8).map(r => {\n                  const srcc = +(r.SRCC||0).toFixed(3);\n                  const label = srcc >= 0.8 ? 'Strong' : srcc >= 0.5 ? 'Moderate' : 'Weak';\n                  const col   = srcc >= 0.8 ? '#009a44' : srcc >= 0.5 ? '#ffa726' : '#dc3545';\n                  return `<tr><td style=\"font-size:11px;font-family:monospace\">${(r.QtoField||'').replace('[Qto_','').replace(']',' ').slice(0,28)}</td><td>${srcc}</td><td><span style=\"color:${col};font-weight:600\">${label}</span></td></tr>`;\n                }).join('')\n              : `<tr><td colspan=\"3\" style=\"text-align:center;color:#999;padding:16px\">QTO comparison pending \u2014 Block 3 not yet run</td></tr>`\n            }\n          </tbody>\n        </table>\n      </div>\n    </div>\n\n  </div>\n\n  <!-- Footer -->\n  <div class=\"footer\">\n    <p><strong>Uncertainty-Aware Risk Screening from Imperfect BIM</strong> &nbsp;|&nbsp; EMJM NORISK Thesis &nbsp;|&nbsp; ${new Date().toLocaleString()}</p>\n    <p style=\"margin-top:6px\">Pipeline A: DDC Converter &nbsp;|&nbsp; Pipeline B: IfcOpenShell &nbsp;|&nbsp; Orchestrated via n8n v2.7.5</p>\n  </div>\n\n</div>\n<script>\nconst distData    = ${distData};\nconst bqiWeights  = ${bqiWeights};\nconst srccData    = ${srccChartData};\nconst top10Data   = ${top10Data};\n\nChart.defaults.font.family = 'Arial,sans-serif';\nChart.defaults.font.size = 11;\n\n// Risk distribution doughnut\nnew Chart(document.getElementById('riskDist'), {\n  type: 'doughnut',\n  data: {\n    labels: ['High', 'Medium', 'Low'],\n    datasets: [{ data: distData, backgroundColor: ['#dc3545','#ffa726','#66bb6a'], borderColor:'#fff', borderWidth:2 }]\n  },\n  options: { responsive:true, maintainAspectRatio:false, cutout:'55%',\n    plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, padding:10 } } } }\n});\n\n// BQI weights horizontal bar\nnew Chart(document.getElementById('bqiWeights'), {\n  type: 'bar',\n  data: {\n    labels: bqiWeights.map(d => d.label),\n    datasets: [{ label:'Weight %', data: bqiWeights.map(d => d.value),\n      backgroundColor: ['#0061a0','#00a19a','#460073','#009a44'], borderWidth:0 }]\n  },\n  options: { indexAxis:'y', responsive:true, maintainAspectRatio:false,\n    plugins:{ legend:{ display:false } },\n    scales:{ x:{ max:50, ticks:{ callback: v => v+'%' } }, y:{ grid:{ display:false } } } }\n});\n\n// SRCC bar\nif (srccData.length) {\n  new Chart(document.getElementById('srccBar'), {\n    type: 'bar',\n    data: {\n      labels: srccData.map(d => d.field.slice(0,14)),\n      datasets: [{ label:'SRCC', data: srccData.map(d => d.srcc),\n        backgroundColor: srccData.map(d => d.srcc >= 0.8 ? '#009a44' : d.srcc >= 0.5 ? '#ffa726' : '#dc3545'),\n        borderWidth:0 }]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ display:false } },\n      scales:{ y:{ min:0, max:1, ticks:{ stepSize:.2 } }, x:{ grid:{ display:false },\n        ticks:{ font:{ size:9 } } } } }\n  });\n} else {\n  document.getElementById('srccBar').parentElement.innerHTML += '<p style=\"color:#999;font-size:12px;text-align:center;padding:20px\">Run Block 3 first</p>';\n}\n\n// Risk vs BQI scatter\nif (top10Data.length) {\n  new Chart(document.getElementById('riskBqiScatter'), {\n    type: 'scatter',\n    data: {\n      datasets: [\n        { label:'High',   data: top10Data.filter(d=>d.label==='High').map(d=>({x:d.bqi,y:d.score,id:d.id})),   backgroundColor:'#dc3545', pointRadius:6 },\n        { label:'Medium', data: top10Data.filter(d=>d.label==='Medium').map(d=>({x:d.bqi,y:d.score,id:d.id})), backgroundColor:'#ffa726', pointRadius:6 },\n        { label:'Low',    data: top10Data.filter(d=>d.label==='Low').map(d=>({x:d.bqi,y:d.score,id:d.id})),    backgroundColor:'#66bb6a', pointRadius:6 }\n      ]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ position:'top' }, tooltip:{ callbacks:{ label: ctx => ctx.raw.id+' | BQI:'+ctx.raw.x+' Risk:'+ctx.raw.y } } },\n      scales:{\n        x:{ min:0, max:1, title:{ display:true, text:'BQI Score (0=poor, 1=complete)' } },\n        y:{ min:0, title:{ display:true, text:'Risk Score' } }\n      }\n    }\n  });\n}\n<\\/script>\n</body>\n</html>`;\n\nreturn [{\n  json: {\n    html: html,\n    report_type: 'risk-register-bqi',\n    project: projectFileName,\n    timestamp: new Date().toISOString(),\n    summary: {\n      model_bqi: modelBQI,\n      model_confidence: modelConf,\n      total_elements: totalScored,\n      high_risk: highRisk,\n      medium_risk: medRisk,\n      low_risk: lowRisk,\n      avg_srcc: avgSRCC\n    }\n  }\n}];"
+      },
+      "id": "17e826f4-961e-44ae-a7d4-24c2a5998488",
+      "name": "6.2: Build HTML",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        3392,
+        1232
+      ],
+      "typeVersion": 2,
+      "notes": "Code JS \u2014 adapt from n8n_Annisa_Learn pattern (Chart.js, comparison table)"
+    },
+    {
+      "parameters": {
+        "command": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\output'\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        3616,
+        1232
+      ],
+      "id": "04a197a6-bcb9-45af-9bfa-257108d845bf",
+      "name": "6.3: Create output dir"
+    },
+    {
+      "parameters": {
+        "jsCode": "const html     = $node['6.2: Build HTML'].json.html;\nconst projFile = $node['0.1: Config'].json.project_file || \n                 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output\\\\report';\n\nconst dir = 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output';\nconst stamp    = new Date().toISOString().slice(0, 10);\nconst baseName = `RiskRegister_${stamp}`;\nconst htmlPath = `${dir}\\\\${baseName}.html`;\nconst pdfPath  = `${dir}\\\\${baseName}.pdf`;\n\nreturn [{\n  json: {\n    html_path: htmlPath,\n    pdf_path:  pdfPath,\n    base_name: baseName,\n    directory: dir\n  },\n  binary: {\n    data: {\n      data:     Buffer.from(html, 'utf8').toString('base64'),\n      mimeType: 'text/html',\n      fileName: `${baseName}.html`\n    }\n  }\n}];"
+      },
+      "id": "bb97d0cc-ce11-4f0b-8e07-2ae9c3f25f8e",
+      "name": "6.4: HTML to Binary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        3840,
+        1232
+      ],
+      "typeVersion": 2,
+      "notes": "Code JS \u2014 Buffer.from(html, 'utf8') \u2192 binary item"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $json.html_path }}",
+        "dataPropertyName": "=data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        4064,
+        1232
+      ],
+      "id": "f2f9be55-0afb-4a86-a8f6-e618058c15dc",
+      "name": "6.5: Write HTML"
+    },
+    {
+      "parameters": {
+        "command": "=powershell -Command \"& 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe' --headless --disable-gpu --print-to-pdf='{{ $node['6.4: HTML to Binary'].json.pdf_path }}' '{{ $node['6.4: HTML to Binary'].json.html_path }}'\""
+      },
+      "id": "154ace5c-0fd7-474c-955d-ec5dea7a3767",
+      "name": "6.6: Export PDF",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        4288,
+        1232
+      ],
+      "typeVersion": 1
     }
   ],
   "pinData": {},
   "connections": {
-    "When clicking ‘Execute workflow’": {
+    "0.0: Trigger": {
       "main": [
         [
           {
             "node": "0.1: Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "0.1: Config": {
+      "main": [
+        [
+          {
+            "node": "2.1: Download script",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "1.1: Build XLSX path",
             "type": "main",
             "index": 0
           }
@@ -919,36 +953,47 @@
       "main": [
         [
           {
-            "node": "1.3a: Skip",
+            "node": "1.3a: Skip (file exists)",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "1.4: Run DDC",
+            "node": "1.4: Run DDC converter",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "1.4: Run DDC": {
+    "1.3a: Skip (file exists)": {
       "main": [
         [
           {
-            "node": "1.5: DDC OK?",
+            "node": "1.6: Merge",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "1.5: DDC OK?": {
+    "1.4: Run DDC converter": {
       "main": [
         [
           {
-            "node": "1.5a: DDC error",
+            "node": "1.5: DDC Converter OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.5: DDC Converter OK?": {
+      "main": [
+        [
+          {
+            "node": "1.5a: DDC Converter error",
             "type": "main",
             "index": 0
           }
@@ -962,24 +1007,13 @@
         ]
       ]
     },
-    "1.5a: DDC error": {
+    "1.5a: DDC Converter error": {
       "main": [
         [
           {
             "node": "1.6: Merge",
             "type": "main",
             "index": 1
-          }
-        ]
-      ]
-    },
-    "1.3a: Skip": {
-      "main": [
-        [
-          {
-            "node": "1.6: Merge",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1039,11 +1073,121 @@
         ]
       ]
     },
+    "1.10: Filter spatial": {
+      "main": [
+        [
+          {
+            "node": "1.11: Tag as Pipeline A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.11: Tag as Pipeline A": {
+      "main": [
+        [
+          {
+            "node": "3.1: Merge A+B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.1: Download script": {
+      "main": [
+        [
+          {
+            "node": "2.2: Verify Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.2: Verify Python": {
+      "main": [
+        [
+          {
+            "node": "2.3: Run extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.3: Run extraction": {
+      "main": [
+        [
+          {
+            "node": "2.4: Parse output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.4: Parse output": {
+      "main": [
+        [
+          {
+            "node": "2.5: Detect domain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.5: Detect domain": {
+      "main": [
+        [
+          {
+            "node": "2.6: Filter elements",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.6: Filter elements": {
+      "main": [
+        [
+          {
+            "node": "2.7: Tag as Pipeline B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.7: Tag as Pipeline B": {
+      "main": [
+        [
+          {
+            "node": "3.1: Merge A+B",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
     "3.1: Merge A+B": {
       "main": [
         [
           {
             "node": "3.2: QTO comparison",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3.2: QTO comparison": {
+      "main": [
+        [
+          {
+            "node": "4.1: BQI scoring",
             "type": "main",
             "index": 0
           }
@@ -1105,22 +1249,22 @@
         ]
       ]
     },
-    "6.1: Format register": {
+    "5.5: Rank + label": {
       "main": [
         [
           {
-            "node": "6.2: Build HTML",
+            "node": "6.1: Format register",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "5.5: Rank + label": {
+    "6.1: Format register": {
       "main": [
         [
           {
-            "node": "6.1: Format register",
+            "node": "6.2: Build HTML",
             "type": "main",
             "index": 0
           }
@@ -1138,7 +1282,18 @@
         ]
       ]
     },
-    "6.4: HTML → binary": {
+    "6.3: Create output dir": {
+      "main": [
+        [
+          {
+            "node": "6.4: HTML to Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "6.4: HTML to Binary": {
       "main": [
         [
           {
@@ -1164,132 +1319,6 @@
       "main": [
         []
       ]
-    },
-    "6.3: Create output dir": {
-      "main": [
-        [
-          {
-            "node": "6.4: HTML → binary",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "1.10: Filter spatial": {
-      "main": [
-        [
-          {
-            "node": "1.11: Tag [PA]",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "1.11: Tag [PA]": {
-      "main": [
-        [
-          {
-            "node": "3.1: Merge A+B",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "0.1: Config": {
-      "main": [
-        [
-          {
-            "node": "2.1: Download script",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "1.1: Build XLSX path",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "2.2: Verify Python": {
-      "main": [
-        [
-          {
-            "node": "2.3: Run extraction",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "2.3: Run extraction": {
-      "main": [
-        [
-          {
-            "node": "2.4: Parse output",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "2.4: Parse output": {
-      "main": [
-        [
-          {
-            "node": "2.6: Filter elements",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "2.6: Filter elements": {
-      "main": [
-        [
-          {
-            "node": "2.7: Tag [PB]",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "2.7: Tag [PB]": {
-      "main": [
-        [
-          {
-            "node": "3.1: Merge A+B",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "3.2: QTO comparison": {
-      "main": [
-        [
-          {
-            "node": "4.1: BQI scoring",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "2.1: Download script": {
-      "main": [
-        [
-          {
-            "node": "2.2: Verify Python",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "active": false,
@@ -1300,7 +1329,7 @@
     "timeSavedMode": "fixed",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "b78876c6-bd45-4528-ba91-ed0d9b864277",
+  "versionId": "d33cfa48-0d54-468f-a8eb-30097fac2904",
   "meta": {
     "instanceId": "04adcdbc4b2ff3c2e3e85a32e9e18c5432e2d4b85688194ce6155f1530721ac2"
   },
