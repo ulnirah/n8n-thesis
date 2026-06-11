@@ -761,26 +761,6 @@
     },
     {
       "parameters": {
-        "fileSelector": "={{ $json.project_file }}",
-        "options": {
-          "fileExtension": "",
-          "fileName": "",
-          "mimeType": "",
-          "dataPropertyName": "data"
-        }
-      },
-      "type": "n8n-nodes-base.readWriteFile",
-      "typeVersion": 1.1,
-      "position": [
-        -2416,
-        1136
-      ],
-      "id": "65399132-db3c-44d7-ab81-546fd5efcb75",
-      "name": "S2: Read/Write Files from Disk",
-      "disabled": true
-    },
-    {
-      "parameters": {
         "command": "python -c \"import ifcopenshell; print(ifcopenshell.version)\""
       },
       "type": "n8n-nodes-base.executeCommand",
@@ -1219,17 +1199,6 @@
       ]
     },
     "S1: Setup paths": {
-      "main": [
-        [
-          {
-            "node": "S2: Read/Write Files from Disk",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "S2: Read/Write Files from Disk": {
       "main": [
         [
           {
