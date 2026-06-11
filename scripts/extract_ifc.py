@@ -14,6 +14,7 @@ except ImportError:
     sys.exit(1)
 
 ELEMENT_TYPES = [
+    # IFC4 building elements
     "IfcWall", "IfcWallStandardCase",
     "IfcSlab", "IfcSlabStandardCase",
     "IfcBeam", "IfcBeamStandardCase",
@@ -28,11 +29,28 @@ ELEMENT_TYPES = [
     "IfcBuildingElementProxy",
     "IfcFurniture", "IfcFurnishingElement",
     "IfcSpace", "IfcSpatialZone", "IfcZone",
-    "IfcBearing", "IfcDeepFoundation",
-    "IfcCourse", "IfcEarthworksElement",
-    "IfcPavement", "IfcRail", "IfcSurfaceFeature",
     "IfcTendon", "IfcTendonAnchor", "IfcTendonConduit",
     "IfcReinforcingBar", "IfcReinforcingMesh",
+    # IFC4X3 infrastructure elements (by_type includes subtypes, so base classes catch all)
+    "IfcBearing", "IfcDeepFoundation",
+    "IfcCourse", "IfcEarthworksElement",
+    "IfcPavement", "IfcKerb",
+    "IfcRail", "IfcTrackElement",
+    "IfcSurfaceFeature",
+    "IfcFacilityPart",
+    "IfcCivilElement",
+    "IfcSignal", "IfcSign",
+]
+
+# IFC4X3 spatial container types (different from IFC4 building hierarchy)
+SPATIAL_TYPES_IFC4 = [
+    "IfcProject", "IfcSite", "IfcBuilding", "IfcBuildingStorey", "IfcSpace",
+]
+SPATIAL_TYPES_IFC4X3 = [
+    "IfcProject", "IfcSite",
+    "IfcFacility", "IfcFacilityPart", "IfcFacilityPartCommon",
+    "IfcRoad", "IfcRailway", "IfcBridge",
+    "IfcMarineFacility",
 ]
 
 def main():
@@ -105,21 +123,29 @@ def main():
                     "Material": material.Name if hasattr(material, "Name") else str(material),
                 })
 
+    # Pick spatial types based on schema — IFC4X3 uses facility/road/rail/bridge hierarchy
+    is_ifc4x3 = schema.upper().startswith("IFC4X3") or schema.upper() == "IFC4X3_ADD2"
+    spatial_query_types = SPATIAL_TYPES_IFC4X3 if is_ifc4x3 else SPATIAL_TYPES_IFC4
+
     spatial_rows = []
-    for entity_type in ["IfcProject", "IfcSite", "IfcBuilding", "IfcBuildingStorey"]:
+    seen_spatial_gids = set()
+    for entity_type in spatial_query_types:
         try:
             for elem in model.by_type(entity_type):
+                if elem.GlobalId in seen_spatial_gids:
+                    continue
+                seen_spatial_gids.add(elem.GlobalId)
                 parent_gid, parent_name = "", ""
                 if hasattr(elem, "Decomposes") and elem.Decomposes:
                     parent = elem.Decomposes[0].RelatingObject
                     parent_gid  = parent.GlobalId
                     parent_name = parent.Name or ""
                 spatial_rows.append({
-                    "GlobalId":      elem.GlobalId,
-                    "Name":          elem.Name or "",
-                    "Type":          elem.is_a(),
+                    "GlobalId":       elem.GlobalId,
+                    "Name":           elem.Name or "",
+                    "Type":           elem.is_a(),
                     "ParentGlobalId": parent_gid,
-                    "ParentName":    parent_name,
+                    "ParentName":     parent_name,
                 })
         except Exception:
             continue
