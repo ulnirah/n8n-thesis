@@ -71,7 +71,7 @@
         "options": {}
       },
       "id": "13e54eb5-88e3-4366-9745-9013dfc435d3",
-      "name": "A1: Build XLSX filename",
+      "name": "1.1: Build XLSX path",
       "type": "n8n-nodes-base.set",
       "position": [
         -1968,
@@ -86,7 +86,7 @@
         "filePath": "={{ $json[\"xlsx_filename\"] }}"
       },
       "id": "4fbb3dfe-bb68-4c49-8d67-04decb8e0fa0",
-      "name": "A2: Check if XLSX exists",
+      "name": "1.2: XLSX exists?",
       "type": "n8n-nodes-base.readBinaryFile",
       "position": [
         -1744,
@@ -123,7 +123,7 @@
         "options": {}
       },
       "id": "8cddc24f-1b61-4bed-937d-56a155ee3dad",
-      "name": "A3: Already converted?",
+      "name": "1.3: Skip if converted?",
       "type": "n8n-nodes-base.if",
       "position": [
         -1520,
@@ -136,10 +136,10 @@
     {
       "parameters": {
         "executeOnce": false,
-        "command": "=\"{{$node[\"S1: Setup paths\"].json[\"path_to_converter\"]}}\" \"{{$node[\"S1: Setup paths\"].json[\"project_file\"]}}\""
+        "command": "=\"{{$node[\"0.1: Config\"].json[\"path_to_converter\"]}}\" \"{{$node[\"0.1: Config\"].json[\"project_file\"]}}\""
       },
       "id": "55d1b893-c86f-4089-8a51-a9de0af4d89e",
-      "name": "A4: Run DDC converter",
+      "name": "1.4: Run DDC",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
         -1296,
@@ -167,7 +167,7 @@
                 "operation": "exists",
                 "rightType": "any"
               },
-              "leftValue": "={{ $node[\"A4: Run DDC converter\"].json.error }}",
+              "leftValue": "={{ $node[\"1.4: Run DDC\"].json.error }}",
               "rightValue": ""
             }
           ],
@@ -176,7 +176,7 @@
         "options": {}
       },
       "id": "12ed46d2-f4f3-4d9d-a70a-cca6b2d63287",
-      "name": "A5: Converter succeeded?",
+      "name": "1.5: DDC OK?",
       "type": "n8n-nodes-base.if",
       "position": [
         -1072,
@@ -192,26 +192,26 @@
               "id": "error-message-id",
               "name": "error_message",
               "type": "string",
-              "value": "=Extraction failed: {{ $node[\"A4: Run DDC converter\"].json.error || \"Unknown error\" }}"
+              "value": "=Extraction failed: {{ $node[\"1.4: Run DDC\"].json.error || \"Unknown error\" }}"
             },
             {
               "id": "error-code-id",
               "name": "error_code",
               "type": "number",
-              "value": "={{ $node[\"A4: Run DDC converter\"].json.code || -1 }}"
+              "value": "={{ $node[\"1.4: Run DDC\"].json.code || -1 }}"
             },
             {
               "id": "xlsx-filename-error",
               "name": "xlsx_filename",
               "type": "string",
-              "value": "={{ $node[\"A1: Build XLSX filename\"].json[\"xlsx_filename\"] }}"
+              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
             }
           ]
         },
         "options": {}
       },
       "id": "84fa3e31-8696-4e77-91ca-1c388eca03ce",
-      "name": "A5a: Log converter error",
+      "name": "1.5a: DDC error",
       "type": "n8n-nodes-base.set",
       "position": [
         -848,
@@ -233,14 +233,14 @@
               "id": "xlsx-filename-id",
               "name": "xlsx_filename",
               "type": "string",
-              "value": "={{ $node[\"A1: Build XLSX filename\"].json[\"xlsx_filename\"] }}"
+              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
             }
           ]
         },
         "options": {}
       },
       "id": "726f6628-448a-4347-865f-835dfd6e6604",
-      "name": "A3a: Skip (file exists)",
+      "name": "1.3a: Skip",
       "type": "n8n-nodes-base.set",
       "position": [
         -848,
@@ -256,14 +256,14 @@
               "id": "xlsx-filename-success",
               "name": "xlsx_filename",
               "type": "string",
-              "value": "={{ $node[\"A1: Build XLSX filename\"].json[\"xlsx_filename\"] }}"
+              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
             }
           ]
         },
         "options": {}
       },
       "id": "ec42d43c-90d2-4369-9041-1b1f98a129d8",
-      "name": "A5b: Set filename on success",
+      "name": "1.5b: DDC success",
       "type": "n8n-nodes-base.set",
       "position": [
         -848,
@@ -274,7 +274,7 @@
     {
       "parameters": {},
       "id": "5bdcff45-c355-41b9-8be9-dd7cfee42d0e",
-      "name": "A6: Merge conversion result",
+      "name": "1.6: Merge",
       "type": "n8n-nodes-base.merge",
       "position": [
         -624,
@@ -303,7 +303,7 @@
         "options": {}
       },
       "id": "c8bc89be-ca67-4c24-b191-4839b7ab80be",
-      "name": "A7: Set XLSX path for reader",
+      "name": "1.7: Set XLSX path",
       "type": "n8n-nodes-base.set",
       "position": [
         -400,
@@ -318,7 +318,7 @@
         "filePath": "={{ $json.xlsx_path }}"
       },
       "id": "3e083158-59ef-4f0a-9682-61ba4b9677c8",
-      "name": "A8: Read DDC XLSX",
+      "name": "1.8: Read XLSX",
       "type": "n8n-nodes-base.readBinaryFile",
       "position": [
         -176,
@@ -336,7 +336,7 @@
         }
       },
       "id": "4f6e37fd-24dd-4449-a4c1-f0d5ceac71f1",
-      "name": "A9: Parse to JSON rows",
+      "name": "1.9: Parse rows",
       "type": "n8n-nodes-base.spreadsheetFile",
       "position": [
         48,
@@ -355,7 +355,7 @@
         1392
       ],
       "id": "beacdc5e-3328-4144-8f25-aa2a6f6191c0",
-      "name": "B1: Write script inline"
+      "name": "2.1: Download script"
     },
     {
       "parameters": {
@@ -461,7 +461,7 @@
         1232
       ],
       "id": "a666afcb-e2fb-47be-9864-e5ad6b62b982",
-      "name": "C1: Merge pipelines A+B"
+      "name": "3.1: Merge A+B"
     },
     {
       "parameters": {
@@ -474,7 +474,7 @@
         1232
       ],
       "id": "cbb220c6-de91-4094-ae28-42da9a98ae69",
-      "name": "C5: BQI scoring (eval GitHub code)"
+      "name": "4.1: BQI scoring"
     },
     {
       "parameters": {
@@ -487,7 +487,7 @@
         1232
       ],
       "id": "be3031b7-17ab-4b97-b839-9505449d5c33",
-      "name": "R1: Exposure lookup"
+      "name": "5.1: Exposure"
     },
     {
       "parameters": {
@@ -500,7 +500,7 @@
         1232
       ],
       "id": "504865ef-be31-499d-b3e6-d992103a78b7",
-      "name": "R2: Likelihood proxy"
+      "name": "5.2: Likelihood"
     },
     {
       "parameters": {
@@ -513,7 +513,7 @@
         1232
       ],
       "id": "d24d05b5-9c6b-4f9e-9e25-333eb6f5696e",
-      "name": "R3: Consequence proxy"
+      "name": "5.3: Consequence"
     },
     {
       "parameters": {
@@ -526,7 +526,7 @@
         1232
       ],
       "id": "0de01e38-7de3-48f0-a35b-68c2061a8591",
-      "name": "R4: BQI penalty + risk score"
+      "name": "5.4: Risk score"
     },
     {
       "parameters": {
@@ -539,7 +539,7 @@
         1232
       ],
       "id": "cfe2b15a-549a-487f-856e-1081e5b80af6",
-      "name": "R5: Rank by risk",
+      "name": "5.5: Rank + label",
       "notes": "Code JS — sort, assign High/Med/Low label"
     },
     {
@@ -553,14 +553,14 @@
         1232
       ],
       "id": "013c9041-7cbf-402e-a989-98d7f2292b7c",
-      "name": "O1: Format risk register"
+      "name": "6.1: Format register"
     },
     {
       "parameters": {
-        "jsCode": "const allItems = $input.all();\n\nlet projectFilePath = '';\ntry {\n  projectFilePath = $node['S1: Setup paths'].json.project_file || '';\n} catch(e) {\n  projectFilePath = 'Unknown Project';\n}\nconst projectFileName = projectFilePath.split('\\\\').pop().split('/').pop().replace(/\\.[^/.]+$/, '');\n\nconst modelSummary  = allItems.find(i => i.json._type === 'bqi_model_summary') || { json: {} };\nconst riskElements  = allItems.filter(i => i.json._type === 'risk_element');\nconst qtoSummary    = allItems.find(i => i.json._type === 'qto_summary') || { json: {} };\n\nconst modelBQI        = +(modelSummary.json.model_bqi   || 0).toFixed(3);\nconst modelConf       = modelSummary.json.model_confidence || 'low';\nconst totalScored     = modelSummary.json.total_elements_scored || allItems.length;\nconst dist            = modelSummary.json.distribution || { high: 0, medium: 0, low: 0 };\nconst weights         = modelSummary.json.weights_used || { completeness: 0.35, validity: 0.25, qto_coverage: 0.20, qto_agreement: 0.20 };\n\nconst highRisk   = riskElements.filter(i => i.json.risk_label === 'High').length   || dist.high   || 0;\nconst medRisk    = riskElements.filter(i => i.json.risk_label === 'Medium').length || dist.medium || 0;\nconst lowRisk    = riskElements.filter(i => i.json.risk_label === 'Low').length    || dist.low    || 0;\nconst top10      = riskElements\n  .sort((a,b) => (b.json.risk_score||0) - (a.json.risk_score||0))\n  .slice(0, 10);\n\nconst srccResults = qtoSummary.json.srcc_results || [];\nconst avgSRCC     = srccResults.length\n  ? (srccResults.reduce((s,r) => s + (r.SRCC||0), 0) / srccResults.length).toFixed(3)\n  : 'N/A';\n\nfunction confColor(conf) {\n  if (conf === 'high')   return '#009a44';\n  if (conf === 'medium') return '#ffa726';\n  return '#dc3545';\n}\nfunction riskColor(label) {\n  if (label === 'High')   return '#dc3545';\n  if (label === 'Medium') return '#ffa726';\n  return '#66bb6a';\n}\nfunction bqiBar(score) {\n  const pct = Math.round((score||0) * 100);\n  const col = score >= 0.7 ? '#009a44' : score >= 0.4 ? '#ffa726' : '#dc3545';\n  return `<div style=\"background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px\"><div style=\"height:100%;width:${pct}%;background:${col};border-radius:3px\"></div></div>`;\n}\n\nconst distData    = JSON.stringify([highRisk, medRisk, lowRisk]);\nconst bqiWeights  = JSON.stringify(Object.entries(weights).map(([k,v]) => ({ label: k.replace('_',' '), value: +(v*100).toFixed(0) })));\nconst srccChartData = JSON.stringify(srccResults.slice(0,8).map(r => ({ field: (r.QtoField||'').replace('[Qto_','').replace(']',''), srcc: +(r.SRCC||0).toFixed(3) })));\nconst top10Data   = JSON.stringify(top10.map(i => ({ id: (i.json.GlobalId||'').slice(0,8), score: +(i.json.risk_score||0).toFixed(3), bqi: +(i.json.bqi_score||0).toFixed(3), label: i.json.risk_label||'Low', type: i.json.Category||i.json._type||'' })));\n\nconst riskRows = top10.map((item, idx) => {\n  const d = item.json;\n  const label = d.risk_label || 'Low';\n  return `<tr>\n    <td>${idx+1}</td>\n    <td style=\"font-family:monospace;font-size:11px\">${(d.GlobalId||'—').slice(0,16)}</td>\n    <td>${d.Category || d.ifc_type || '—'}</td>\n    <td>${(d.zone || d.location_tag || '—')}</td>\n    <td>${(+(d.bqi_score||0)).toFixed(2)} ${bqiBar(d.bqi_score)}</td>\n    <td>${d.bqi_confidence || '—'}</td>\n    <td>${(+(d.likelihood||0)).toFixed(2)}</td>\n    <td>${(+(d.consequence||0)).toFixed(2)}</td>\n    <td><strong>${(+(d.risk_score||0)).toFixed(3)}</strong></td>\n    <td><span style=\"display:inline-block;padding:2px 8px;background:${riskColor(label)};color:white;font-size:11px;font-weight:600;border-radius:2px\">${label.toUpperCase()}</span></td>\n  </tr>`;\n}).join('') || `<tr><td colspan=\"10\" style=\"text-align:center;color:#999;padding:20px\">Risk screening stubs (R1–R5) not yet implemented — placeholder data</td></tr>`;\n\nconst weightRows = Object.entries(weights).map(([k,v]) =>\n  `<tr><td>${k.replace(/_/g,' ')}</td><td>${(v*100).toFixed(0)}%</td><td>${bqiBar(v)}</td></tr>`\n).join('');\n\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Uncertainty-Aware Risk Register | ${projectFileName}</title>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js\"><\\/script>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:Arial,'Helvetica Neue',sans-serif;background:#f5f5f5;color:#2e2e38;font-size:13px;line-height:1.6}\n.container{max-width:1200px;margin:0 auto;padding:40px 20px}\n.header{border-bottom:3px solid #0061a0;padding-bottom:20px;margin-bottom:30px;background:#fff;padding:24px 30px;border-left:6px solid #0061a0}\n.header h1{font-size:26px;font-weight:300;color:#0061a0;margin-bottom:6px}\n.header .subtitle{color:#696969;font-size:13px}\n.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}\n.kpi-card{background:#fff;border:1px solid #e0e0e0;padding:20px;border-top:4px solid #ccc}\n.kpi-card.blue{border-top-color:#0061a0}\n.kpi-card.green{border-top-color:#009a44}\n.kpi-card.amber{border-top-color:#ffa726}\n.kpi-card.red{border-top-color:#dc3545}\n.kpi-value{font-size:32px;font-weight:300;color:#0061a0;line-height:1;margin-bottom:6px}\n.kpi-label{font-size:11px;color:#696969;text-transform:uppercase;letter-spacing:.5px;font-weight:600}\n.kpi-sub{font-size:11px;color:#999;margin-top:4px}\n.section{background:#fff;border:1px solid #e0e0e0;margin-bottom:24px}\n.section-header{background:#fafafa;padding:14px 20px;border-bottom:1px solid #e0e0e0}\n.section-header h2{font-size:15px;font-weight:600;color:#2e2e38;margin:0}\n.section-header p{font-size:12px;color:#696969;margin-top:3px}\n.section-body{padding:20px}\n.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px}\n.chart-box{background:#fff;border:1px solid #e0e0e0;padding:16px}\n.chart-box h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#2e2e38}\n.chart-box.wide{grid-column:1/-1}\ntable{width:100%;border-collapse:collapse;font-size:12px}\nth{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:600;color:#2e2e38;border-bottom:2px solid #e0e0e0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}\ntd{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#4a4a4a;vertical-align:middle}\ntr:hover{background:#fafafa}\n.conf-badge{display:inline-block;padding:2px 7px;border-radius:2px;font-size:11px;font-weight:600}\n.alert-box{border-left:4px solid #ffa726;background:#fff8e1;padding:16px 20px;margin-bottom:24px;font-size:13px}\n.alert-box strong{color:#e65100}\n.footer{margin-top:40px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#999;font-size:11px}\n@media(max-width:768px){.charts-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}}\n@media print{body{background:white}.container{padding:10px}}\n</style>\n</head>\n<body>\n<div class=\"container\">\n\n  <!-- Header -->\n  <div class=\"header\">\n    <h1>Uncertainty-Aware Risk Register</h1>\n    <div class=\"subtitle\">\n      Project: <strong>${projectFileName}</strong> &nbsp;|&nbsp;\n      BIM Quality Index (BQI) + Risk Screening &nbsp;|&nbsp;\n      Generated: ${new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}\n    </div>\n  </div>\n\n  ${totalScored === 0 ? `\n  <div class=\"alert-box\">\n    <strong>⚠ Placeholder data:</strong> Risk screening nodes R1–R5 and BQI node C5 are not yet fully implemented.\n    The report structure is correct — scores will populate once those nodes are built.\n  </div>` : ''}\n\n  <!-- KPI Cards -->\n  <div class=\"kpi-grid\">\n    <div class=\"kpi-card blue\">\n      <div class=\"kpi-value\">${modelBQI}</div>\n      <div class=\"kpi-label\">Model BQI Score</div>\n      <div class=\"kpi-sub\" style=\"color:${confColor(modelConf)};font-weight:600\">${modelConf.toUpperCase()} confidence</div>\n    </div>\n    <div class=\"kpi-card red\">\n      <div class=\"kpi-value\">${highRisk}</div>\n      <div class=\"kpi-label\">High-Risk Elements</div>\n      <div class=\"kpi-sub\">require immediate attention</div>\n    </div>\n    <div class=\"kpi-card amber\">\n      <div class=\"kpi-value\">${medRisk}</div>\n      <div class=\"kpi-label\">Medium-Risk Elements</div>\n      <div class=\"kpi-sub\">monitor closely</div>\n    </div>\n    <div class=\"kpi-card green\">\n      <div class=\"kpi-value\">${totalScored}</div>\n      <div class=\"kpi-label\">Elements Scored</div>\n      <div class=\"kpi-sub\">avg SRCC: ${avgSRCC}</div>\n    </div>\n  </div>\n\n  <!-- Charts row -->\n  <div class=\"charts-grid\">\n    <div class=\"chart-box\">\n      <h3>Risk distribution</h3>\n      <canvas id=\"riskDist\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>BQI weight breakdown</h3>\n      <canvas id=\"bqiWeights\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>QTO pipeline agreement (SRCC)</h3>\n      <canvas id=\"srccBar\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box wide\">\n      <h3>Top 10 risk elements — risk score vs BQI score</h3>\n      <canvas id=\"riskBqiScatter\" height=\"120\"></canvas>\n    </div>\n  </div>\n\n  <!-- Risk Register Table -->\n  <div class=\"section\">\n    <div class=\"section-header\">\n      <h2>Risk Register — Top 10 Screened Elements</h2>\n      <p>Ranked by risk score (Likelihood × Consequence), adjusted by BQI confidence bounds</p>\n    </div>\n    <div class=\"section-body\" style=\"padding:0;overflow-x:auto\">\n      <table>\n        <thead>\n          <tr>\n            <th>#</th><th>GlobalId</th><th>IFC Type</th><th>Zone</th>\n            <th>BQI Score</th><th>Confidence</th>\n            <th>Likelihood</th><th>Consequence</th><th>Risk Score</th><th>Level</th>\n          </tr>\n        </thead>\n        <tbody>${riskRows}</tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- BQI Summary + Pipeline comparison -->\n  <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px\">\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>BQI Scoring Weights</h2>\n        <p>Dimensions and their contribution to the final BQI score</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>Dimension</th><th>Weight</th><th>Contribution</th></tr></thead>\n          <tbody>${weightRows}</tbody>\n        </table>\n      </div>\n    </div>\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>Pipeline A vs B — QTO Comparison</h2>\n        <p>Spearman SRCC per quantity field (1.0 = perfect agreement)</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>QTO Field</th><th>SRCC</th><th>Agreement</th></tr></thead>\n          <tbody>\n            ${srccResults.length\n              ? srccResults.slice(0,8).map(r => {\n                  const srcc = +(r.SRCC||0).toFixed(3);\n                  const label = srcc >= 0.8 ? 'Strong' : srcc >= 0.5 ? 'Moderate' : 'Weak';\n                  const col   = srcc >= 0.8 ? '#009a44' : srcc >= 0.5 ? '#ffa726' : '#dc3545';\n                  return `<tr><td style=\"font-size:11px;font-family:monospace\">${(r.QtoField||'').replace('[Qto_','').replace(']',' ').slice(0,28)}</td><td>${srcc}</td><td><span style=\"color:${col};font-weight:600\">${label}</span></td></tr>`;\n                }).join('')\n              : `<tr><td colspan=\"3\" style=\"text-align:center;color:#999;padding:16px\">QTO comparison pending — Block 3 not yet run</td></tr>`\n            }\n          </tbody>\n        </table>\n      </div>\n    </div>\n\n  </div>\n\n  <!-- Footer -->\n  <div class=\"footer\">\n    <p><strong>Uncertainty-Aware Risk Screening from Imperfect BIM</strong> &nbsp;|&nbsp; EMJM NORISK Thesis &nbsp;|&nbsp; ${new Date().toLocaleString()}</p>\n    <p style=\"margin-top:6px\">Pipeline A: DDC Converter &nbsp;|&nbsp; Pipeline B: IfcOpenShell &nbsp;|&nbsp; Orchestrated via n8n v2.7.5</p>\n  </div>\n\n</div>\n<script>\nconst distData    = ${distData};\nconst bqiWeights  = ${bqiWeights};\nconst srccData    = ${srccChartData};\nconst top10Data   = ${top10Data};\n\nChart.defaults.font.family = 'Arial,sans-serif';\nChart.defaults.font.size = 11;\n\n// Risk distribution doughnut\nnew Chart(document.getElementById('riskDist'), {\n  type: 'doughnut',\n  data: {\n    labels: ['High', 'Medium', 'Low'],\n    datasets: [{ data: distData, backgroundColor: ['#dc3545','#ffa726','#66bb6a'], borderColor:'#fff', borderWidth:2 }]\n  },\n  options: { responsive:true, maintainAspectRatio:false, cutout:'55%',\n    plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, padding:10 } } } }\n});\n\n// BQI weights horizontal bar\nnew Chart(document.getElementById('bqiWeights'), {\n  type: 'bar',\n  data: {\n    labels: bqiWeights.map(d => d.label),\n    datasets: [{ label:'Weight %', data: bqiWeights.map(d => d.value),\n      backgroundColor: ['#0061a0','#00a19a','#460073','#009a44'], borderWidth:0 }]\n  },\n  options: { indexAxis:'y', responsive:true, maintainAspectRatio:false,\n    plugins:{ legend:{ display:false } },\n    scales:{ x:{ max:50, ticks:{ callback: v => v+'%' } }, y:{ grid:{ display:false } } } }\n});\n\n// SRCC bar\nif (srccData.length) {\n  new Chart(document.getElementById('srccBar'), {\n    type: 'bar',\n    data: {\n      labels: srccData.map(d => d.field.slice(0,14)),\n      datasets: [{ label:'SRCC', data: srccData.map(d => d.srcc),\n        backgroundColor: srccData.map(d => d.srcc >= 0.8 ? '#009a44' : d.srcc >= 0.5 ? '#ffa726' : '#dc3545'),\n        borderWidth:0 }]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ display:false } },\n      scales:{ y:{ min:0, max:1, ticks:{ stepSize:.2 } }, x:{ grid:{ display:false },\n        ticks:{ font:{ size:9 } } } } }\n  });\n} else {\n  document.getElementById('srccBar').parentElement.innerHTML += '<p style=\"color:#999;font-size:12px;text-align:center;padding:20px\">Run Block 3 first</p>';\n}\n\n// Risk vs BQI scatter\nif (top10Data.length) {\n  new Chart(document.getElementById('riskBqiScatter'), {\n    type: 'scatter',\n    data: {\n      datasets: [\n        { label:'High',   data: top10Data.filter(d=>d.label==='High').map(d=>({x:d.bqi,y:d.score,id:d.id})),   backgroundColor:'#dc3545', pointRadius:6 },\n        { label:'Medium', data: top10Data.filter(d=>d.label==='Medium').map(d=>({x:d.bqi,y:d.score,id:d.id})), backgroundColor:'#ffa726', pointRadius:6 },\n        { label:'Low',    data: top10Data.filter(d=>d.label==='Low').map(d=>({x:d.bqi,y:d.score,id:d.id})),    backgroundColor:'#66bb6a', pointRadius:6 }\n      ]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ position:'top' }, tooltip:{ callbacks:{ label: ctx => ctx.raw.id+' | BQI:'+ctx.raw.x+' Risk:'+ctx.raw.y } } },\n      scales:{\n        x:{ min:0, max:1, title:{ display:true, text:'BQI Score (0=poor, 1=complete)' } },\n        y:{ min:0, title:{ display:true, text:'Risk Score' } }\n      }\n    }\n  });\n}\n<\\/script>\n</body>\n</html>`;\n\nreturn [{\n  json: {\n    html: html,\n    report_type: 'risk-register-bqi',\n    project: projectFileName,\n    timestamp: new Date().toISOString(),\n    summary: {\n      model_bqi: modelBQI,\n      model_confidence: modelConf,\n      total_elements: totalScored,\n      high_risk: highRisk,\n      medium_risk: medRisk,\n      low_risk: lowRisk,\n      avg_srcc: avgSRCC\n    }\n  }\n}];"
+        "jsCode": "const allItems = $input.all();\n\nlet projectFilePath = '';\ntry {\n  projectFilePath = $node['0.1: Config'].json.project_file || '';\n} catch(e) {\n  projectFilePath = 'Unknown Project';\n}\nconst projectFileName = projectFilePath.split('\\\\').pop().split('/').pop().replace(/\\.[^/.]+$/, '');\n\nconst modelSummary  = allItems.find(i => i.json._type === 'bqi_model_summary') || { json: {} };\nconst riskElements  = allItems.filter(i => i.json._type === 'risk_element');\nconst qtoSummary    = allItems.find(i => i.json._type === 'qto_summary') || { json: {} };\n\nconst modelBQI        = +(modelSummary.json.model_bqi   || 0).toFixed(3);\nconst modelConf       = modelSummary.json.model_confidence || 'low';\nconst totalScored     = modelSummary.json.total_elements_scored || allItems.length;\nconst dist            = modelSummary.json.distribution || { high: 0, medium: 0, low: 0 };\nconst weights         = modelSummary.json.weights_used || { completeness: 0.35, validity: 0.25, qto_coverage: 0.20, qto_agreement: 0.20 };\n\nconst highRisk   = riskElements.filter(i => i.json.risk_label === 'High').length   || dist.high   || 0;\nconst medRisk    = riskElements.filter(i => i.json.risk_label === 'Medium').length || dist.medium || 0;\nconst lowRisk    = riskElements.filter(i => i.json.risk_label === 'Low').length    || dist.low    || 0;\nconst top10      = riskElements\n  .sort((a,b) => (b.json.risk_score||0) - (a.json.risk_score||0))\n  .slice(0, 10);\n\nconst srccResults = qtoSummary.json.srcc_results || [];\nconst avgSRCC     = srccResults.length\n  ? (srccResults.reduce((s,r) => s + (r.SRCC||0), 0) / srccResults.length).toFixed(3)\n  : 'N/A';\n\nfunction confColor(conf) {\n  if (conf === 'high')   return '#009a44';\n  if (conf === 'medium') return '#ffa726';\n  return '#dc3545';\n}\nfunction riskColor(label) {\n  if (label === 'High')   return '#dc3545';\n  if (label === 'Medium') return '#ffa726';\n  return '#66bb6a';\n}\nfunction bqiBar(score) {\n  const pct = Math.round((score||0) * 100);\n  const col = score >= 0.7 ? '#009a44' : score >= 0.4 ? '#ffa726' : '#dc3545';\n  return `<div style=\"background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px\"><div style=\"height:100%;width:${pct}%;background:${col};border-radius:3px\"></div></div>`;\n}\n\nconst distData    = JSON.stringify([highRisk, medRisk, lowRisk]);\nconst bqiWeights  = JSON.stringify(Object.entries(weights).map(([k,v]) => ({ label: k.replace('_',' '), value: +(v*100).toFixed(0) })));\nconst srccChartData = JSON.stringify(srccResults.slice(0,8).map(r => ({ field: (r.QtoField||'').replace('[Qto_','').replace(']',''), srcc: +(r.SRCC||0).toFixed(3) })));\nconst top10Data   = JSON.stringify(top10.map(i => ({ id: (i.json.GlobalId||'').slice(0,8), score: +(i.json.risk_score||0).toFixed(3), bqi: +(i.json.bqi_score||0).toFixed(3), label: i.json.risk_label||'Low', type: i.json.Category||i.json._type||'' })));\n\nconst riskRows = top10.map((item, idx) => {\n  const d = item.json;\n  const label = d.risk_label || 'Low';\n  return `<tr>\n    <td>${idx+1}</td>\n    <td style=\"font-family:monospace;font-size:11px\">${(d.GlobalId||'—').slice(0,16)}</td>\n    <td>${d.Category || d.ifc_type || '—'}</td>\n    <td>${(d.zone || d.location_tag || '—')}</td>\n    <td>${(+(d.bqi_score||0)).toFixed(2)} ${bqiBar(d.bqi_score)}</td>\n    <td>${d.bqi_confidence || '—'}</td>\n    <td>${(+(d.likelihood||0)).toFixed(2)}</td>\n    <td>${(+(d.consequence||0)).toFixed(2)}</td>\n    <td><strong>${(+(d.risk_score||0)).toFixed(3)}</strong></td>\n    <td><span style=\"display:inline-block;padding:2px 8px;background:${riskColor(label)};color:white;font-size:11px;font-weight:600;border-radius:2px\">${label.toUpperCase()}</span></td>\n  </tr>`;\n}).join('') || `<tr><td colspan=\"10\" style=\"text-align:center;color:#999;padding:20px\">Risk screening stubs (R1–R5) not yet implemented — placeholder data</td></tr>`;\n\nconst weightRows = Object.entries(weights).map(([k,v]) =>\n  `<tr><td>${k.replace(/_/g,' ')}</td><td>${(v*100).toFixed(0)}%</td><td>${bqiBar(v)}</td></tr>`\n).join('');\n\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Uncertainty-Aware Risk Register | ${projectFileName}</title>\n<script src=\"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js\"><\\/script>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:Arial,'Helvetica Neue',sans-serif;background:#f5f5f5;color:#2e2e38;font-size:13px;line-height:1.6}\n.container{max-width:1200px;margin:0 auto;padding:40px 20px}\n.header{border-bottom:3px solid #0061a0;padding-bottom:20px;margin-bottom:30px;background:#fff;padding:24px 30px;border-left:6px solid #0061a0}\n.header h1{font-size:26px;font-weight:300;color:#0061a0;margin-bottom:6px}\n.header .subtitle{color:#696969;font-size:13px}\n.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}\n.kpi-card{background:#fff;border:1px solid #e0e0e0;padding:20px;border-top:4px solid #ccc}\n.kpi-card.blue{border-top-color:#0061a0}\n.kpi-card.green{border-top-color:#009a44}\n.kpi-card.amber{border-top-color:#ffa726}\n.kpi-card.red{border-top-color:#dc3545}\n.kpi-value{font-size:32px;font-weight:300;color:#0061a0;line-height:1;margin-bottom:6px}\n.kpi-label{font-size:11px;color:#696969;text-transform:uppercase;letter-spacing:.5px;font-weight:600}\n.kpi-sub{font-size:11px;color:#999;margin-top:4px}\n.section{background:#fff;border:1px solid #e0e0e0;margin-bottom:24px}\n.section-header{background:#fafafa;padding:14px 20px;border-bottom:1px solid #e0e0e0}\n.section-header h2{font-size:15px;font-weight:600;color:#2e2e38;margin:0}\n.section-header p{font-size:12px;color:#696969;margin-top:3px}\n.section-body{padding:20px}\n.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px}\n.chart-box{background:#fff;border:1px solid #e0e0e0;padding:16px}\n.chart-box h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#2e2e38}\n.chart-box.wide{grid-column:1/-1}\ntable{width:100%;border-collapse:collapse;font-size:12px}\nth{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:600;color:#2e2e38;border-bottom:2px solid #e0e0e0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}\ntd{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#4a4a4a;vertical-align:middle}\ntr:hover{background:#fafafa}\n.conf-badge{display:inline-block;padding:2px 7px;border-radius:2px;font-size:11px;font-weight:600}\n.alert-box{border-left:4px solid #ffa726;background:#fff8e1;padding:16px 20px;margin-bottom:24px;font-size:13px}\n.alert-box strong{color:#e65100}\n.footer{margin-top:40px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#999;font-size:11px}\n@media(max-width:768px){.charts-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}}\n@media print{body{background:white}.container{padding:10px}}\n</style>\n</head>\n<body>\n<div class=\"container\">\n\n  <!-- Header -->\n  <div class=\"header\">\n    <h1>Uncertainty-Aware Risk Register</h1>\n    <div class=\"subtitle\">\n      Project: <strong>${projectFileName}</strong> &nbsp;|&nbsp;\n      BIM Quality Index (BQI) + Risk Screening &nbsp;|&nbsp;\n      Generated: ${new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })}\n    </div>\n  </div>\n\n  ${totalScored === 0 ? `\n  <div class=\"alert-box\">\n    <strong>⚠ Placeholder data:</strong> Risk screening nodes R1–R5 and BQI node C5 are not yet fully implemented.\n    The report structure is correct — scores will populate once those nodes are built.\n  </div>` : ''}\n\n  <!-- KPI Cards -->\n  <div class=\"kpi-grid\">\n    <div class=\"kpi-card blue\">\n      <div class=\"kpi-value\">${modelBQI}</div>\n      <div class=\"kpi-label\">Model BQI Score</div>\n      <div class=\"kpi-sub\" style=\"color:${confColor(modelConf)};font-weight:600\">${modelConf.toUpperCase()} confidence</div>\n    </div>\n    <div class=\"kpi-card red\">\n      <div class=\"kpi-value\">${highRisk}</div>\n      <div class=\"kpi-label\">High-Risk Elements</div>\n      <div class=\"kpi-sub\">require immediate attention</div>\n    </div>\n    <div class=\"kpi-card amber\">\n      <div class=\"kpi-value\">${medRisk}</div>\n      <div class=\"kpi-label\">Medium-Risk Elements</div>\n      <div class=\"kpi-sub\">monitor closely</div>\n    </div>\n    <div class=\"kpi-card green\">\n      <div class=\"kpi-value\">${totalScored}</div>\n      <div class=\"kpi-label\">Elements Scored</div>\n      <div class=\"kpi-sub\">avg SRCC: ${avgSRCC}</div>\n    </div>\n  </div>\n\n  <!-- Charts row -->\n  <div class=\"charts-grid\">\n    <div class=\"chart-box\">\n      <h3>Risk distribution</h3>\n      <canvas id=\"riskDist\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>BQI weight breakdown</h3>\n      <canvas id=\"bqiWeights\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box\">\n      <h3>QTO pipeline agreement (SRCC)</h3>\n      <canvas id=\"srccBar\" height=\"200\"></canvas>\n    </div>\n    <div class=\"chart-box wide\">\n      <h3>Top 10 risk elements — risk score vs BQI score</h3>\n      <canvas id=\"riskBqiScatter\" height=\"120\"></canvas>\n    </div>\n  </div>\n\n  <!-- Risk Register Table -->\n  <div class=\"section\">\n    <div class=\"section-header\">\n      <h2>Risk Register — Top 10 Screened Elements</h2>\n      <p>Ranked by risk score (Likelihood × Consequence), adjusted by BQI confidence bounds</p>\n    </div>\n    <div class=\"section-body\" style=\"padding:0;overflow-x:auto\">\n      <table>\n        <thead>\n          <tr>\n            <th>#</th><th>GlobalId</th><th>IFC Type</th><th>Zone</th>\n            <th>BQI Score</th><th>Confidence</th>\n            <th>Likelihood</th><th>Consequence</th><th>Risk Score</th><th>Level</th>\n          </tr>\n        </thead>\n        <tbody>${riskRows}</tbody>\n      </table>\n    </div>\n  </div>\n\n  <!-- BQI Summary + Pipeline comparison -->\n  <div style=\"display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px\">\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>BQI Scoring Weights</h2>\n        <p>Dimensions and their contribution to the final BQI score</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>Dimension</th><th>Weight</th><th>Contribution</th></tr></thead>\n          <tbody>${weightRows}</tbody>\n        </table>\n      </div>\n    </div>\n\n    <div class=\"section\">\n      <div class=\"section-header\">\n        <h2>Pipeline A vs B — QTO Comparison</h2>\n        <p>Spearman SRCC per quantity field (1.0 = perfect agreement)</p>\n      </div>\n      <div class=\"section-body\" style=\"padding:0\">\n        <table>\n          <thead><tr><th>QTO Field</th><th>SRCC</th><th>Agreement</th></tr></thead>\n          <tbody>\n            ${srccResults.length\n              ? srccResults.slice(0,8).map(r => {\n                  const srcc = +(r.SRCC||0).toFixed(3);\n                  const label = srcc >= 0.8 ? 'Strong' : srcc >= 0.5 ? 'Moderate' : 'Weak';\n                  const col   = srcc >= 0.8 ? '#009a44' : srcc >= 0.5 ? '#ffa726' : '#dc3545';\n                  return `<tr><td style=\"font-size:11px;font-family:monospace\">${(r.QtoField||'').replace('[Qto_','').replace(']',' ').slice(0,28)}</td><td>${srcc}</td><td><span style=\"color:${col};font-weight:600\">${label}</span></td></tr>`;\n                }).join('')\n              : `<tr><td colspan=\"3\" style=\"text-align:center;color:#999;padding:16px\">QTO comparison pending — Block 3 not yet run</td></tr>`\n            }\n          </tbody>\n        </table>\n      </div>\n    </div>\n\n  </div>\n\n  <!-- Footer -->\n  <div class=\"footer\">\n    <p><strong>Uncertainty-Aware Risk Screening from Imperfect BIM</strong> &nbsp;|&nbsp; EMJM NORISK Thesis &nbsp;|&nbsp; ${new Date().toLocaleString()}</p>\n    <p style=\"margin-top:6px\">Pipeline A: DDC Converter &nbsp;|&nbsp; Pipeline B: IfcOpenShell &nbsp;|&nbsp; Orchestrated via n8n v2.7.5</p>\n  </div>\n\n</div>\n<script>\nconst distData    = ${distData};\nconst bqiWeights  = ${bqiWeights};\nconst srccData    = ${srccChartData};\nconst top10Data   = ${top10Data};\n\nChart.defaults.font.family = 'Arial,sans-serif';\nChart.defaults.font.size = 11;\n\n// Risk distribution doughnut\nnew Chart(document.getElementById('riskDist'), {\n  type: 'doughnut',\n  data: {\n    labels: ['High', 'Medium', 'Low'],\n    datasets: [{ data: distData, backgroundColor: ['#dc3545','#ffa726','#66bb6a'], borderColor:'#fff', borderWidth:2 }]\n  },\n  options: { responsive:true, maintainAspectRatio:false, cutout:'55%',\n    plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, padding:10 } } } }\n});\n\n// BQI weights horizontal bar\nnew Chart(document.getElementById('bqiWeights'), {\n  type: 'bar',\n  data: {\n    labels: bqiWeights.map(d => d.label),\n    datasets: [{ label:'Weight %', data: bqiWeights.map(d => d.value),\n      backgroundColor: ['#0061a0','#00a19a','#460073','#009a44'], borderWidth:0 }]\n  },\n  options: { indexAxis:'y', responsive:true, maintainAspectRatio:false,\n    plugins:{ legend:{ display:false } },\n    scales:{ x:{ max:50, ticks:{ callback: v => v+'%' } }, y:{ grid:{ display:false } } } }\n});\n\n// SRCC bar\nif (srccData.length) {\n  new Chart(document.getElementById('srccBar'), {\n    type: 'bar',\n    data: {\n      labels: srccData.map(d => d.field.slice(0,14)),\n      datasets: [{ label:'SRCC', data: srccData.map(d => d.srcc),\n        backgroundColor: srccData.map(d => d.srcc >= 0.8 ? '#009a44' : d.srcc >= 0.5 ? '#ffa726' : '#dc3545'),\n        borderWidth:0 }]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ display:false } },\n      scales:{ y:{ min:0, max:1, ticks:{ stepSize:.2 } }, x:{ grid:{ display:false },\n        ticks:{ font:{ size:9 } } } } }\n  });\n} else {\n  document.getElementById('srccBar').parentElement.innerHTML += '<p style=\"color:#999;font-size:12px;text-align:center;padding:20px\">Run Block 3 first</p>';\n}\n\n// Risk vs BQI scatter\nif (top10Data.length) {\n  new Chart(document.getElementById('riskBqiScatter'), {\n    type: 'scatter',\n    data: {\n      datasets: [\n        { label:'High',   data: top10Data.filter(d=>d.label==='High').map(d=>({x:d.bqi,y:d.score,id:d.id})),   backgroundColor:'#dc3545', pointRadius:6 },\n        { label:'Medium', data: top10Data.filter(d=>d.label==='Medium').map(d=>({x:d.bqi,y:d.score,id:d.id})), backgroundColor:'#ffa726', pointRadius:6 },\n        { label:'Low',    data: top10Data.filter(d=>d.label==='Low').map(d=>({x:d.bqi,y:d.score,id:d.id})),    backgroundColor:'#66bb6a', pointRadius:6 }\n      ]\n    },\n    options: { responsive:true, maintainAspectRatio:false,\n      plugins:{ legend:{ position:'top' }, tooltip:{ callbacks:{ label: ctx => ctx.raw.id+' | BQI:'+ctx.raw.x+' Risk:'+ctx.raw.y } } },\n      scales:{\n        x:{ min:0, max:1, title:{ display:true, text:'BQI Score (0=poor, 1=complete)' } },\n        y:{ min:0, title:{ display:true, text:'Risk Score' } }\n      }\n    }\n  });\n}\n<\\/script>\n</body>\n</html>`;\n\nreturn [{\n  json: {\n    html: html,\n    report_type: 'risk-register-bqi',\n    project: projectFileName,\n    timestamp: new Date().toISOString(),\n    summary: {\n      model_bqi: modelBQI,\n      model_confidence: modelConf,\n      total_elements: totalScored,\n      high_risk: highRisk,\n      medium_risk: medRisk,\n      low_risk: lowRisk,\n      avg_srcc: avgSRCC\n    }\n  }\n}];"
       },
       "id": "17e826f4-961e-44ae-a7d4-24c2a5998488",
-      "name": "O2: Generate HTML report",
+      "name": "6.2: Build HTML",
       "type": "n8n-nodes-base.code",
       "position": [
         3184,
@@ -571,10 +571,10 @@
     },
     {
       "parameters": {
-        "jsCode": "const html     = $node['O2: Generate HTML report'].json.html;\nconst projFile = $node['S1: Setup paths'].json.project_file || \n                 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output\\\\report';\n\nconst dir = 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output';\nconst stamp    = new Date().toISOString().slice(0, 10);\nconst baseName = `RiskRegister_${stamp}`;\nconst htmlPath = `${dir}\\\\${baseName}.html`;\nconst pdfPath  = `${dir}\\\\${baseName}.pdf`;\n\nreturn [{\n  json: {\n    html_path: htmlPath,\n    pdf_path:  pdfPath,\n    base_name: baseName,\n    directory: dir\n  },\n  binary: {\n    data: {\n      data:     Buffer.from(html, 'utf8').toString('base64'),\n      mimeType: 'text/html',\n      fileName: `${baseName}.html`\n    }\n  }\n}];"
+        "jsCode": "const html     = $node['6.2: Build HTML'].json.html;\nconst projFile = $node['0.1: Config'].json.project_file || \n                 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output\\\\report';\n\nconst dir = 'C:\\\\Users\\\\milad.komary\\\\.n8n-files\\\\projectactual\\\\thesis-annisa\\\\output';\nconst stamp    = new Date().toISOString().slice(0, 10);\nconst baseName = `RiskRegister_${stamp}`;\nconst htmlPath = `${dir}\\\\${baseName}.html`;\nconst pdfPath  = `${dir}\\\\${baseName}.pdf`;\n\nreturn [{\n  json: {\n    html_path: htmlPath,\n    pdf_path:  pdfPath,\n    base_name: baseName,\n    directory: dir\n  },\n  binary: {\n    data: {\n      data:     Buffer.from(html, 'utf8').toString('base64'),\n      mimeType: 'text/html',\n      fileName: `${baseName}.html`\n    }\n  }\n}];"
       },
       "id": "bb97d0cc-ce11-4f0b-8e07-2ae9c3f25f8e",
-      "name": "O3: HTML to Binary",
+      "name": "6.4: HTML → binary",
       "type": "n8n-nodes-base.code",
       "position": [
         3632,
@@ -597,14 +597,14 @@
         1232
       ],
       "id": "f2f9be55-0afb-4a86-a8f6-e618058c15dc",
-      "name": "O4: Write HTML file"
+      "name": "6.5: Write HTML"
     },
     {
       "parameters": {
-        "command": "=powershell -Command \"& 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe' --headless --disable-gpu --print-to-pdf='{{ $node['O3: HTML to Binary'].json.pdf_path }}' '{{ $node['O3: HTML to Binary'].json.html_path }}'\""
+        "command": "=powershell -Command \"& 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe' --headless --disable-gpu --print-to-pdf='{{ $node['6.4: HTML → binary'].json.pdf_path }}' '{{ $node['6.4: HTML → binary'].json.html_path }}'\""
       },
       "id": "154ace5c-0fd7-474c-955d-ec5dea7a3767",
-      "name": "O5: HTML to PDF (headless)",
+      "name": "6.6: Export PDF",
       "type": "n8n-nodes-base.executeCommand",
       "position": [
         4080,
@@ -623,7 +623,7 @@
         1232
       ],
       "id": "04a197a6-bcb9-45af-9bfa-257108d845bf",
-      "name": "O3b: Create output dir"
+      "name": "6.3: Create output dir"
     },
     {
       "parameters": {
@@ -685,7 +685,7 @@
         1056
       ],
       "id": "92191da0-c62f-4080-b649-e3d9be6831bd",
-      "name": "A10: Filter spatial containers1"
+      "name": "1.10: Filter spatial"
     },
     {
       "parameters": {
@@ -715,7 +715,7 @@
         1056
       ],
       "id": "1d83a52d-72da-4a94-b110-f3ad7c70ace0",
-      "name": "A11: Tag as Pipeline A"
+      "name": "1.11: Tag [PA]"
     },
     {
       "parameters": {
@@ -750,7 +750,7 @@
         "options": {}
       },
       "id": "fc8bc447-da03-41dd-9807-0a3317a335e9",
-      "name": "S1: Setup paths",
+      "name": "0.1: Config",
       "type": "n8n-nodes-base.set",
       "position": [
         -2640,
@@ -770,11 +770,11 @@
         1392
       ],
       "id": "be7c2e4b-abff-42a3-8477-ae958abd81e4",
-      "name": "B2: Verify script download"
+      "name": "2.2: Verify Python"
     },
     {
       "parameters": {
-        "command": "=python \"C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts\\extract_ifc.py\" \"{{ $node['S1: Setup paths'].json.project_file }}\""
+        "command": "=python \"C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts\\extract_ifc.py\" \"{{ $node['0.1: Config'].json.project_file }}\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -783,7 +783,7 @@
         1392
       ],
       "id": "f101cfdc-45d3-45e8-982c-6dc2404b69cc",
-      "name": "B3: Run IfcOpenShell",
+      "name": "2.3: Run extraction",
       "notesInFlow": false,
       "notes": "Runs ifcopenshell extraction.\nRequires: python + ifcopenshell installed on server."
     },
@@ -798,7 +798,7 @@
         1392
       ],
       "id": "50df8c84-1c77-4dd6-9a74-edd2b7d9a934",
-      "name": "B4: Parse JSON to items",
+      "name": "2.4: Parse output",
       "notesInFlow": false,
       "notes": "Parses ifcopenshell JSON output.\nCreates one n8n item per element with all data merged."
     },
@@ -834,7 +834,7 @@
         1392
       ],
       "id": "cbfb8fc2-92b4-4953-80e6-5826df42015d",
-      "name": "B5: Filter elements only"
+      "name": "2.6: Filter elements"
     },
     {
       "parameters": {
@@ -864,7 +864,7 @@
         1392
       ],
       "id": "0395f235-c46f-49d4-82b3-1af0c4e20211",
-      "name": "B6: Tag as Pipeline B"
+      "name": "2.7: Tag [PB]"
     },
     {
       "parameters": {
@@ -877,7 +877,7 @@
         1232
       ],
       "id": "04c265b2-0f83-4fe7-92fb-ae1d97c88578",
-      "name": "C3: QTO Comparison"
+      "name": "3.2: QTO comparison"
     }
   ],
   "pinData": {},
@@ -886,405 +886,405 @@
       "main": [
         [
           {
-            "node": "S1: Setup paths",
+            "node": "0.1: Config",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A1: Build XLSX filename": {
+    "1.1: Build XLSX path": {
       "main": [
         [
           {
-            "node": "A2: Check if XLSX exists",
+            "node": "1.2: XLSX exists?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A2: Check if XLSX exists": {
+    "1.2: XLSX exists?": {
       "main": [
         [
           {
-            "node": "A3: Already converted?",
+            "node": "1.3: Skip if converted?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A3: Already converted?": {
+    "1.3: Skip if converted?": {
       "main": [
         [
           {
-            "node": "A3a: Skip (file exists)",
+            "node": "1.3a: Skip",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "A4: Run DDC converter",
+            "node": "1.4: Run DDC",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A4: Run DDC converter": {
+    "1.4: Run DDC": {
       "main": [
         [
           {
-            "node": "A5: Converter succeeded?",
+            "node": "1.5: DDC OK?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A5: Converter succeeded?": {
+    "1.5: DDC OK?": {
       "main": [
         [
           {
-            "node": "A5a: Log converter error",
+            "node": "1.5a: DDC error",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "A5b: Set filename on success",
+            "node": "1.5b: DDC success",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A5a: Log converter error": {
+    "1.5a: DDC error": {
       "main": [
         [
           {
-            "node": "A6: Merge conversion result",
+            "node": "1.6: Merge",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "A3a: Skip (file exists)": {
+    "1.3a: Skip": {
       "main": [
         [
           {
-            "node": "A6: Merge conversion result",
+            "node": "1.6: Merge",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A5b: Set filename on success": {
+    "1.5b: DDC success": {
       "main": [
         [
           {
-            "node": "A6: Merge conversion result",
+            "node": "1.6: Merge",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "A6: Merge conversion result": {
+    "1.6: Merge": {
       "main": [
         [
           {
-            "node": "A7: Set XLSX path for reader",
+            "node": "1.7: Set XLSX path",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A7: Set XLSX path for reader": {
+    "1.7: Set XLSX path": {
       "main": [
         [
           {
-            "node": "A8: Read DDC XLSX",
+            "node": "1.8: Read XLSX",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A8: Read DDC XLSX": {
+    "1.8: Read XLSX": {
       "main": [
         [
           {
-            "node": "A9: Parse to JSON rows",
+            "node": "1.9: Parse rows",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A9: Parse to JSON rows": {
+    "1.9: Parse rows": {
       "main": [
         [
           {
-            "node": "A10: Filter spatial containers1",
+            "node": "1.10: Filter spatial",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "C1: Merge pipelines A+B": {
+    "3.1: Merge A+B": {
       "main": [
         [
           {
-            "node": "C3: QTO Comparison",
+            "node": "3.2: QTO comparison",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "C5: BQI scoring (eval GitHub code)": {
+    "4.1: BQI scoring": {
       "main": [
         [
           {
-            "node": "R1: Exposure lookup",
+            "node": "5.1: Exposure",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "R1: Exposure lookup": {
+    "5.1: Exposure": {
       "main": [
         [
           {
-            "node": "R2: Likelihood proxy",
+            "node": "5.2: Likelihood",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "R2: Likelihood proxy": {
+    "5.2: Likelihood": {
       "main": [
         [
           {
-            "node": "R3: Consequence proxy",
+            "node": "5.3: Consequence",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "R3: Consequence proxy": {
+    "5.3: Consequence": {
       "main": [
         [
           {
-            "node": "R4: BQI penalty + risk score",
+            "node": "5.4: Risk score",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "R4: BQI penalty + risk score": {
+    "5.4: Risk score": {
       "main": [
         [
           {
-            "node": "R5: Rank by risk",
+            "node": "5.5: Rank + label",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "O1: Format risk register": {
+    "6.1: Format register": {
       "main": [
         [
           {
-            "node": "O2: Generate HTML report",
+            "node": "6.2: Build HTML",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "R5: Rank by risk": {
+    "5.5: Rank + label": {
       "main": [
         [
           {
-            "node": "O1: Format risk register",
+            "node": "6.1: Format register",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "O2: Generate HTML report": {
+    "6.2: Build HTML": {
       "main": [
         [
           {
-            "node": "O3b: Create output dir",
+            "node": "6.3: Create output dir",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "O3: HTML to Binary": {
+    "6.4: HTML → binary": {
       "main": [
         [
           {
-            "node": "O4: Write HTML file",
+            "node": "6.5: Write HTML",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "O4: Write HTML file": {
+    "6.5: Write HTML": {
       "main": [
         [
           {
-            "node": "O5: HTML to PDF (headless)",
+            "node": "6.6: Export PDF",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "O5: HTML to PDF (headless)": {
+    "6.6: Export PDF": {
       "main": [
         []
       ]
     },
-    "O3b: Create output dir": {
+    "6.3: Create output dir": {
       "main": [
         [
           {
-            "node": "O3: HTML to Binary",
+            "node": "6.4: HTML → binary",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A10: Filter spatial containers1": {
+    "1.10: Filter spatial": {
       "main": [
         [
           {
-            "node": "A11: Tag as Pipeline A",
+            "node": "1.11: Tag [PA]",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "A11: Tag as Pipeline A": {
+    "1.11: Tag [PA]": {
       "main": [
         [
           {
-            "node": "C1: Merge pipelines A+B",
+            "node": "3.1: Merge A+B",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "S1: Setup paths": {
+    "0.1: Config": {
       "main": [
         [
           {
-            "node": "B1: Download script",
+            "node": "2.1: Download script",
             "type": "main",
             "index": 0
           },
           {
-            "node": "A1: Build XLSX filename",
+            "node": "1.1: Build XLSX path",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "B2: Verify script download": {
+    "2.2: Verify Python": {
       "main": [
         [
           {
-            "node": "B3: Run IfcOpenShell",
+            "node": "2.3: Run extraction",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "B3: Run IfcOpenShell": {
+    "2.3: Run extraction": {
       "main": [
         [
           {
-            "node": "B4: Parse JSON to items",
+            "node": "2.4: Parse output",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "B4: Parse JSON to items": {
+    "2.4: Parse output": {
       "main": [
         [
           {
-            "node": "B5: Filter elements only",
+            "node": "2.6: Filter elements",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "B5: Filter elements only": {
+    "2.6: Filter elements": {
       "main": [
         [
           {
-            "node": "B6: Tag as Pipeline B",
+            "node": "2.7: Tag [PB]",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "B6: Tag as Pipeline B": {
+    "2.7: Tag [PB]": {
       "main": [
         [
           {
-            "node": "C1: Merge pipelines A+B",
+            "node": "3.1: Merge A+B",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "C3: QTO Comparison": {
+    "3.2: QTO comparison": {
       "main": [
         [
           {
-            "node": "C5: BQI scoring (eval GitHub code)",
+            "node": "4.1: BQI scoring",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "B1: Write script inline": {
+    "2.1: Download script": {
       "main": [
         [
           {
-            "node": "B2: Verify script download",
+            "node": "2.2: Verify Python",
             "type": "main",
             "index": 0
           }
