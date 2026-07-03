@@ -27,6 +27,7 @@ ELEMENT_TYPES = [
     "IfcPlate", "IfcMember",
     "IfcFooting", "IfcPile",
     "IfcBuildingElementProxy",
+    "IfcElementAssembly",
     "IfcFurniture", "IfcFurnishingElement",
     "IfcSpace",
     # ✅ Removed IfcSpatialZone and IfcZone — no QTO, causes A/B coverage asymmetry
