@@ -67,9 +67,13 @@ def load_run(path):
     avg = {d: sum(e[FIELD[d]] for e in elements) / n for d in DIMS}
     bqi = (WEIGHTS["w1"] * avg["D1"] + WEIGHTS["w2"] * avg["D2"]
            + WEIGHTS["w3"] * avg["D3"] + WEIGHTS["w4"] * avg["D4"])
-    # Report at 3 dp to match the thesis convention. The averages themselves
-    # are computed at full precision from full-precision node output.
-    return {"n": n, **{d: round(avg[d], 3) for d in DIMS}, "BQI": round(bqi, 3)}
+    # CHANGED (C6): carry FULL precision for every comparison; round only for
+    # display. Deciding most_affected_dim from 3 dp values can swap two
+    # dimensions that differ by ~0.001 - exactly the M1/F2/r10 case.
+    return {"n": n,
+            "full": avg, "bqi_full": bqi,
+            **{d: round(avg[d], 3) for d in DIMS},
+            "BQI": round(bqi, 3)}
 
 
 def main(patterns):
@@ -116,17 +120,26 @@ def main(patterns):
                "rate": rate, "n_elements": v["n"],
                **{d: v[d] for d in DIMS}, "BQI": v["BQI"]}
         if base and fault:
+            # CHANGED (C6): deltas and selectivity from FULL-precision values
             for d in DIMS:
-                row[f"d{d}"] = round(v[d] - base[d], 3)
-            row["dBQI"] = round(v["BQI"] - base["BQI"], 3)
-            # selectivity: which dimension dropped the most
-            drops = {d: base[d] - v[d] for d in DIMS}
-            row["most_affected_dim"] = max(drops, key=drops.get) if any(
-                x > 1e-9 for x in drops.values()) else "none"
+                row[f"d{d}"] = round(v["full"][d] - base["full"][d], 4)
+            row["dBQI"] = round(v["bqi_full"] - base["bqi_full"], 4)
+            drops = {d: base["full"][d] - v["full"][d] for d in DIMS}
+            ranked = sorted(drops.items(), key=lambda kv: -kv[1])
+            if ranked[0][1] > 1e-9:
+                row["most_affected_dim"] = ranked[0][0]
+                row["runner_up_dim"] = ranked[1][0]
+                # margin over runner-up: small values mean a borderline call
+                row["margin_over_2nd"] = round(ranked[0][1] - ranked[1][1], 5)
+            else:
+                row["most_affected_dim"] = "none"
+                row["runner_up_dim"] = ""
+                row["margin_over_2nd"] = ""
         rows.append(row)
 
     header = ["model", "fault", "config", "rate", "n_elements", *DIMS, "BQI",
-              "dD1", "dD2", "dD3", "dD4", "dBQI", "most_affected_dim"]
+              "dD1", "dD2", "dD3", "dD4", "dBQI",
+              "most_affected_dim", "runner_up_dim", "margin_over_2nd"]
     with open("fault_analysis.csv", "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=header)
         w.writeheader()
@@ -160,6 +173,31 @@ def main(patterns):
               f"({' -> '.join(f'{b:.3f}' for b in bqis)})")
     print(f"\n{len(by_mf)} model x fault x config combinations checked, "
           f"{violations} violation(s).")
+
+    # CHANGED (C6): borderline selectivity calls decided by < 0.002
+    close = [r for r in rows
+             if isinstance(r.get("margin_over_2nd"), float)
+             and r["margin_over_2nd"] < 0.002]
+    if close:
+        print("\nBORDERLINE selectivity calls (margin < 0.002 over runner-up).")
+        print("Do not report these as decisive in the thesis:")
+        for r in close:
+            print(f"   {r['model'][:28]:<30}{r['fault']} r{r['rate']:.2f} "
+                  f"{r['config']:<12} {r['most_affected_dim']} over "
+                  f"{r['runner_up_dim']} by {r['margin_over_2nd']:.5f}")
+
+    # F2 target-dimension tally: settles the abstract's selectivity claim
+    f2 = [r for r in rows if r["fault"] == "F2"
+          and r.get("most_affected_dim") not in (None, "", "none")]
+    if f2:
+        tally = {}
+        for r in f2:
+            tally[r["most_affected_dim"]] = tally.get(r["most_affected_dim"], 0) + 1
+        print("\nF2 most-affected dimension across all manifesting runs:")
+        for d in DIMS:
+            if d in tally:
+                print(f"   {d}: {tally[d]}")
+        print(f"   total manifesting F2 runs: {len(f2)}")
 
     # F4 single-file null-result guard: a non-zero dBQI means contamination
     bad = [r for r in rows
