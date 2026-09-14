@@ -1,4 +1,6 @@
-# Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N
+# Uncertainty-Aware Risk Screening from Imperfect Building Information Models
+
+**Thesis repository for the NORISK Erasmus Mundus Joint Master**
 
 **Author:** Aulia Annisa Rahmatillah      
 **Programme:** The International Masters in Risk Assessment and Management of Civil Infrastructures – NORISK        
@@ -10,27 +12,109 @@
 
 ## Overview
 
-This repository contains all materials for the thesis:
+This repository contains the computational artefacts developed for the MSc thesis:
 
-> *Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers*
+> **Uncertainty-Aware Risk Screening from Imperfect Building Information Models: Schema Validation, Quantity Take-Off Robustness, and Explainable Risk Registers in an n8n Workflow**
 
-The project builds an automated n8n workflow that processes open IFC/BIM models to produce uncertainty-aware risk registers — without requiring field monitoring data.
+The thesis investigates how imperfect IFC/BIM information affects automated infrastructure risk screening and develops a reproducible workflow for evaluating and communicating that uncertainty.
 
-The pipeline is built on top of the [DDC CAD-to-data toolkit](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN) as its core conversion and validation infrastructure. The original contributions of this thesis — BQI scoring, uncertainty-aware risk screening, fault injection benchmarking, and QTO robustness analysis — are developed on top of that foundation.
+The proposed framework introduces the **BIM Quality Index (BQI)**, a continuous and weighted quality metric based on four dimensions:
+
+1. Property completeness
+2. Property validity
+3. Quantity take-off (QTO) coverage
+4. Cross-pipeline agreement
+
+The BQI is calculated from two independent IFC extraction pipelines and propagated into an uncertainty-aware risk band. Controlled fault injection is then used to evaluate the response of the BQI and downstream risk screening to known BIM information defects.
+
+The complete extraction, validation, scoring, screening, and reporting chain is orchestrated in **n8n**. Scoring and analysis logic are externalised into version-controlled scripts and rule tables to support deterministic execution, auditability, and reproducibility.
 
 ---
 
-## Thesis Tasks
+## Main Contributions
 
-| # | Task | Status |
-|---|------|--------|
-| 1 | Select and prepare BIM inputs (IFC sample models) | ✅ Done — 8 IFC files (IFC4 + IFC4.3), buildingSMART samples |
-| 2 | Build end-to-end n8n workflow (trigger → convert → validate → extract → report) | 🔄 In progress — adapting DDC n8n_4 (validation) + n8n_9 (QTO) for IFC |
-| 3 | Define BIM Quality Index (BQI) | 🔲 Not started |
-| 4 | Develop uncertainty-aware risk screening model | 🔲 Not started |
-| 5 | Benchmark robustness via fault injection | 🔲 Not started |
-| 6 | Check QTO robustness across extraction methods | 🔲 Not started |
-| 7 | Deliver final package | 🔲 Not started |
+The repository implements the main computational contributions of the thesis:
+
+### BIM Quality Index (BQI)
+
+A continuous, weighted, and schema-aware metric that evaluates BIM information quality at element and model level.
+
+The four BQI dimensions are:
+
+| Dimension | Description |
+|---|---|
+| D1 – Completeness | Presence of required BIM property information |
+| D2 – Validity | Validity of available property values |
+| D3 – QTO Coverage | Availability of required quantity information |
+| D4 – QTO Agreement | Agreement between independent extraction pipelines |
+
+### Cross-pipeline QTO robustness
+
+Two independent extraction pathways are compared:
+
+- **Pipeline A:** DDC-based IFC-to-XLSX extraction
+- **Pipeline B:** IfcOpenShell-based IFC extraction
+
+Elements are matched using IFC `GlobalId`. Quantity fields are compared across the two pipelines, and Spearman rank correlation is used as a ground-truth-free agreement metric.
+
+### Uncertainty-aware risk screening
+
+Likelihood, exposure, and consequence proxies are derived from IFC information and combined into a raw risk score.
+
+The BQI is then used to widen the risk result into an uncertainty band consisting of:
+
+- lower risk bound;
+- raw risk score; and
+- conservative adjusted risk bound.
+
+The adjusted upper bound is used for screening and ranking.
+
+### Fault injection and measurement analysis
+
+Controlled IFC faults are introduced to evaluate the behaviour of the BQI as a measurement instrument.
+
+The experimental design covers:
+
+- six fault types;
+- three severity levels;
+- baseline runs;
+- single-file configurations; and
+- dual-file configurations for faults where cross-pipeline disagreement must be isolated.
+
+---
+
+## Experimental Corpus
+
+The study uses eight openly available IFC sample models from buildingSMART repositories.
+
+Seven models satisfy the inclusion criteria for the main experiments. The eighth model is retained as a negative control.
+
+The corpus covers four design domains across IFC 4 and IFC 4.3:
+
+- building architecture;
+- building structural;
+- bridge; and
+- road.
+
+The baseline models are stored in:
+
+```text
+sample-models/baseline/
+```
+
+Fault-injected variants are stored in:
+
+```text
+sample-models/fault-injected/
+```
+
+Detailed corpus provenance and model-level information are documented in:
+
+```text
+sample-models/README.md
+```
+
+
 
 ---
 
