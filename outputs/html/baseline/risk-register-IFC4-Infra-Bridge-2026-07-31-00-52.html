@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Uncertainty-Aware Risk Register | IFC4-Infra-Bridge</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,'Helvetica Neue',sans-serif;background:#f5f5f5;color:#2e2e38;font-size:13px;line-height:1.6}
+.container{max-width:1200px;margin:0 auto;padding:40px 20px}
+.header{background:#fff;padding:24px 30px;border-left:6px solid #0061a0;margin-bottom:30px;display:flex;justify-content:space-between;align-items:flex-start}
+.header-text h1{font-size:26px;font-weight:300;color:#0061a0;margin-bottom:6px}
+.header-text .subtitle{color:#696969;font-size:13px}
+.print-btn{background:#0061a0;color:white;border:none;padding:10px 20px;font-size:12px;cursor:pointer;border-radius:2px;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;margin-left:20px}
+.print-btn:hover{background:#004d85}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.kpi-card{background:#fff;border:1px solid #e0e0e0;padding:20px;border-top:4px solid #ccc}
+.kpi-card.blue{border-top-color:#0061a0}.kpi-card.green{border-top-color:#009a44}.kpi-card.amber{border-top-color:#ffa726}.kpi-card.red{border-top-color:#dc3545}.kpi-card.purple{border-top-color:#460073}
+.kpi-value{font-size:32px;font-weight:300;color:#0061a0;line-height:1;margin-bottom:6px}
+.kpi-label{font-size:11px;color:#696969;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.kpi-sub{font-size:11px;color:#999;margin-top:4px}
+.section{background:#fff;border:1px solid #e0e0e0;margin-bottom:24px}
+.section-header{background:#fafafa;padding:14px 20px;border-bottom:1px solid #e0e0e0}
+.section-header h2{font-size:15px;font-weight:600;color:#2e2e38;margin:0}
+.section-header p{font-size:12px;color:#696969;margin-top:3px}
+.section-body{padding:20px}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px}
+.chart-box{background:#fff;border:1px solid #e0e0e0;padding:16px}
+.chart-box h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#2e2e38}
+.chart-box.wide{grid-column:1/-1}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.ai-card{padding:14px 16px;border-left:3px solid}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:600;color:#2e2e38;border-bottom:2px solid #e0e0e0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#4a4a4a;vertical-align:middle}
+tr:hover{background:#fafafa}
+.rec-row{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f0f0f0}
+.rec-num{background:#0061a0;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:2px;flex-shrink:0;margin-top:1px}
+.severity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center}
+.severity-box{padding:20px;border-radius:4px;border:1px solid}
+.alert-box{border-left:4px solid #ffa726;background:#fff8e1;padding:16px 20px;margin-bottom:24px;font-size:13px}
+.footer{margin-top:40px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#999;font-size:11px}
+@media print{
+  body{background:white;font-size:11px}
+  .container{padding:0;max-width:100%}
+  .print-btn{display:none !important}
+  .charts-grid{grid-template-columns:1fr 1fr}.chart-box.wide{grid-column:1/-1}
+  .section{break-inside:avoid;box-shadow:none}.ai-grid{grid-template-columns:1fr 1fr}
+  .page-break{page-break-before:always}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}
+  @page{size:A4 landscape;margin:15mm}
+}
+@media(max-width:768px){
+  .charts-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}
+  .header{flex-direction:column;gap:12px}.print-btn{margin-left:0}
+  .ai-grid{grid-template-columns:1fr}.severity-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-text">
+      <h1>Uncertainty-Aware Risk Register</h1>
+      <div class="subtitle">
+        Project: <strong>IFC4-Infra-Bridge</strong> &nbsp;|&nbsp;
+        BIM Quality Index (BQI) + Risk Screening &nbsp;|&nbsp;
+        Generated: 31 July 2026
+      </div>
+      
+    </div>
+    <button class="print-btn" onclick="window.print()">Export / Print PDF</button>
+  </div>
+
+  
+
+  <div style="background:#dc354511;border:1px solid #dc3545;border-left:6px solid #dc3545;padding:14px 20px;margin-bottom:24px">
+    <span style="font-weight:700;font-size:14px;color:#dc3545">Screening verdict: DATA UNRELIABLE</span>
+    <span style="color:#4a4a4a;font-size:12px">&nbsp;(model BQI confidence is LOW)</span>
+    <div style="font-size:11px;color:#696969;margin-top:4px">Verdict based on three checks: BQI confidence, element coverage, and the high-risk count.</div>
+  </div>
+
+  <div style="font-size:12px;color:#696969;margin:-12px 0 20px 2px">
+    How to read this report: Section 1 gives the screening result (which elements to look at first).
+    Section 2 shows the quality of the data behind those scores. Section 3 checks that two independent
+    tools read the file the same way.
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card blue">
+      <div class="kpi-value">0.281</div>
+      <div class="kpi-label">Model BQI Score</div>
+      <div class="kpi-sub" style="color:#dc3545;font-weight:600">LOW confidence</div>
+    </div>
+    <div class="kpi-card purple">
+      <div class="kpi-value">100%</div>
+      <div class="kpi-label">Element Coverage</div>
+      <div class="kpi-sub" style="color:#009a44;font-weight:600">PASS &nbsp;&middot;&nbsp; LOW coverage risk</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-value">0</div>
+      <div class="kpi-label">High-Risk Elements</div>
+      <div class="kpi-sub">look at these first</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-value">18</div>
+      <div class="kpi-label">Medium-Risk Elements</div>
+      <div class="kpi-sub">check when time allows</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-value">57</div>
+      <div class="kpi-label">Elements Scored</div>
+      <div class="kpi-sub">avg SRCC: 1</div>
+    </div>
+  </div>
+
+  
+  <div class="section" style="margin-bottom:24px">
+    <div class="section-header">
+      <h2>Recommended Action</h2>
+      <p>What to do with this result. Derived from the numbers with fixed rules.</p>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:14px;line-height:1.8;color:#2e2e38;font-size:13px">Improve the model data before acting on the risk ranking: with data this sparse, the scores mainly reflect missing information rather than real risk.</p><p style="margin-bottom:14px;line-height:1.8;color:#2e2e38;font-size:13px">Start with the top-ranked element (IfcColumn, 13HNHx2i…): R_adj 0.238 with an uncertainty band of 0.129. The narrow band means this score is driven by the element itself, not by data gaps.</p><p style="margin-bottom:14px;line-height:1.8;color:#2e2e38;font-size:13px">For the fastest data improvement, add IsExternal (missing on 22 elements) and the quantity Length (missing on 16 elements). See Section 2 for the full repair list.</p>
+      
+      
+    </div>
+  </div>
+
+  <div class="section page-break">
+    <div class="section-header">
+      <h2>1. Risk Screening Results</h2>
+      <p>Ranked by R_adj = R_raw &times; (1 + &alpha;(1 &minus; BQI)), the conservative upper bound under data quality uncertainty</p>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start">
+        <div><h3 style="font-size:13px;font-weight:600;margin-bottom:12px">Risk distribution</h3><svg width="140" height="140" viewBox="0 0 140 140" style="display:block;margin:0 auto"><circle cx="70" cy="70" r="52" fill="none" stroke="#ffa726" stroke-width="18" stroke-linecap="butt" stroke-dasharray="103.177 223.549" stroke-dashoffset="0.000" transform="rotate(-90 70 70)"></circle><circle cx="70" cy="70" r="52" fill="none" stroke="#66bb6a" stroke-width="18" stroke-linecap="butt" stroke-dasharray="223.549 103.177" stroke-dashoffset="-103.177" transform="rotate(-90 70 70)"></circle><text x="70" y="66" text-anchor="middle" font-size="26" font-weight="700" fill="#2e2e38" font-family="Arial,sans-serif">57</text><text x="70" y="84" text-anchor="middle" font-size="9" fill="#999" font-family="Arial,sans-serif">ELEMENTS</text></svg><div style="display:flex;justify-content:center;gap:16px;margin-top:10px;font-size:11px"><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#dc3545;display:inline-block"></span>High (0)</span><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#ffa726;display:inline-block"></span>Medium (18)</span><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#66bb6a;display:inline-block"></span>Low (39)</span></div></div>
+        <div><h3 style="font-size:13px;font-weight:600;margin-bottom:12px">Top 10 Risk Elements: Risk Score vs BQI Score</h3><svg width="100%" viewBox="0 0 680 240" preserveAspectRatio="xMidYMid meet" style="display:block"><line x1="48" y1="198" x2="660" y2="198" stroke="#eee"></line><text x="42" y="201" text-anchor="end" font-size="9" fill="#999" font-family="Arial,sans-serif">0.000</text><line x1="48" y1="152.5" x2="660" y2="152.5" stroke="#eee"></line><text x="42" y="155.5" text-anchor="end" font-size="9" fill="#999" font-family="Arial,sans-serif">0.068</text><line x1="48" y1="107" x2="660" y2="107" stroke="#eee"></line><text x="42" y="110" text-anchor="end" font-size="9" fill="#999" font-family="Arial,sans-serif">0.137</text><line x1="48" y1="61.5" x2="660" y2="61.5" stroke="#eee"></line><text x="42" y="64.5" text-anchor="end" font-size="9" fill="#999" font-family="Arial,sans-serif">0.205</text><line x1="48" y1="16" x2="660" y2="16" stroke="#eee"></line><text x="42" y="19" text-anchor="end" font-size="9" fill="#999" font-family="Arial,sans-serif">0.273</text><line x1="48" y1="16" x2="48" y2="198" stroke="#f5f5f5"></line><text x="48" y="214" text-anchor="middle" font-size="9" fill="#999" font-family="Arial,sans-serif">0</text><line x1="201" y1="16" x2="201" y2="198" stroke="#f5f5f5"></line><text x="201" y="214" text-anchor="middle" font-size="9" fill="#999" font-family="Arial,sans-serif">0.25</text><line x1="354" y1="16" x2="354" y2="198" stroke="#f5f5f5"></line><text x="354" y="214" text-anchor="middle" font-size="9" fill="#999" font-family="Arial,sans-serif">0.5</text><line x1="507" y1="16" x2="507" y2="198" stroke="#f5f5f5"></line><text x="507" y="214" text-anchor="middle" font-size="9" fill="#999" font-family="Arial,sans-serif">0.75</text><line x1="660" y1="16" x2="660" y2="198" stroke="#f5f5f5"></line><text x="660" y="214" text-anchor="middle" font-size="9" fill="#999" font-family="Arial,sans-serif">1</text><text x="354" y="236" text-anchor="middle" font-size="10" fill="#696969" font-family="Arial,sans-serif">BQI Score (0 = poor, 1 = complete)</text><text x="12" y="107" text-anchor="middle" font-size="10" fill="#696969" font-family="Arial,sans-serif" transform="rotate(-90 12 107)">Risk Score</text><circle cx="246.900" cy="39.739" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="246.900" cy="39.739" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="246.900" cy="39.739" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="246.900" cy="39.739" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="109.200" cy="41.142" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="109.200" cy="41.142" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="109.200" cy="41.142" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="384.600" cy="54.022" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="384.600" cy="54.022" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle><circle cx="384.600" cy="54.022" r="6" fill="#ffa726" fill-opacity="0.85" stroke="#fff" stroke-width="1.5"></circle></svg></div>
+      </div>
+      <div style="margin:14px 0">
+    <div style="font-size:11px;color:#666;margin-bottom:6px">Top-ranked element (13HNHx2iHDah · IfcColumn): R_lower, R_raw, and R_adj on a 0 to 1 scale</div>
+    <div style="position:relative;height:30px;background:#f0f2f5;border-radius:6px">
+      <div style="position:absolute;top:0;height:100%;left:25%;width:1px;background:#dde3ea"></div><div style="position:absolute;top:0;height:100%;left:50%;width:1px;background:#dde3ea"></div><div style="position:absolute;top:0;height:100%;left:75%;width:1px;background:#dde3ea"></div>
+      <div style="position:absolute;left:10.893%;width:12.864%;height:100%;background:#ffa72622;border:1px solid #ffa72666;border-radius:4px"></div>
+      <div style="position:absolute;top:0;height:100%;left:10.893%;width:2px;background:#999"></div>
+      <div style="position:absolute;top:0;height:100%;left:17.325%;width:2px;background:#555;border-left:1px dashed #555"></div>
+      <div style="position:absolute;top:0;height:100%;left:23.757%;width:3px;background:#dc3545"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#999;margin-top:2px">
+      <span>0</span><span>0.25</span><span>0.50</span><span>0.75</span><span>1.00</span>
+    </div>
+    <div style="font-size:11px;color:#475569;margin-top:10px;line-height:2">
+      <div><span style="color:#555;font-weight:700">&#124;</span> <b>R_raw</b> = L &times; C = 0.173 (deterministic base, dashed marker)</div>
+      <div><span style="color:#dc3545;font-weight:700">&#124;</span> <b>R_adj</b> = R_raw &times; (1 <b>+</b> &alpha;(1 &minus; BQI)) = 0.238 (upper limit, red marker; used for the ranking)</div>
+      <div><span style="color:#999;font-weight:700">&#124;</span> <b>R_lower</b> = R_raw &times; (1 <b>&minus;</b> &alpha;(1 &minus; BQI)) = 0.109 (lower limit, grey marker)</div>
+      <div><b>Band width</b> = R_adj &minus; R_lower = 0.129, with &alpha; = 0.550 and BQI<sub>element</sub> = 0.325</div>
+    </div></div>
+    </div>
+    <div class="section-body" style="padding:0;overflow-x:auto">
+      <table>
+        <thead><tr>
+          <th>#</th><th>GlobalId</th><th>IFC Type</th><th>Zone</th>
+          <th>BQI Score</th><th>Confidence</th>
+          <th>Likelihood</th><th>Consequence</th><th>Risk Score</th><th>Level</th>
+        </tr></thead>
+        <tbody><tr>
+    <td>1</td>
+    <td style="font-family:monospace;font-size:11px">13HNHx2iHDah6c_2</td>
+    <td>IfcColumn</td>
+    <td>Interior</td>
+    <td>0.325 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:33%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.247</td>
+    <td>0.700</td>
+    <td><strong>0.238</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>2</td>
+    <td style="font-family:monospace;font-size:11px">1Ov2FEORP589f6FJ</td>
+    <td>IfcColumn</td>
+    <td>Interior</td>
+    <td>0.325 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:33%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.247</td>
+    <td>0.700</td>
+    <td><strong>0.238</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>3</td>
+    <td style="font-family:monospace;font-size:11px">0XPURiAkzB3g2LT4</td>
+    <td>IfcColumn</td>
+    <td>Interior</td>
+    <td>0.325 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:33%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.247</td>
+    <td>0.700</td>
+    <td><strong>0.238</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>4</td>
+    <td style="font-family:monospace;font-size:11px">0IBSrNevj23wueIn</td>
+    <td>IfcColumn</td>
+    <td>Interior</td>
+    <td>0.325 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:33%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.247</td>
+    <td>0.700</td>
+    <td><strong>0.238</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>5</td>
+    <td style="font-family:monospace;font-size:11px">1dmYPmycr2LPQju2</td>
+    <td>IfcBeam</td>
+    <td>Interior</td>
+    <td>0.100 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:10%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.250</td>
+    <td>0.630</td>
+    <td><strong>0.235</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>6</td>
+    <td style="font-family:monospace;font-size:11px">0fDVrF0456nhTwgI</td>
+    <td>IfcBeam</td>
+    <td>Interior</td>
+    <td>0.100 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:10%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.250</td>
+    <td>0.630</td>
+    <td><strong>0.235</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>7</td>
+    <td style="font-family:monospace;font-size:11px">2kSK2Jw$z3JQs2Yi</td>
+    <td>IfcBeam</td>
+    <td>Interior</td>
+    <td>0.100 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:10%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.250</td>
+    <td>0.630</td>
+    <td><strong>0.235</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>8</td>
+    <td style="font-family:monospace;font-size:11px">0Gl168Rv1ErxU_Zx</td>
+    <td>IfcColumn</td>
+    <td>Interior</td>
+    <td>0.550 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:55%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.247</td>
+    <td>0.700</td>
+    <td><strong>0.216</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>9</td>
+    <td style="font-family:monospace;font-size:11px">3ul67tVf5Dl82Y_L</td>
+    <td>IfcColumn</td>
+    <td>Interior</td>
+    <td>0.550 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:55%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.247</td>
+    <td>0.700</td>
+    <td><strong>0.216</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr><tr>
+    <td>10</td>
+    <td style="font-family:monospace;font-size:11px">1BTWAuNPH8_BiqEs</td>
+    <td>IfcColumn</td>
+    <td>Interior</td>
+    <td>0.550 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:55%;background:#dc3545;border-radius:3px"></div></div></td>
+    <td>low</td>
+    <td>0.247</td>
+    <td>0.700</td>
+    <td><strong>0.216</strong></td>
+    <td><span style="display:inline-block;padding:2px 8px;background:#ffa726;color:white;font-size:11px;font-weight:600;border-radius:2px">MEDIUM</span></td>
+  </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section page-break">
+    <div class="section-header">
+      <h2>2. Data Quality Evidence (BQI)</h2>
+      <p>How much usable data the model carries, and where the gaps are. This explains how much the risk scores above can be trusted.</p>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start">
+        <div><h3 style="font-size:13px;font-weight:600;margin-bottom:12px">BQI Dimensions by Pipeline (A vs B)</h3><svg width="240" height="230" viewBox="0 0 240 230" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto"><polygon points="120.000,90.500 139.500,110.000 120.000,129.500 100.500,110.000" fill="none" stroke="#e0e0e0"/><polygon points="120.000,71.000 159.000,110.000 120.000,149.000 81.000,110.000" fill="none" stroke="#e0e0e0"/><polygon points="120.000,51.500 178.500,110.000 120.000,168.500 61.500,110.000" fill="none" stroke="#e0e0e0"/><polygon points="120.000,32.000 198.000,110.000 120.000,188.000 42.000,110.000" fill="none" stroke="#e0e0e0"/><line x1="120" y1="110" x2="120.000" y2="32.000" stroke="#e0e0e0"/><line x1="120" y1="110" x2="198.000" y2="110.000" stroke="#e0e0e0"/><line x1="120" y1="110" x2="120.000" y2="188.000" stroke="#e0e0e0"/><line x1="120" y1="110" x2="42.000" y2="110.000" stroke="#e0e0e0"/><polygon points="120.000,110.000 140.526,110.000 120.000,124.368 98.447,110.000" fill="#0061a0" fill-opacity="0.20" stroke="#0061a0" stroke-width="2"/><polygon points="120.000,90.842 136.763,110.000 120.000,143.526 98.447,110.000" fill="#009a44" fill-opacity="0.20" stroke="#009a44" stroke-width="2"/><text x="120.000" y="14.840" font-size="10" fill="#555" text-anchor="middle" font-family="Arial,sans-serif">D1 Compl.</text><text x="215.160" y="110.000" font-size="10" fill="#555" text-anchor="middle" font-family="Arial,sans-serif">D2 Valid.</text><text x="120.000" y="205.160" font-size="10" fill="#555" text-anchor="middle" font-family="Arial,sans-serif">D3 QTO Cov.</text><text x="24.840" y="110.000" font-size="10" fill="#555" text-anchor="middle" font-family="Arial,sans-serif">D4 Agree.</text></svg><div style="font-size:11px;color:#666;text-align:center">
+    <span style="color:#0061a0">&#9632;</span> Pipeline A (DDC)&nbsp;&nbsp;
+    <span style="color:#009a44">&#9632;</span> Pipeline B (IfcOpenShell)
+    <br>D4 measures cross-pipeline agreement and applies to both series</div></div>
+        <div>
+          <h3 style="font-size:13px;font-weight:600;margin-bottom:4px">BQI Dimension Performance</h3>
+          <p style="font-size:11px;color:#696969;margin-bottom:10px">Averages from Pipeline B (IfcOpenShell). D4 measures cross-pipeline agreement and is the same for both series; see the radar for the A-vs-B comparison.</p>
+          <table>
+            <thead><tr><th>Dimension</th><th style="text-align:center">Avg Score</th><th style="text-align:center">Weight</th><th style="text-align:center">Contribution</th></tr></thead>
+            <tbody><tr>
+  <td style="padding:8px 12px">Completeness (D1)</td>
+  <td style="padding:8px 12px;text-align:center;white-space:nowrap">0.246 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:25%;background:#dc3545;border-radius:3px"></div></div></td>
+  <td style="padding:8px 12px;text-align:center">35%</td>
+  <td style="padding:8px 12px;text-align:center;font-weight:700">0.086</td>
+</tr><tr>
+  <td style="padding:8px 12px">Validity (D2)</td>
+  <td style="padding:8px 12px;text-align:center;white-space:nowrap">0.215 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:21%;background:#dc3545;border-radius:3px"></div></div></td>
+  <td style="padding:8px 12px;text-align:center">25%</td>
+  <td style="padding:8px 12px;text-align:center;font-weight:700">0.054</td>
+</tr><tr>
+  <td style="padding:8px 12px">QTO Coverage (D3)</td>
+  <td style="padding:8px 12px;text-align:center;white-space:nowrap">0.430 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:43%;background:#dc3545;border-radius:3px"></div></div></td>
+  <td style="padding:8px 12px;text-align:center">20%</td>
+  <td style="padding:8px 12px;text-align:center;font-weight:700">0.086</td>
+</tr><tr>
+  <td style="padding:8px 12px">QTO Agreement (D4)</td>
+  <td style="padding:8px 12px;text-align:center;white-space:nowrap">0.276 <div style="background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px"><div style="height:100%;width:28%;background:#dc3545;border-radius:3px"></div></div></td>
+  <td style="padding:8px 12px;text-align:center">20%</td>
+  <td style="padding:8px 12px;text-align:center;font-weight:700">0.055</td>
+</tr><tr style="border-top:2px solid #ccc">
+  <td colspan="3" style="padding:8px 12px;font-weight:700">Model BQI (&Sigma; weight &times; score)</td>
+  <td style="padding:8px 12px;text-align:center;font-weight:800">0.281</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:24px">
+        <h3 style="font-size:13px;font-weight:600;margin-bottom:4px">Property Quality Findings</h3>
+        <p style="font-size:12px;color:#696969;margin-bottom:12px">Most frequent data gaps behind the dimension scores. Use these lists as the model repair priority list.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+          <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#0061a0;margin-bottom:6px">Missing required properties (D1)</div><table><thead><tr><th>Field</th><th style="text-align:center">Elements affected</th></tr></thead><tbody><tr><td style="font-family:monospace;font-size:11px">IsExternal</td><td style="text-align:center">22</td></tr><tr><td style="font-family:monospace;font-size:11px">LoadBearing</td><td style="text-align:center">22</td></tr></tbody></table></div>
+          <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#00a19a;margin-bottom:6px">Invalid property values (D2)</div><table><thead><tr><th>Field</th><th style="text-align:center">Elements affected</th></tr></thead><tbody><tr><td style="font-family:monospace;font-size:11px">[Pset_FootingCommon] Status</td><td style="text-align:center">7</td></tr><tr><td style="font-family:monospace;font-size:11px">[Pset_ElementAssemblyCommon] Status</td><td style="text-align:center">7</td></tr><tr><td style="font-family:monospace;font-size:11px">[Pset_ColumnCommon] Status</td><td style="text-align:center">4</td></tr><tr><td style="font-family:monospace;font-size:11px">[Pset_BeamCommon] Status</td><td style="text-align:center">3</td></tr></tbody></table></div>
+          <div><div style="font-size:11px;font-weight:700;text-transform:uppercase;color:#460073;margin-bottom:6px">Missing quantity fields (D3)</div><table><thead><tr><th>Field</th><th style="text-align:center">Elements affected</th></tr></thead><tbody><tr><td style="font-family:monospace;font-size:11px">Length</td><td style="text-align:center">16</td></tr><tr><td style="font-family:monospace;font-size:11px">NetVolume</td><td style="text-align:center">7</td></tr><tr><td style="font-family:monospace;font-size:11px">Width</td><td style="text-align:center">4</td></tr><tr><td style="font-family:monospace;font-size:11px">NetSideArea</td><td style="text-align:center">4</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section page-break">
+    <div class="section-header">
+      <h2>3. Pipeline Cross-Check: A vs B</h2>
+      <p>Do two independent extraction tools read this file the same way? Quantities compared via SRCC, element presence via coverage.</p>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start">
+        <div><h3 style="font-size:13px;font-weight:600;margin-bottom:12px">QTO agreement (SRCC)</h3><div style="margin-bottom:11px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px">
+      <span>NetVolume</span><span style="font-weight:600;color:#009a44">1.000</span>
+    </div>
+    <div style="background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#009a44;border-radius:5px"></div>
+    </div>
+  </div><div style="margin-bottom:11px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px">
+      <span>Depth</span><span style="font-weight:600;color:#009a44">1.000</span>
+    </div>
+    <div style="background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#009a44;border-radius:5px"></div>
+    </div>
+  </div><div style="margin-bottom:11px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px">
+      <span>NetArea</span><span style="font-weight:600;color:#009a44">1.000</span>
+    </div>
+    <div style="background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#009a44;border-radius:5px"></div>
+    </div>
+  </div><div style="margin-bottom:11px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px">
+      <span>NetVolume</span><span style="font-weight:600;color:#009a44">1.000</span>
+    </div>
+    <div style="background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#009a44;border-radius:5px"></div>
+    </div>
+  </div><div style="margin-bottom:11px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px">
+      <span>NetVolume</span><span style="font-weight:600;color:#009a44">1.000</span>
+    </div>
+    <div style="background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#009a44;border-radius:5px"></div>
+    </div>
+  </div><div style="margin-bottom:11px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px">
+      <span>Length</span><span style="font-weight:600;color:#009a44">1.000</span>
+    </div>
+    <div style="background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#009a44;border-radius:5px"></div>
+    </div>
+  </div><div style="margin-bottom:11px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px">
+      <span>CrossSectionArea</span><span style="font-weight:600;color:#009a44">1.000</span>
+    </div>
+    <div style="background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden">
+      <div style="width:100%;height:100%;background:#009a44;border-radius:5px"></div>
+    </div>
+  </div></div>
+        <div>
+          <h3 style="font-size:13px;font-weight:600;margin-bottom:12px">SRCC per quantity field</h3>
+          <p style="font-size:12px;color:#696969;margin-bottom:8px">Overall rank agreement is strong (avg SRCC ≥ 0.95)</p>
+          <table>
+            <thead><tr><th>QTO Field</th><th>SRCC</th><th>Elements</th><th>Agreement</th><th>Note</th></tr></thead>
+            <tbody><tr>
+        <td style="font-size:11px;font-family:monospace">NetVolume</td>
+        <td>1</td>
+        <td>3</td>
+        <td><span style="color:#009a44;font-weight:600">Strong</span></td>
+        <td style="font-size:11px;color:#696969">Perfect rank agreement</td>
+      </tr><tr>
+        <td style="font-size:11px;font-family:monospace">Depth</td>
+        <td>1</td>
+        <td>3</td>
+        <td><span style="color:#009a44;font-weight:600">Strong</span></td>
+        <td style="font-size:11px;color:#696969">Perfect rank agreement</td>
+      </tr><tr>
+        <td style="font-size:11px;font-family:monospace">NetArea</td>
+        <td>1</td>
+        <td>3</td>
+        <td><span style="color:#009a44;font-weight:600">Strong</span></td>
+        <td style="font-size:11px;color:#696969">Perfect rank agreement</td>
+      </tr><tr>
+        <td style="font-size:11px;font-family:monospace">NetVolume</td>
+        <td>1</td>
+        <td>5</td>
+        <td><span style="color:#009a44;font-weight:600">Strong</span></td>
+        <td style="font-size:11px;color:#696969">Perfect rank agreement</td>
+      </tr><tr>
+        <td style="font-size:11px;font-family:monospace">NetVolume</td>
+        <td>1</td>
+        <td>7</td>
+        <td><span style="color:#009a44;font-weight:600">Strong</span></td>
+        <td style="font-size:11px;color:#696969">Perfect rank agreement</td>
+      </tr><tr>
+        <td style="font-size:11px;font-family:monospace">Length</td>
+        <td>1</td>
+        <td>3</td>
+        <td><span style="color:#009a44;font-weight:600">Strong</span></td>
+        <td style="font-size:11px;color:#696969">Perfect rank agreement</td>
+      </tr><tr>
+        <td style="font-size:11px;font-family:monospace">CrossSectionArea</td>
+        <td>1</td>
+        <td>3</td>
+        <td><span style="color:#009a44;font-weight:600">Strong</span></td>
+        <td style="font-size:11px;color:#696969">Perfect rank agreement</td>
+      </tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div style="margin-top:24px">
+        <h3 style="font-size:13px;font-weight:600;margin-bottom:4px">Element coverage: missing element severity</h3>
+        <p style="font-size:12px;color:#696969;margin-bottom:12px">Checks whether the same elements exist in both pipelines (breadth). This is separate from D3 QTO coverage, which checks quantity fields per element (depth). Missing elements are classified by IFC type criticality.</p>
+        <div class="severity-grid">
+          <div class="severity-box" style="background:#fff5f5;border-color:#f5c2c7">
+            <div style="font-size:28px;font-weight:300;color:#dc3545">0</div>
+            <div style="font-size:11px;text-transform:uppercase;font-weight:600;color:#dc3545;margin-top:4px">Critical</div>
+            <div style="font-size:11px;color:#999;margin-top:4px">None missing</div>
+          </div>
+          <div class="severity-box" style="background:#fff8e1;border-color:#ffe08a">
+            <div style="font-size:28px;font-weight:300;color:#ffa726">0</div>
+            <div style="font-size:11px;text-transform:uppercase;font-weight:600;color:#ffa726;margin-top:4px">Needs Review</div>
+            <div style="font-size:11px;color:#999;margin-top:4px">None missing</div>
+          </div>
+          <div class="severity-box" style="background:#f0faf4;border-color:#b7dfca">
+            <div style="font-size:28px;font-weight:300;color:#009a44">0</div>
+            <div style="font-size:11px;text-transform:uppercase;font-weight:600;color:#009a44;margin-top:4px">Probably Harmless</div>
+            <div style="font-size:11px;color:#999;margin-top:4px">None missing</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;font-size:12px;color:#696969;text-align:center">
+          Total missing elements: <strong>0</strong> &nbsp;|&nbsp;
+          Verdict: <strong style="color:#009a44">PASS</strong> &nbsp;|&nbsp;
+          Coverage risk level: <strong>LOW</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p><strong>Uncertainty-Aware Risk Screening from Imperfect BIM</strong> &nbsp;|&nbsp; EMJM NORISK &nbsp;|&nbsp; 7/31/2026, 12:52:03 AM</p>
+    <p style="margin-top:6px">Pipeline A: DDC Converter &nbsp;|&nbsp; Pipeline B: IfcOpenShell &nbsp;|&nbsp; Orchestrated via n8n</p>
+  </div>
+
+</div>
+</body>
+</html>
