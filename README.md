@@ -2,11 +2,11 @@
 
 **Thesis repository for the NORISK Erasmus Mundus Joint Master**
 
-**Author:** Aulia Annisa Rahmatillah      
-**Programme:** The International Masters in Risk Assessment and Management of Civil Infrastructures – NORISK        
-**University:** Technical University of Catalonia (UPC), Barcelona, Spain      
-**Supervisor:** Seyedmilad Komarizadehasl      
-**Co-supervisor:** Mahyad Komary      
+**Author:** Aulia Annisa Rahmatillah  
+**Programme:** International Master's in Risk Assessment and Management of Civil Infrastructures (NORISK)  
+**Institution:** Universitat Politècnica de Catalunya (UPC), Barcelona, Spain  
+**Supervisor:** Seyedmilad Komarizadehasl  
+**Co-supervisor:** Mahyad Komary  
 
 ---
 
@@ -16,78 +16,145 @@ This repository contains the computational artefacts developed for the MSc thesi
 
 > **Uncertainty-Aware Risk Screening from Imperfect Building Information Models: Schema Validation, Quantity Take-Off Robustness, and Explainable Risk Registers in an n8n Workflow**
 
-The thesis investigates how imperfect IFC/BIM information affects automated infrastructure risk screening and develops a reproducible workflow for evaluating and communicating that uncertainty.
+The thesis investigates how imperfect IFC/BIM information affects automated infrastructure risk screening and develops a reproducible workflow for measuring BIM information quality, propagating that uncertainty into risk screening, and producing auditable risk registers.
 
-The proposed framework introduces the **BIM Quality Index (BQI)**, a continuous and weighted quality metric based on four dimensions:
+The framework introduces the **BIM Quality Index (BQI)**, a continuous and weighted quality metric with four dimensions:
 
 1. Property completeness
 2. Property validity
 3. Quantity take-off (QTO) coverage
 4. Cross-pipeline agreement
 
-The BQI is calculated from two independent IFC extraction pipelines and propagated into an uncertainty-aware risk band. Controlled fault injection is then used to evaluate the response of the BQI and downstream risk screening to known BIM information defects.
+The BQI is calculated from two independent IFC extraction pipelines and propagated into an uncertainty-aware risk band. Controlled fault injection is used to evaluate how the BQI responds to known BIM information defects and how those changes affect downstream risk screening.
 
-The complete extraction, validation, scoring, screening, and reporting chain is orchestrated in **n8n**. Scoring and analysis logic are externalised into version-controlled scripts and rule tables to support deterministic execution, auditability, and reproducibility.
+The complete extraction, validation, scoring, screening, and reporting chain is orchestrated in **n8n**. The scoring and analysis logic is externalised into version-controlled scripts and rule tables so that the computational path is deterministic, inspectable, and reproducible.
+
+The repository is intended to accompany the thesis and provide the implementation and experimental artefacts underlying the reported results.
 
 ---
 
-## Main Contributions
+## Contributions and Provenance
 
-The repository implements the main computational contributions of the thesis:
+The repository combines external infrastructure from the DataDrivenConstruction (DDC) CAD-to-data toolkit with original computational components developed for this thesis.
 
-### BIM Quality Index (BQI)
+### Main thesis contributions
 
-A continuous, weighted, and schema-aware metric that evaluates BIM information quality at element and model level.
-
-The four BQI dimensions are:
-
-| Dimension | Description |
+| Contribution | Description |
 |---|---|
-| D1 – Completeness | Presence of required BIM property information |
-| D2 – Validity | Validity of available property values |
-| D3 – QTO Coverage | Availability of required quantity information |
-| D4 – QTO Agreement | Agreement between independent extraction pipelines |
+| **BIM Quality Index (BQI)** | Continuous, weighted, and schema-aware evaluation of BIM information quality at element and model level |
+| **Cross-pipeline QTO robustness** | Comparison of quantities extracted independently by DDC and IfcOpenShell using `GlobalId` matching and SRCC |
+| **Uncertainty-aware risk screening** | Propagation of BIM information quality into a risk band containing lower, raw, and conservative adjusted risk values |
+| **Fault-injection measurement analysis** | Controlled evaluation of BQI response to six IFC fault types across three severity levels |
+| **Explainable risk register** | Auditable risk-screening output linking element-level risk results to BIM information quality |
+| **Sensitivity analysis** | Evaluation of parameter sensitivity and ranking stability |
 
-### Cross-pipeline QTO robustness
+### External and adapted components
 
-Two independent extraction pathways are compared:
+| Component | Source | Role in the thesis |
+|---|---|---|
+| IFC → XLSX conversion | DDC `IfcExporter` | Converts IFC models into structured tabular data |
+| Baseline validation workflows | DDC workflows | Provides existing validation and processing infrastructure |
+| QTO extraction pathway | DDC workflows | Provides the DDC-based quantity extraction method |
+| Batch and ETL processing | DDC workflows | Supports conversion, parsing, and batch processing |
 
-- **Pipeline A:** DDC-based IFC-to-XLSX extraction
-- **Pipeline B:** IfcOpenShell-based IFC extraction
+The DDC components provide infrastructure rather than the original research contribution. The thesis-specific BQI, risk-screening, fault-injection, measurement-analysis, sensitivity, and reporting logic are implemented in the thesis workflow and associated scripts.
 
-Elements are matched using IFC `GlobalId`. Quantity fields are compared across the two pipelines, and Spearman rank correlation is used as a ground-truth-free agreement metric.
+Detailed adaptation notes are provided in:
 
-### Uncertainty-aware risk screening
+```text
+docs/ddc-adaptation-notes.md
+```
 
-Likelihood, exposure, and consequence proxies are derived from IFC information and combined into a raw risk score.
+---
 
-The BQI is then used to widen the risk result into an uncertainty band consisting of:
+## Workflow Architecture
 
-- lower risk bound;
-- raw risk score; and
-- conservative adjusted risk bound.
+The thesis implements a modular dual-pipeline architecture in n8n.
+
+```text
+                         IFC input
+                            |
+              +-------------+-------------+
+              |                           |
+              v                           v
+       Pipeline A                   Pipeline B
+     DDC / IFC → XLSX            IfcOpenShell / JSON
+              |                           |
+              +-------------+-------------+
+                            |
+                     GlobalId matching
+                            |
+                            v
+                    QTO comparison
+                            |
+                            v
+                       BQI scoring
+                            |
+                            v
+                    Risk screening
+                            |
+                            v
+                 Uncertainty propagation
+                            |
+                 +----------+----------+
+                 |                     |
+                 v                     v
+          HTML risk register    Sensitivity JSON
+```
+
+### Pipeline A – DDC extraction
+
+Pipeline A uses the DDC conversion pathway to convert IFC input to structured XLSX data.
+
+### Pipeline B – IfcOpenShell extraction
+
+Pipeline B uses the thesis-controlled `extract_ifc.py` script to independently extract IFC elements, properties, quantities, materials, schema metadata, and spatial information.
+
+The IFC schema detected by Pipeline B determines the schema-conditional rule set used downstream.
+
+### QTO comparison and BQI
+
+The two extraction streams are merged using IFC `GlobalId`.
+
+The workflow then:
+
+- identifies matched and unmatched elements;
+- compares shared quantity fields;
+- evaluates element coverage;
+- calculates the four BQI dimensions; and
+- computes the relevant cross-pipeline agreement metrics.
+
+### Risk screening
+
+The workflow derives exposure, likelihood, and consequence proxies from IFC information, calculates the raw risk score, and propagates BIM information uncertainty through the BQI.
+
+The resulting risk band contains:
+
+- a lower bound;
+- the raw risk score; and
+- a conservative adjusted upper bound.
 
 The adjusted upper bound is used for screening and ranking.
 
-### Fault injection and measurement analysis
+### Output generation
 
-Controlled IFC faults are introduced to evaluate the behaviour of the BQI as a measurement instrument.
+The final workflow generates the HTML risk register and exports a per-element sensitivity dataset as JSON. Diagnostic outputs can also be produced at block boundaries for traceability.
 
-The experimental design covers:
+The main workflow export is stored in:
 
-- six fault types;
-- three severity levels;
-- baseline runs;
-- single-file configurations; and
-- dual-file configurations for faults where cross-pipeline disagreement must be isolated.
+```text
+workflows/thesis/
+```
 
 ---
 
-## Experimental Corpus
+## Corpus and Experimental Design
+
+### IFC corpus
 
 The study uses eight openly available IFC sample models from buildingSMART repositories.
 
-Seven models satisfy the inclusion criteria for the main experiments. The eighth model is retained as a negative control.
+Seven models satisfy the inclusion criteria for the principal experiments. The eighth model is retained as a negative control.
 
 The corpus covers four design domains across IFC 4 and IFC 4.3:
 
@@ -96,164 +163,313 @@ The corpus covers four design domains across IFC 4 and IFC 4.3:
 - bridge; and
 - road.
 
-The baseline models are stored in:
+The baseline files are stored in:
 
 ```text
 sample-models/baseline/
 ```
 
-Fault-injected variants are stored in:
-
-```text
-sample-models/fault-injected/
-```
-
-Detailed corpus provenance and model-level information are documented in:
+The corpus is documented in:
 
 ```text
 sample-models/README.md
 ```
 
+### Fault injection
 
+The robustness evaluation uses six controlled IFC fault classes:
+
+```text
+F1
+F2
+F3
+F4
+F5
+F6
+```
+
+Each fault is evaluated at three severity levels according to the experimental design defined in the thesis.
+
+The fault-injection implementation generates reproducible variants from the baseline models and stores them in:
+
+```text
+sample-models/fault-injected/
+```
+
+### Experimental configurations
+
+The experiments are organised into four principal configurations:
+
+| Configuration | Purpose |
+|---|---|
+| **Baseline** | Establishes behaviour on the unmodified reference models |
+| **Single File (F1, F2, F3, F5)** | Applies the fault to a single IFC input consumed by both extraction pipelines |
+| **Single File (F4, F6)** | Evaluates F4 and F6 under the shared-input configuration |
+| **Dual File (F4, F6)** | Assigns the perturbed input selectively to Pipeline A or Pipeline B to expose cross-pipeline disagreement |
+
+The dual-file configuration is required for faults whose effect depends on disagreement between independent data consumers. When both pipelines read the same perturbed source, they can experience the same change and therefore cannot necessarily expose that disagreement.
+
+Experimental outputs are organised under:
+
+```text
+outputs/
+```
+
+See `outputs/README.md` for the output naming convention.
 
 ---
 
-## What is Original vs. What is Adapted
+## Outputs
 
-This thesis builds on the DDC toolkit as infrastructure. The table below clarifies the boundary between what is given and what is the original contribution of this work.
+The workflow produces two principal analysis artefacts.
 
-| Component | Source | Description |
-|-----------|--------|-------------|
-| IFC → XLSX conversion | DDC (`IfcExporter.exe`) | Converts IFC files to structured Excel data |
-| Basic IFC validation | DDC (`n8n_4`) | Schema compliance, property fill rates |
-| QTO extraction to HTML | DDC (`n8n_9`) | Quantity take-off report generation |
-| Batch processing | DDC (`n8n_3`) | Processes multiple files in one run |
-| ETL extract + parse | DDC (`n8n_8`) | Extracts and parses XLSX for downstream use |
-| **BQI scoring formula** | **Original** | Weighted scoring of BIM trustworthiness per element and per model |
-| **Uncertainty-aware risk screening** | **Original** | Likelihood + consequence proxies from BIM-only data |
-| **Confidence bounds from BQI** | **Original** | Missing-data penalties and conservative screening |
-| **Fault injection methodology** | **Original** | Controlled error injection and robustness benchmarking |
-| **QTO robustness analysis** | **Original** | Spearman rank correlation between two extraction methods |
-| **Explainable risk register** | **Original** | Auditable output linking risk scores to BIM data quality |
+### HTML risk registers
+
+Files beginning with:
+
+```text
+risk-register-
+```
+
+contain the explainable risk-screening report, including the resulting screening information and supporting element-level evidence.
+
+### Sensitivity JSON datasets
+
+Files beginning with:
+
+```text
+sensitivity-
+```
+
+contain the per-element dataset used for the offline robustness and sensitivity analyses.
+
+The sensitivity dataset contains the information required for downstream analysis, including element identifiers, IFC categories, BQI dimensions, likelihood, and consequence-related values.
+
+Additional diagnostic outputs may be generated for pipeline traceability.
+
+The generated outputs are organised by experimental configuration in:
+
+```text
+outputs/
+```
 
 ---
 
 ## Repository Structure
 
-```
+```text
 n8n-thesis/
-├── README.md                           ← You are here
+│
+├── README.md
 │
 ├── sample-models/
-│   ├── README.md                       ← Describes each IFC file and fault types
-│   ├── baseline/                       ← 8 clean original IFC files (reference models)
-│   └── fault-injected/                 ← Broken variants for robustness testing (Task 5)
+│   ├── README.md
+│   ├── baseline/
+│   └── fault-injected/
 │
 ├── workflows/
-│   ├── README.md                       ← Explains ddc-base vs thesis split
-│   ├── ddc-base/                       ← All 9 original DDC workflows (unchanged reference)
-│   │   └── README.md                   ← What each DDC workflow does and its thesis relevance
-│   └── thesis/                         ← Adapted and custom workflows for this thesis
-│       └── README.md                   ← What was changed, why, and what is new
+│   ├── README.md
+│   ├── ddc-base/
+│   └── thesis/
+│       ├── README.md
+│       └── n8n_ifc_dual_pipeline_v16.json
 │
 ├── outputs/
-│   ├── README.md                       ← Explains output types and file naming convention
-│   ├── qto/                            ← QTO results (CSV/JSON)
-│   ├── bqi/                            ← BQI scores and confidence labels
-│   └── reports/                        ← PDF/HTML risk reports
+│   ├── README.md
+│   ├── baseline/
+│   ├── single-file-F1-F2-F3-F5/
+│   ├── single-file-F4-F6/
+│   └── dual-file-F4-F6/
 │
 ├── scripts/
-│   ├── README.md                       ← Describes each Python script and its purpose
-│   └── (Python scripts — ifcopenshell, QTO comparison, fault injection)
+│   ├── README.md
+│   ├── extract_ifc.py
+│   ├── fault_injection.py
+│   ├── fault_analysis.py
+│   ├── sensitivity_analysis.py
+│   ├── alpha_characterization.py
+│   ├── verify_exports.py
+│   ├── verify_exports.ps1
+│   └── harvest_reports.ps1
 │
 └── docs/
-    ├── README.md                       ← Guide to all documentation files
-    ├── bqi-definition.md               ← BQI scoring formula and rules
-    ├── risk-rules-table.md             ← Risk screening logic
-    ├── validation-ruleset.md           ← IFC validation rules
-    └── ddc-adaptation-notes.md         ← What was changed from DDC base workflows and why
+    ├── README.md
+    ├── bqi-definition.md
+    ├── risk-rules-table.md
+    ├── validation-ruleset.md
+    └── ddc-adaptation-notes.md
 ```
 
 ---
 
-## How the Pipeline Works
+## Software Artefacts
 
+The principal thesis software artefacts are:
+
+| Artefact | Path |
+|---|---|
+| n8n workflow export | `workflows/thesis/n8n_ifc_dual_pipeline_v16.json` |
+| Pipeline B extraction | `scripts/extract_ifc.py` |
+| Fault injection | `scripts/fault_injection.py` |
+| Fault analysis | `scripts/fault_analysis.py` |
+| Sensitivity analysis | `scripts/sensitivity_analysis.py` |
+| α characterisation | `scripts/alpha_characterization.py` |
+| Export verification | `scripts/verify_exports.py` |
+| Export verification wrapper | `scripts/verify_exports.ps1` |
+| Report aggregation | `scripts/harvest_reports.ps1` |
+
+The SHA-256 values of the principal artefacts used for thesis deposit are recorded in the thesis provenance table.
+
+---
+
+## Tools and Technologies
+
+| Tool / Technology | Role |
+|---|---|
+| **n8n** | Workflow automation and orchestration |
+| **DDC CAD-to-data toolkit** | IFC conversion and baseline extraction infrastructure |
+| **IfcOpenShell** | Independent IFC extraction pathway |
+| **Python** | IFC extraction, fault injection, fault analysis, sensitivity analysis, and verification |
+| **JavaScript** | n8n Code-node processing |
+| **PowerShell** | Windows-side verification and report harvesting |
+| **Git / GitHub** | Version control and reproducibility |
+
+---
+
+## Verification and Reproducibility
+
+The repository includes utilities for verifying generated outputs and supporting reproducibility.
+
+### `verify_exports.py`
+
+Performs structural checks on the sensitivity JSON exports, including:
+
+- JSON validity;
+- required fields;
+- `GlobalId` uniqueness;
+- expected element counts;
+- F6 element-removal behaviour; and
+- recomputed model-level BQI values.
+
+### `verify_exports.ps1`
+
+Provides a Windows PowerShell wrapper for the export-verification procedure.
+
+### `harvest_reports.ps1`
+
+Collects information from generated reports and produces a summary dataset for downstream analysis.
+
+---
+
+## Versioning and Thesis Release
+
+The final computational package is released under the Git tag:
+
+```text
+v1.0-thesis
 ```
-IFC File
-   ↓
-[DDC IfcExporter] ──────────────────────→ XLSX (element data)
-   ↓                                           ↓
-[n8n_4 Validation] ──→ Validation Report    [n8n_9 QTO] ──→ QTO Report
-   ↓                                           ↓
-[BQI Scoring] ────────────────────────────────┘
-   ↓
-BQI Score + Confidence Label
-   ↓
-[Risk Screening Model]
-   ↓
-Uncertainty-Aware Risk Register + PDF Report
+
+The thesis records the exact 40-character commit SHA associated with this tag.
+
+The principal software artefacts are additionally identified by SHA-256 hashes.
+
+The intended provenance chain is:
+
+```text
+Repository
+    |
+    v
+v1.0-thesis
+    |
+    v
+Git commit SHA
+    |
+    +---- workflow
+    +---- scripts
+    +---- IFC inputs
+    +---- documentation
+    |
+    v
+SHA-256 verification
 ```
 
-**DDC toolkit handles:** conversion, validation, QTO extraction
-**This thesis adds:** BQI scoring, risk screening, uncertainty propagation, fault injection benchmarking
+The `v1.0-thesis` tag should be treated as the frozen computational reference corresponding to the thesis deposit.
 
 ---
 
-## Tools & Technologies
+## Reproduction Overview
 
-| Tool | Role in This Thesis |
-|------|---------------------|
-| **n8n** | Workflow automation and orchestration — runs the entire pipeline |
-| **DDC IfcExporter** | Converts IFC files to XLSX for downstream processing |
-| **DDC n8n_1** | Base single-file conversion workflow |
-| **DDC n8n_3** | Base batch conversion workflow — used for fault injection testing (Task 5) |
-| **DDC n8n_4** | Base validation workflow — adapted for IFC schema and property checks |
-| **DDC n8n_8** | Base ETL extract workflow — used as QTO Method 1 input (Task 6) |
-| **DDC n8n_9** | Base QTO workflow — adapted for IFC element types |
-| **IFC / ifcopenshell** | BIM data extraction and second QTO method (Task 6 comparison) |
-| **Python** | BQI scoring, fault injection, Spearman rank correlation |
-| **GitHub** | Version control and model storage |
+A reproduction of the computational study follows the general sequence:
 
----
+```text
+1. Obtain the repository at the thesis release tag
+                         ↓
+2. Obtain the documented IFC corpus
+                         ↓
+3. Prepare the required fault-injected variants
+                         ↓
+4. Configure the thesis n8n workflow
+                         ↓
+5. Run the required experimental configurations
+                         ↓
+6. Generate HTML risk registers and sensitivity JSON
+                         ↓
+7. Verify the sensitivity exports
+                         ↓
+8. Aggregate report-level results
+                         ↓
+9. Perform the offline robustness and sensitivity analyses
+```
 
-## Sample IFC Models
-
-8 baseline IFC files are stored in `sample-models/baseline/`, sourced from official buildingSMART repositories:
-
-- buildingSMART Sample Test Files (IFC4 & IFC4.3): https://github.com/buildingSMART/Sample-Test-Files
-- buildingSMART Community Sample Files: https://github.com/buildingsmart-community/Community-Sample-Test-Files
-
-| File | Schema | Type |
-|------|--------|------|
-| `IFC4-Building-Architecture.ifc` | IFC 4.0.2.1 | Building — Architecture |
-| `IFC4-Building-Structural.ifc` | IFC 4.0.2.1 | Building — Structural |
-| `IFC4-Infra-Bridge.ifc` | IFC 4.0.2.1 | Infrastructure — Bridge |
-| `IFC4-Infra-Road.ifc` | IFC 4.0.2.1 | Infrastructure — Road |
-| `IFC4-wall-with-opening-and-window.ifc` | IFC 4.0.2.1 | Building — Wall detail |
-| `IFC43-Building-Structural.ifc` | IFC 4.3 | Building — Structural |
-| `IFC43-Infra-Bridge.ifc` | IFC 4.3 | Infrastructure — Bridge |
-| `IFC43-Infra-Road.ifc` | IFC 4.3 | Infrastructure — Road |
-
-Fault-injected variants (Task 5) will be generated programmatically and stored in `sample-models/fault-injected/`.
+Environment-specific requirements and configuration details are documented in the corresponding workflow, script, and documentation READMEs.
 
 ---
 
-## Project Resources
+## External Resources
 
 | Resource | Description | Link |
-|----------|-------------|------|
-| DDC CAD-to-data toolkit | Core pipeline — IFC/Revit conversion, validation, QTO, and n8n workflows | [cad2data-Revit-IFC-DWG-DGN](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN) |
-| n8n-skills | n8n skillset for building robust n8n workflows | [n8n-skills](https://github.com/czlonkowski/n8n-skills) |
-| buildingSMART Sample Files | Source of baseline IFC models | [Sample-Test-Files](https://github.com/buildingSMART/Sample-Test-Files) |
+|---|---|---|
+| DataDrivenConstruction CAD-to-data toolkit | IFC conversion, validation, QTO, and n8n workflow infrastructure | [GitHub repository](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN) |
+| buildingSMART Sample Test Files | IFC sample models used for the corpus | [GitHub repository](https://github.com/buildingSMART/Sample-Test-Files) |
+| buildingSMART Community Sample Files | Additional IFC sample models | [GitHub repository](https://github.com/buildingsmart-community/Community-Sample-Test-Files) |
+| n8n thesis repository | This thesis software repository | [GitHub repository](https://github.com/ulnirah/n8n-thesis) |
 
 ---
 
-## Progress Log
+## Thesis Mapping
 
-| Date | Update |
-|------|--------|
-| Apr 2026 | Repository created, folder structure established |
-| Apr 2026 | Task 1 complete — 8 baseline IFC files added (IFC4 + IFC4.3) |
-| Apr 2026 | All 9 DDC workflows uploaded to workflows/ddc-base/ |
-| Apr 2026 | All folder READMEs created |
-| Apr 2026 | Task 2 in progress — adapting DDC workflows for IFC inputs |
+| Thesis component | Repository location |
+|---|---|
+| IFC corpus and provenance | `sample-models/` |
+| Dual-pipeline extraction architecture | `workflows/thesis/` |
+| BQI definition and rules | `docs/bqi-definition.md` |
+| Risk-screening rules | `docs/risk-rules-table.md` |
+| IFC validation rules | `docs/validation-ruleset.md` |
+| DDC adaptations | `docs/ddc-adaptation-notes.md` |
+| Fault injection | `scripts/fault_injection.py` |
+| Fault analysis | `scripts/fault_analysis.py` |
+| α characterisation | `scripts/alpha_characterization.py` |
+| Sensitivity analysis | `scripts/sensitivity_analysis.py` |
+| Output verification | `scripts/verify_exports.py` |
+| Report aggregation | `scripts/harvest_reports.ps1` |
+| Experimental outputs | `outputs/` |
+
+---
+
+## Citation
+
+When using this repository in academic work, please cite the associated MSc thesis:
+
+> Rahmatillah, A. A. (2026). *Uncertainty-Aware Risk Screening from Imperfect Building Information Models: Schema Validation, Quantity Take-Off Robustness, and Explainable Risk Registers in an n8n Workflow*. Universitat Politècnica de Catalunya.
+
+---
+
+## Scope and Limitations
+
+This repository supports the computational experiments reported in the thesis.
+
+The study is limited to the IFC versions, corpus, fault taxonomy, parameter ranges, and experimental configurations defined in the thesis. The principal corpus consists of openly available buildingSMART sample models rather than proprietary project models.
+
+The repository should therefore be considered a reproducible research artefact supporting the thesis rather than a general-purpose commercial BIM validation or infrastructure risk-management system.
+
+For the full methodological scope, assumptions, threats to validity, limitations, and conclusions, refer to the MSc thesis.
