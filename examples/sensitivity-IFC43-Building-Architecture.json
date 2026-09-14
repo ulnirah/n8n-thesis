@@ -1,0 +1,142 @@
+[
+ {
+  "GlobalId": "2iPwJwpPDCSgMheXwk9cBT",
+  "Category": "IfcRoof",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.72,
+  "consequence_score": 0.525
+ },
+ {
+  "GlobalId": "3dkFAzOGrAIuOzY_RdrdVv",
+  "Category": "IfcChimney",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.56,
+  "consequence_score": 0.315
+ },
+ {
+  "GlobalId": "0ZTBBPo6f6bxqV2K7Oelrq",
+  "Category": "IfcSlab",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.22,
+  "consequence_score": 0.595
+ },
+ {
+  "GlobalId": "12UVOn4wvAJPMUExKdZLb8",
+  "Category": "IfcSlab",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.22,
+  "consequence_score": 0.595
+ },
+ {
+  "GlobalId": "1AQAupaRP1txwK1AGiN61V",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.2025,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "3wdauVJT5Fx9drrREiDqA$",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.2025,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "0OfZwWc8j9QP5uX8xPTxDH",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.2025,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "1uS5vfZPn9R8PlAaVd73on",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.2025,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "3zR0BOEcLADRKln4HYporH",
+  "Category": "IfcSlab",
+  "score_completeness": 1,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.1925,
+  "consequence_score": 0.595
+ },
+ {
+  "GlobalId": "1wADrO19H3w980h1wUyXLk",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "0bo7_K6az7AA$4RxkSNVNM",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "2F44QMqSH3TOkM$SZoqCBe",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "3Fit2Fad92zf2f6aWdJtF5",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "3_4VN63S96DfWiJjgG8j1C",
+  "Category": "IfcEarthworksFill",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ }
+]

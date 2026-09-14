@@ -1,0 +1,572 @@
+[
+ {
+  "GlobalId": "13HNHx2iHDah6c_2Ir0QFv",
+  "Category": "IfcColumn",
+  "score_completeness": 0,
+  "score_validity": 0.5,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "1Ov2FEORP589f6FJ7Vsjbf",
+  "Category": "IfcColumn",
+  "score_completeness": 0,
+  "score_validity": 0.5,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "0XPURiAkzB3g2LT4CHIL$P",
+  "Category": "IfcColumn",
+  "score_completeness": 0,
+  "score_validity": 0.5,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "0IBSrNevj23wueInn68pOs",
+  "Category": "IfcColumn",
+  "score_completeness": 0,
+  "score_validity": 0.5,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "1dmYPmycr2LPQju29cHK45",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "0fDVrF0456nhTwgIrF5CPd",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "2kSK2Jw$z3JQs2YiiWmHXV",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "0Gl168Rv1ErxU_Zx$i1I5m",
+  "Category": "IfcColumn",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "3ul67tVf5Dl82Y_LatCAFo",
+  "Category": "IfcColumn",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "1BTWAuNPH8_BiqEs5C5kK5",
+  "Category": "IfcColumn",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "3ObOfBTNz2dhgWxUzdmDpl",
+  "Category": "IfcSlab",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.3025,
+  "consequence_score": 0.595
+ },
+ {
+  "GlobalId": "064CKbgdv2$uFEsgE5j3ba",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "3LTGJZ50P17x4My$lMjBSo",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "2tKslGZJz0Nu12g9XAhM2h",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "06ymNwhgjC9vHrcokNIGHx",
+  "Category": "IfcWall",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.2475,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "3hqwHdFaf66Oki_1cxKAnF",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 0.75,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.75,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "1glXn_b3PFhflp9CKhrvzD",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 0.75,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.75,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "0sH1yiI49B6w$h$tWL2i3T",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 0.75,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.75,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "1iUk9ABeL9eBJ7Sv9b$q0d",
+  "Category": "IfcFooting",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "3kDaIrka18GwgJ2ayJZMBO",
+  "Category": "IfcFooting",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "0NMvtFx717oPAWTAMXwXAy",
+  "Category": "IfcFooting",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "3QqyCHEVDF$gkEh307F1yY",
+  "Category": "IfcFooting",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "3N1IPEdwr8ovT_ZOobkqBX",
+  "Category": "IfcFooting",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "1TNwPNu5vAJ8rWCr2_eafm",
+  "Category": "IfcFooting",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "2Q4p8yWJzFIvhoX9T$V40D",
+  "Category": "IfcFooting",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "0W_tPyzHXFtwl0O2DZZAe3",
+  "Category": "IfcSlab",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.1925,
+  "consequence_score": 0.595
+ },
+ {
+  "GlobalId": "01itnAmhP3LAz9aL2vu3YJ",
+  "Category": "IfcSlab",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.1925,
+  "consequence_score": 0.595
+ },
+ {
+  "GlobalId": "2YYLlceAvCKB$5luCgsyAd",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "3kuqbEQ55DwQX5rk3QQW6b",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "0mUNenrM54pwFfq2oXhCct",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "3dxS5_Bpz7vB8wbZiDy6FO",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "3Py7bxE7n5JOxOxHlYh2N3",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "1hByR6f1zEWg0gFVCzqiAV",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "0LwIg3tPb1axicmL$uibFc",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "14s9MtA2T3DOZ3vc6xj1mL",
+  "Category": "IfcMember",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.455
+ },
+ {
+  "GlobalId": "322tROdCvE68UcU2Qe02GA",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.15,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "1Rd3zGyxjCSBQhmMuxTFJ7",
+  "Category": "IfcBeam",
+  "score_completeness": 0,
+  "score_validity": 1,
+  "score_qto_coverage": 0.5,
+  "score_qto_agreement": 1,
+  "likelihood_score": 0.15,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "1PXj3pcJX7RgxexBEm0se9",
+  "Category": "IfcRailing",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1925,
+  "consequence_score": 0.245
+ },
+ {
+  "GlobalId": "1lX0aCXHj46eYgtlXl_65e",
+  "Category": "IfcRailing",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1925,
+  "consequence_score": 0.245
+ },
+ {
+  "GlobalId": "02Q1JJaeXCofF8bu9IDYbN",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.105,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "38UHNG19HAuOHKeHr7iIlo",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.105,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "0GcdwGAXbEP8fxME368hA4",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.105,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "0gB41TAsXCeg1sVvBm2u9j",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.105,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "1Ni63N3g9CwwsFbbNgF65B",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "1ngF1j04v49eiBUKkKO16p",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "2vnqnmqXH4Q9vBMUebOywv",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "2ZYxBDA4bC$vk_U2Y8GUqS",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "3Fit2Fad92zf2f6aWdJtF5",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "00ZvlN19v73wE8JOyDmPjG",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "3E8poO$Er6gPhLg44LF$bc",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "0kTVfaOTj2pAN_WvUgOEdD",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "0qDQIJzHH719PVQZWdQqW2",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "0vFQAzqYzD2P8vJwFIDXrV",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "2qHgQrSEbBmAN2Nh3C6_X0",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "2hJMDFMXH0q8k_DMRtOb0x",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "3UNm72MkH81wf0YgrOuk7D",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "0ZqHhx84T54vsUjUWpHX1r",
+  "Category": "IfcElementAssembly",
+  "score_completeness": 1,
+  "score_validity": 0,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ }
+]

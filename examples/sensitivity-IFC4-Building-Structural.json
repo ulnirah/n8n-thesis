@@ -1,0 +1,162 @@
+[
+ {
+  "GlobalId": "2iPwJwpPDCSgMheXwk9cBT",
+  "Category": "IfcRoof",
+  "score_completeness": 1,
+  "score_validity": 0.5,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.72,
+  "consequence_score": 0.525
+ },
+ {
+  "GlobalId": "3dkFAzOGrAIuOzY_RdrdVv",
+  "Category": "IfcChimney",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.56,
+  "consequence_score": 0.315
+ },
+ {
+  "GlobalId": "0pFmhV8oD1dB40_b4pscr8",
+  "Category": "IfcFooting",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.1625,
+  "consequence_score": 0.7
+ },
+ {
+  "GlobalId": "0fqX614OH1YO1Njdxms2$Q",
+  "Category": "IfcBeam",
+  "score_completeness": 1,
+  "score_validity": 0.8333333333333334,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "0rh7bRO0L9fg1NzgGKU$Ut",
+  "Category": "IfcBeam",
+  "score_completeness": 1,
+  "score_validity": 0.8333333333333334,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "3roxUKbVv98xiUcl22_T07",
+  "Category": "IfcBeam",
+  "score_completeness": 1,
+  "score_validity": 0.8333333333333334,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "0Lvk$Qa81D5et3l3a4S9Vk",
+  "Category": "IfcBeam",
+  "score_completeness": 1,
+  "score_validity": 0.8333333333333334,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "2ddLgAnQf4mBfh5IpUp54U",
+  "Category": "IfcBeam",
+  "score_completeness": 1,
+  "score_validity": 0.8333333333333334,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "2fjJuPht9EIQaZQYZfC1Op",
+  "Category": "IfcBeam",
+  "score_completeness": 1,
+  "score_validity": 0.8333333333333334,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5,
+  "likelihood_score": 0.25,
+  "consequence_score": 0.63
+ },
+ {
+  "GlobalId": "2gTJhghMT81QThk15l2VwR",
+  "Category": "IfcWall",
+  "score_completeness": 1,
+  "score_validity": 0.8571428571428571,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5714285714285714,
+  "likelihood_score": 0.2025,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "3oNJ9yHi5FJuFnK8yg68Yt",
+  "Category": "IfcWall",
+  "score_completeness": 0.5,
+  "score_validity": 0.8333333333333334,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.6666666666666666,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "0DyViLJJ175RvWQi1rE7a6",
+  "Category": "IfcWall",
+  "score_completeness": 1,
+  "score_validity": 0.8571428571428571,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5714285714285714,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "3SGBcf7Lv0r80vKtUCgOpf",
+  "Category": "IfcWall",
+  "score_completeness": 1,
+  "score_validity": 0.8571428571428571,
+  "score_qto_coverage": 1,
+  "score_qto_agreement": 0.5714285714285714,
+  "likelihood_score": 0.18,
+  "consequence_score": 0.56
+ },
+ {
+  "GlobalId": "1CjP_CWub368bZVuVHeHs3",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "2F44QMqSH3TOkM$SZoqCBe",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ },
+ {
+  "GlobalId": "3Fit2Fad92zf2f6aWdJtF5",
+  "Category": "IfcBuildingElementProxy",
+  "score_completeness": 0,
+  "score_validity": 0,
+  "score_qto_coverage": 0,
+  "score_qto_agreement": 0,
+  "likelihood_score": 0.09,
+  "consequence_score": 0.35
+ }
+]
