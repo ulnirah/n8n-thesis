@@ -1,0 +1,1516 @@
+{
+  "name": "n8n_ifc_dual_pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Block 1: Pipeline A (DDC Converter)\n- Converts .ifc to .xlsx, parses the wide table, and filters out spatial entities.\n- Reuses a cached conversion when one exists; a conversion failure halts the run.\n- Full float precision preserved.",
+        "height": 640,
+        "width": 2656,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        448,
+        176
+      ],
+      "id": "293fb19e-34b7-4301-b65d-49e83db451a6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Block 2: Pipeline B (IfcOpenShell)\n- Fetches and verifies the Python extraction script, then extracts elements, properties, quantities and materials as JSON.\n- Detects the IFC schema version and the domain; the schema identifier selects the rule set used downstream.\n- Resolves material names, not just IDs.",
+        "height": 416,
+        "width": 2656,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        448,
+        848
+      ],
+      "id": "d67e1327-0e09-4c11-a950-0f1ed169a5c2",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Block 0: Setup\n- Sets paths, the BQI dimension weights, the uncertainty coefficient α, and the coverage threshold. All tunable parameters live here.\n- Set project_file_b to run the dual-file configuration, in which Pipeline B reads a different file from Pipeline A.",
+        "height": 1088,
+        "width": 416,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        176
+      ],
+      "id": "f34545cc-b540-4c3e-940d-e5cec66f58ba",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers\nDataDrivenConstruction [GitHub](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto)\nN8N Thesis Documentation [N8N-Thesis](https://github.com/ulnirah/n8n-thesis)\nIFC Sample [buildingSMART](https://github.com/buildingSMART/Sample-Test-Files.git)",
+        "height": 144,
+        "width": 6480,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d7584d41-1d6d-4748-8217-bf3665ce26df",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "## Block 3: QTO Comparison + BQI Scoring\n- Merges both pipelines on GlobalId and compares every shared quantity field.\n- Scores each element on D1 completeness, D2 validity, D3 QTO coverage and D4 cross-pipeline agreement.\n- Element coverage and per-field cross-pipeline SRCC are computed separately from the BQI.",
+        "height": 1088,
+        "width": 1088,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3136,
+        176
+      ],
+      "id": "6f99bdc6-a5fa-47fe-854d-6aea84bed432",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {},
+      "id": "b82154a1-dd72-4e33-b09d-094d74ce8936",
+      "name": "0.0: Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "position": [
+        48,
+        544
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9cbd4ec9-df24-41e8-b47a-720a4cdb733b",
+              "name": "path_to_converter",
+              "type": "string",
+              "value": "C:\\Users\\milad.komary\\Desktop\\N8N\\DDC_Converters_Windows_Packages\\DDC_CONVERTER_IFC\\IfcExporter.exe"
+            },
+            {
+              "id": "aa834467-80fb-476a-bac1-6728478834f0",
+              "name": "project_file",
+              "type": "string",
+              "value": "C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\sample-models\\baseline\\IFC4-Building-Structural.ifc"
+            },
+            {
+              "id": "6870ac6e-deba-4b00-aeb7-121b9def372e",
+              "name": "project_file_b",
+              "value": "C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\sample-models\\faulted\\IFC4-Building-Structural__F4-r10-s42_PIPELINE-B-ONLY.ifc",
+              "type": "string"
+            },
+            {
+              "id": "fe48fce3-501e-46da-a722-3d3ef153882a",
+              "name": "output_dir",
+              "value": "C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\output",
+              "type": "string"
+            },
+            {
+              "id": "4e4f5e6f-7a8b-4c5d-9e0f-1a2b3c4d5e6f",
+              "name": "group_by",
+              "type": "string",
+              "value": "Category"
+            },
+            {
+              "id": "ffa8da87-f34f-4c9b-a783-d0bc65ca8a08",
+              "name": "script_dir",
+              "value": "C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts",
+              "type": "string"
+            },
+            {
+              "id": "9edd37d6-0dff-4e29-a704-e6dd77ea2707",
+              "name": "coverage_threshold",
+              "value": 95,
+              "type": "number"
+            },
+            {
+              "id": "e8d49cee-8dc8-41a5-a382-3b02445114a0",
+              "name": "bqi_weights",
+              "value": "={{ { \"completeness\": 0.35, \"validity\": 0.25, \"qto_coverage\": 0.20, \"qto_agreement\": 0.20 } }}",
+              "type": "object"
+            },
+            {
+              "id": "fad36aa5-2801-4732-8a88-f464405abeec",
+              "name": "alpha",
+              "value": 0.55,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e3f0489e-ebc9-4414-8469-69aee21ad508",
+      "name": "0.1: Config",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        272,
+        544
+      ],
+      "typeVersion": 3.4,
+      "notesInFlow": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "xlsx-filename-id",
+              "name": "xlsx_filename",
+              "type": "string",
+              "value": "={{ $json[\"project_file\"].slice(0, -4) + \"_ifc.xlsx\" }}"
+            },
+            {
+              "id": "path-to-converter-pass",
+              "name": "path_to_converter",
+              "type": "string",
+              "value": "={{ $json[\"path_to_converter\"] }}"
+            },
+            {
+              "id": "project-file-pass",
+              "name": "project_file",
+              "type": "string",
+              "value": "={{ $json[\"project_file\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "cef2692f-d575-401d-978f-d9e302dac950",
+      "name": "1.1: Build XLSX path",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        496,
+        448
+      ],
+      "typeVersion": 3.4,
+      "notesInFlow": false,
+      "notes": "Creates expected output filename. DDC converter always outputs _ifc.xlsx."
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json[\"xlsx_filename\"] }}"
+      },
+      "id": "c14005df-58f0-4479-bfed-b8b741c01d83",
+      "name": "1.2: XLSX exists?",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "position": [
+        720,
+        448
+      ],
+      "typeVersion": 1,
+      "alwaysOutputData": true,
+      "retryOnFail": false,
+      "continueOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 1,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "e7fb1577-e753-43f5-9f5a-4d5285aeb96e",
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              },
+              "leftValue": "={{ $binary.data ? true : false }}",
+              "rightValue": "={{ true }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f020fda6-f7d5-4894-a7fe-97ce151f7b50",
+      "name": "1.3: Skip if converted?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        944,
+        448
+      ],
+      "typeVersion": 2,
+      "notesInFlow": false,
+      "notes": "Skips conversion if file exists"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "status-id",
+              "name": "status",
+              "type": "string",
+              "value": "File already exists - skipping conversion"
+            },
+            {
+              "id": "xlsx-filename-id",
+              "name": "xlsx_filename",
+              "type": "string",
+              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "95a5e54d-c30d-4fe9-b8e1-4ce2265a990a",
+      "name": "1.3a: Skip (file exists)",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1616,
+        224
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "command": "powershell -Command \"New-Item -ItemType Directory -Force -Path 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts'; Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/ulnirah/n8n-thesis/main/scripts/extract_ifc.py' -OutFile 'C:\\Users\\milad.komary\\.n8n-files\\projectactual\\thesis-annisa\\scripts\\extract_ifc.py'\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1616,
+        896
+      ],
+      "id": "6e8ada33-4a28-4448-848e-e3b8a5642f36",
+      "name": "2.1: Download script"
+    },
+    {
+      "parameters": {
+        "command": "python -c \"import ifcopenshell; print(ifcopenshell.version)\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        896
+      ],
+      "id": "1d1ba495-a449-4335-b8ba-a43e7c1e7047",
+      "name": "2.2: Verify Python",
+      "notes": "Confirms Python + ifcopenshell are installed before pipeline runs.\nWindows (current): python\nLinux/Docker:       python3  ← change command if deploying to server\nMin version required: ifcopenshell ≥ 0.7.0\nInstall if missing:   pip install ifcopenshell\nExpected output in log: e.g. \"0.8.0\""
+    },
+    {
+      "parameters": {
+        "command": "==python \"{{ $node['0.1: Config'].json.script_dir }}\\extract_ifc.py\" \"{{ $node['0.1: Config'].json.project_file_b || $node['0.1: Config'].json.project_file }}\" --include-properties --include-materials"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        896
+      ],
+      "id": "aea594ad-d6c9-4a3d-bea5-b49f281abe3b",
+      "name": "2.3: Run extraction",
+      "notesInFlow": false,
+      "notes": "Runs ifcopenshell extraction.\nRequires: python + ifcopenshell installed on server."
+    },
+    {
+      "parameters": {
+        "jsCode": "// =============================================================================\n// Node 2.4 · Parse IfcOpenShell JSON Output\n//\n// Purpose:\n// Converts the JSON produced by the IfcOpenShell extraction script into\n// individual n8n items (metadata, elements, and spatial entities).\n//\n// Expected input (stdout):\n// {\n//   metadata: {},\n//   elements: [],\n//   properties: [],\n//   quantities: [],\n//   materials: [],\n//   spatial: []\n// }\n//\n// =============================================================================\n\n// -----------------------------------------------------------------------------\n// 1. Read JSON output from Execute Command node\n// -----------------------------------------------------------------------------\n// IMPORTANT:\n// The Python script should print ONLY valid JSON to stdout.\n// Any log messages or print statements will cause JSON.parse() to fail.\nconst rawOutput = $input.first().json.stdout;\n\n// -----------------------------------------------------------------------------\n// 2. Parse JSON\n// -----------------------------------------------------------------------------\n// If parsing fails, inspect:\n//   • stdout\n//   • stderr\n//   • the Python script output\n//\n// Most common causes:\n//   - Python printed debug messages\n//   - Empty stdout\n//   - Invalid JSON formatting\nlet parsed;\n\ntry {\n  parsed = JSON.parse(rawOutput);\n} catch (e) {\n  return [{\n    json: {\n      error: 'Failed to parse IfcOpenShell output',\n      raw: rawOutput ? rawOutput.substring(0, 500) : 'empty',\n      stderr: $input.first().json.stderr || ''\n    }\n  }];\n}\n\n// -----------------------------------------------------------------------------\n// 3. Stop early if the extraction script returned an error\n// -----------------------------------------------------------------------------\n// Expected format:\n// {\n//     \"error\": \"...\"\n// }\n//\n// Debug Python-side issues before investigating this JavaScript.\nif (parsed.error) {\n  return [{ json: { error: parsed.error, pipeline: 'B' } }];\n}\n\n// -----------------------------------------------------------------------------\n// 4. Build lookup tables\n// -----------------------------------------------------------------------------\n// Instead of filtering every property/quantity for every element (O(n²)),\n// index everything once by GlobalId (approximately O(n)).\n//\n// If properties, quantities or materials appear missing,\n// first verify that their GlobalId matches the corresponding element.\nconst propsByGid = {};\nfor (const p of (parsed.properties || [])) {\n  if (!propsByGid[p.GlobalId]) propsByGid[p.GlobalId] = [];\n  propsByGid[p.GlobalId].push(p);\n}\n\nconst qtsByGid = {};\nfor (const q of (parsed.quantities || [])) {\n  if (!qtsByGid[q.GlobalId]) qtsByGid[q.GlobalId] = [];\n  qtsByGid[q.GlobalId].push(q);\n}\n\nconst matByGid = {};\nfor (const m of (parsed.materials || [])) {\n  matByGid[m.GlobalId] = m;\n}\n\nconst items = [];\n\n// -----------------------------------------------------------------------------\n// 5. Create metadata item\n// -----------------------------------------------------------------------------\n// Metadata is returned as its own n8n item so downstream nodes can process\n// project-level information independently from IFC elements.\nitems.push({\n  json: {\n    _type: 'metadata',\n    pipeline: 'ifcopenshell',\n    ...parsed.metadata\n  }\n});\n\n// -----------------------------------------------------------------------------\n// 6. Process IFC elements\n// -----------------------------------------------------------------------------\n// Each IFC element becomes one n8n item.\n//\n// The node merges:\n//   • Basic element information\n//   • Properties\n//   • Quantities\n//   • Material\n//\n// Result:\n// One flat JSON object per IFC element.\nfor (const elem of parsed.elements) {\n\n  const gid = elem.GlobalId;\n\n  // ---------------------------------------------------------------------------\n  // Merge all properties belonging to this element.\n  //\n  // Output key format:\n  //   [PropertySet] PropertyName\n  //\n  // Example:\n  //   [Pset_WallCommon] FireRating\n  //\n  // NOTE:\n  // Duplicate property names inside the same PropertySet will overwrite\n  // previous values because JavaScript object keys must be unique.\n  // ---------------------------------------------------------------------------\n  const elemProps = (propsByGid[gid] || []).reduce((acc, p) => {\n    acc[`[${p.PropertySet}] ${p.Property}`] = p.Value;\n    return acc;\n  }, {});\n\n  // ---------------------------------------------------------------------------\n  // Merge quantities.\n  //\n  // Numeric strings are converted into JavaScript numbers.\n  //\n  // IMPORTANT:\n  // Using isNaN() preserves legitimate values such as 0.\n  // Avoid checking \"if(num)\" because zero is a valid quantity.\n  // ---------------------------------------------------------------------------\n  const elemQtys = (qtsByGid[gid] || []).reduce((acc, q) => {\n    const num = parseFloat(q.Value);\n    acc[`[${q.QuantitySet}] ${q.Quantity}`] = isNaN(num) ? q.Value : num;\n    return acc;\n  }, {});\n\n  // ---------------------------------------------------------------------------\n  // Retrieve material for this element.\n  //\n  // If Material is unexpectedly empty:\n  //   • Check IFC material assignments.\n  //   • Verify the extractor exported \"materials\".\n  //   • Confirm matching GlobalIds.\n  // ---------------------------------------------------------------------------\n  const elemMat = matByGid[gid];\n\n  items.push({\n    json: {\n      _type: 'element',\n      pipeline: 'B_ifcopenshell',\n\n      GlobalId: gid,\n      Name: elem.Name,\n      Category: elem.Category,\n      ObjectType: elem.ObjectType,\n      Description: elem.Description,\n\n      is_external: elem.is_external ?? false,\n\n      Material: elemMat ? elemMat.Material : '',\n\n      // Flattened property values\n      ...elemProps,\n\n      // Flattened quantity values\n      ...elemQtys\n    }\n  });\n}\n\n// -----------------------------------------------------------------------------\n// 7. Output spatial hierarchy\n// -----------------------------------------------------------------------------\n// Spatial entities are exported separately because downstream nodes use them\n// for hierarchy reconstruction and domain detection.\n//\n// Typical IFC spatial objects:\n//   • IfcProject\n//   • IfcSite\n//   • IfcBuilding\n//   • IfcBuildingStorey\n//   • IfcSpace\n//\n// If hierarchy appears incomplete, inspect parsed.spatial before this loop.\nfor (const s of (parsed.spatial || [])) {\n  items.push({\n    json: {\n      _type: 'spatial_entity',\n      pipeline: 'B_ifcopenshell',\n\n      GlobalId: s.GlobalId,\n      Name: s.Name,\n      Category: s.Type,\n\n      ParentGlobalId: s.ParentGlobalId,\n      ParentName: s.ParentName,\n    }\n  });\n}\n\n// -----------------------------------------------------------------------------\n// 8. Return all generated items\n// -----------------------------------------------------------------------------\n// Output consists of multiple n8n items:\n//\n//   metadata\n//   element\n//   element\n//   ...\n//   spatial_entity\n//   spatial_entity\n//\n// Downstream nodes can filter using the \"_type\" field.\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        896
+      ],
+      "id": "a5c2a8e7-44f7-4e43-9ce6-f9990cfad5de",
+      "name": "2.4: Parse output",
+      "notesInFlow": false,
+      "notes": "Parses ifcopenshell JSON output.\nCreates one n8n item per element with all data merged."
+    },
+    {
+      "parameters": {
+        "jsCode": "// =============================================================================\n// Node 2.5 · IFC Schema & Domain Detection\n//\n// Purpose:\n// Determines the IFC schema and infrastructure domain (Building, Bridge,\n// Road, Rail, Mixed, or Unknown) from the extracted IFC data.\n//\n// Output:\n// Adds two fields to every n8n item:\n//\n//   ifc_schema\n//   ifc_domain\n//\n// Assumptions:\n// • All input items originate from the previous extraction node.\n// • Exactly one metadata item exists.\n// • Metadata contains the IFC schema.\n// =============================================================================\n\nconst all = $input.all();\n\n// -----------------------------------------------------------------------------\n// 1. Retrieve metadata\n// -----------------------------------------------------------------------------\n// The metadata item contains project-wide information such as IFC schema.\n//\n// If no metadata exists, default to IFC4 since most building models use it.\nconst meta = all.find(i => i.json._type === 'metadata');\n\nconst schema = (meta?.json?.schema || 'IFC4').toUpperCase();\n\n// -----------------------------------------------------------------------------\n// 2. Collect all unique element and spatial categories\n// -----------------------------------------------------------------------------\n// Using Sets allows efficient existence checks when determining the domain.\n//\n// Example element categories:\n//   IfcWall\n//   IfcSlab\n//   IfcTrackElement\n//\n// Example spatial categories:\n//   IfcBuilding\n//   IfcBridge\n//   IfcRoad\nconst categories = new Set(\n  all\n    .filter(i => i.json._type === 'element' && i.json.Category)\n    .map(i => i.json.Category)\n);\n\nconst spatialTypes = new Set(\n  all\n    .filter(i => i.json._type === 'spatial_entity' && i.json.Category)\n    .map(i => i.json.Category)\n);\n\n// -----------------------------------------------------------------------------\n// 3. Determine IFC domain\n// -----------------------------------------------------------------------------\n//\n// IFC4\n// -----\n// IFC4 generally represents building models, so \"Building\" is used as the\n// default domain.\n//\n// IFC4X3\n// -------\n// IFC4X3 introduces dedicated infrastructure entities (Road, Rail, Bridge).\n// The domain is inferred by checking for characteristic element and spatial\n// entity types.\n//\n// NOTE:\n// If additional IFC4X3 infrastructure entities are introduced in future\n// versions, extend the checks below.\n//\nlet domain = 'Building';\n\nif (schema.startsWith('IFC4X3')) {\n\n  // Rail indicators\n  const hasRail =\n    categories.has('IfcRail') ||\n    categories.has('IfcTrackElement') ||\n    spatialTypes.has('IfcRailway');\n\n  // Road indicators\n  const hasRoad =\n    categories.has('IfcPavement') ||\n    categories.has('IfcKerb') ||\n    spatialTypes.has('IfcRoad');\n\n  // Bridge indicators\n  const hasBridge =\n    categories.has('IfcBearing') ||\n    categories.has('IfcDeepFoundation') ||\n    spatialTypes.has('IfcBridge');\n\n  // Building indicators\n  const hasBuilding =\n    spatialTypes.has('IfcBuilding') ||\n    categories.has('IfcWall') ||\n    categories.has('IfcSlab');\n\n  // ---------------------------------------------------------------------------\n  // Count how many domains are detected.\n  //\n  // Mixed models (e.g. Road + Bridge) are labelled as \"Mixed\" instead of\n  // assigning a single domain.\n  // ---------------------------------------------------------------------------\n  const matches = [\n    hasRail,\n    hasRoad,\n    hasBridge,\n    hasBuilding\n  ].filter(Boolean).length;\n\n  if      (matches > 1) domain = 'Mixed';\n  else if (hasRail)     domain = 'Rail';\n  else if (hasRoad)     domain = 'Road';\n  else if (hasBridge)   domain = 'Bridge';\n  else if (hasBuilding) domain = 'Building';\n  else                  domain = 'Unknown';\n}\n\n// -----------------------------------------------------------------------------\n// 4. Append schema and domain to every output item\n// -----------------------------------------------------------------------------\n// These fields allow downstream nodes to identify both the IFC schema and\n// inferred project domain without reprocessing the dataset.\nreturn all.map(item => ({\n  json: {\n    ...item.json,\n    ifc_schema: schema,\n    ifc_domain: domain\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2512,
+        896
+      ],
+      "id": "5ea1a7a2-bff8-47c8-a236-2cde8e52560d",
+      "name": "2.5: Detect domain"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8fc0cba1-e64a-4072-a870-1ebda85a7a89",
+              "name": "pipeline",
+              "value": "B_ifcopenshell",
+              "type": "string"
+            },
+            {
+              "id": "6da3d2a8-5ebb-410e-89d9-0f9b16f806a7",
+              "name": "_type",
+              "value": "element",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2960,
+        896
+      ],
+      "id": "e7c9cade-e24f-422d-9b2e-a81642fdb3ed",
+      "name": "2.7: Tag as Pipeline B"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3184,
+        560
+      ],
+      "id": "de75f3f3-1916-4d18-b40a-b36081d5f7ca",
+      "name": "3.1: Merge A+B"
+    },
+    {
+      "parameters": {
+        "content": "## Block 5: Output Generation\n- Writes the HTML risk register with the screening verdict, per-dimension evidence and cross-pipeline verification.\n- Exports the per-element sensitivity dataset as JSON for offline analysis.\n- Diagnostic dumps for pipelines A and B, BQI and risk are written alongside.",
+        "height": 1088,
+        "width": 1104
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5376,
+        176
+      ],
+      "id": "7b13d643-1497-4d11-ac7d-8eea40ba9ca4",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "## Block 4: Risk screening\n- Derives exposure, likelihood and consequence per element from IFC properties.\n- Widens the raw risk score into a band whose width is set by α(1 − BQI); ranks on the upper edge R_adj.\n- Labels each element High, Medium or Low against per-model thresholds.",
+        "height": 1088,
+        "width": 1088,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4256,
+        176
+      ],
+      "id": "ae3f1071-966c-4dc9-a60b-09db925bb818",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst EXPOSURE_BUILDING = {\n  IfcRoof:                { base: 0.90, ext: 0.90 },\n  IfcChimney:             0.80,\n  IfcStair:               0.60,\n  IfcStairFlight:         0.60,\n  IfcRamp:                0.55,\n  IfcRampFlight:          0.55,\n  IfcWall:                { base: 0.45, ext: 0.40 },\n  IfcWallStandardCase:    { base: 0.45, ext: 0.40 },\n  IfcWindow:              { base: 0.50, ext: 0.45 },\n  IfcDoor:                { base: 0.40, ext: 0.35 },\n  IfcColumn:              0.55,\n  IfcColumnStandardCase:  0.55,\n  IfcBeam:                0.50,\n  IfcBeamStandardCase:    0.50,\n  IfcSlab:                0.55,\n  IfcSlabStandardCase:    0.55,\n  IfcFooting:             0.65,\n  IfcPile:                0.60,\n  IfcPlate:               0.45,\n  IfcMember:              0.40,\n  IfcCovering:            0.35,\n  IfcCurtainWall:         { base: 0.60, ext: 0.55 },\n  IfcFurnishingElement:   0.10,\n  IfcFurniture:           0.10,\n  IfcRailing:             0.35,\n  IfcSpace:               0.20,\n  IfcBuildingElementProxy: 0.30,\n};\n\nconst EXPOSURE_ROAD = {\n  IfcPavement:            0.85,\n  IfcKerb:                0.70,\n  IfcRoadPart:            0.75,\n  IfcEarthworksFill:      0.60,\n  IfcEarthworksCut:       0.60,\n  IfcCourse:              0.80,\n  IfcSignal:              0.50,\n  IfcSign:                0.45,\n  IfcCivilElement:        0.55,\n};\n\nconst EXPOSURE_RAIL = {\n  IfcRail:                0.80,\n  IfcTrackElement:        0.75,\n  IfcFacilityPart:        0.60,\n  IfcCivilElement:        0.55,\n  IfcEarthworksFill:      0.55,\n  IfcEarthworksCut:       0.55,\n  IfcSignal:              0.70,\n  IfcSign:                0.40,\n};\n\nconst EXPOSURE_BRIDGE = {\n  IfcBridgePart:          0.85,\n  IfcBearing:             0.80,\n  IfcCourse:              0.75,\n  IfcCivilElement:        0.70,\n  IfcColumn:              0.65,\n  IfcColumnStandardCase:  0.65,\n  IfcBeam:                0.70,\n  IfcBeamStandardCase:    0.70,\n  IfcSlab:                0.65,\n  IfcSlabStandardCase:    0.65,\n  IfcEarthworksFill:      0.50,\n  IfcEarthworksCut:       0.50,\n  IfcDeepFoundation:      0.60,\n};\n\nconst DEFAULT_EXPOSURE = 0.30;\n\nfunction inferDomain(ifcType, explicitDomain) {\n  if (explicitDomain && explicitDomain !== 'Unknown') return explicitDomain;\n  if (['IfcRail', 'IfcTrackElement'].includes(ifcType))           return 'Rail';\n  if (['IfcBridgePart', 'IfcBearing'].includes(ifcType))          return 'Bridge';\n  if (['IfcPavement', 'IfcKerb', 'IfcRoadPart'].includes(ifcType)) return 'Road';\n  return 'Building';\n}\n\nfunction selectTable(domain) {\n  if (domain === 'Road')   return { table: EXPOSURE_ROAD,     warn: false };\n  if (domain === 'Rail')   return { table: EXPOSURE_RAIL,     warn: false };\n  if (domain === 'Bridge') return { table: EXPOSURE_BRIDGE,   warn: false };\n  if (domain === 'Mixed')  return { table: EXPOSURE_BUILDING, warn: true  };\n  return                          { table: EXPOSURE_BUILDING, warn: false };\n}\n\nfunction resolveEntry(entry, isExternal) {\n  if (entry === undefined || entry === null) return null;\n  if (typeof entry === 'number') return entry;\n  if (typeof entry === 'object') return isExternal ? entry.ext : entry.base;\n  return null;\n}\n\nfunction readIsExternal(json) {\n  if (typeof json.is_external === 'boolean') return json.is_external;\n  return Object.keys(json).some(k =>\n    k.includes('IsExternal') &&\n    (json[k] === true || json[k] === 'true' || json[k] === '.T.')\n  );\n}\n\nreturn items.map(item => {\n  if (item.json._type !== 'bqi_scored') return item;\n\n  const json       = item.json;\n  const ifcType    = json.Category || '';\n  const isExternal = readIsExternal(json);\n  const domain     = inferDomain(ifcType, json.ifc_domain || 'Unknown');\n\n  if (!ifcType) {\n    return {\n      json: {\n        ...json,\n        _type:          'risk_exposure',\n        exposure_score: DEFAULT_EXPOSURE,\n        is_external:    isExternal,\n        domain:         domain,\n        domain_warning: true,\n      }\n    };\n  }\n\n  const { table, warn } = selectTable(domain);\n  const entry           = table[ifcType];\n  const resolved        = resolveEntry(entry, isExternal);\n  const exposureScore   = resolved !== null ? resolved : DEFAULT_EXPOSURE;\n\n  return {\n    json: {\n      ...json,\n      _type:          'risk_exposure',\n      exposure_score: exposureScore,\n      is_external:    isExternal,\n      domain:         domain,\n      ...(warn && { domain_warning: true }),\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4304,
+        560
+      ],
+      "id": "42d22429-dd5e-4bd1-a518-876f0d974bf3",
+      "name": "4.1: Exposure",
+      "notes": "Code JS — maps element type + location tag → exposure score"
+    },
+    {
+      "parameters": {
+        "jsCode": "// =============================================================================\n// Node 3.2 · Quantity Take-Off (QTO) Comparison\n//\n// Purpose:\n// Compares Quantity Take-Off (QTO) values extracted from two pipelines:\n//\n//   • Pipeline A (DDC Toolkit)\n//   • Pipeline B (IfcOpenShell)\n//\n// Elements are matched using their IFC GlobalId. Matching QTO fields are then\n// compared to identify differences in extracted quantities.\n//\n// Outputs:\n//   • qto_summary      : Overall comparison statistics\n//   • element          : Original element records (passed through)\n//   • qto_comparison   : One record per compared QTO field\n//\n// Assumptions:\n// • Both pipelines use the same IFC GlobalId for the same physical element.\n// • Quantity fields follow the naming convention:\n//       [QuantitySet] QuantityName\n// =============================================================================\n\n\n// -----------------------------------------------------------------------------\n// Build element lookups\n// -----------------------------------------------------------------------------\n// Create dictionaries indexed by GlobalId for fast element matching.\n//\n// Performance:\n// Lookup by GlobalId is O(1), avoiding repeated searches through the full\n// dataset.\n//\nconst qtoPattern = /^\\[.*?\\]/;\n\nconst lookupA = {};\nconst lookupB = {};\n\nfor (const item of $input.all()) {\n  const el = item.json;\n\n  if (el._type !== 'element') continue;\n\n  if (el.pipeline === 'A_ddc') {\n    lookupA[el.GlobalId] = el;\n  } else if (el.pipeline === 'B_ifcopenshell') {\n    lookupB[el.GlobalId] = el;\n  }\n}\n\n// Elements available in both extraction pipelines.\nconst sharedGids = Object.keys(lookupA).filter(gid => lookupB[gid]);\n\n\n// =============================================================================\n// Helper Functions\n// =============================================================================\n\n// -----------------------------------------------------------------------------\n// Normalize quantity field names.\n//\n// Different extraction tools may use different Quantity Set names:\n//\n//   [BaseQuantities] NetVolume\n//   [Qto_WallBaseQuantities] NetVolume\n//\n// Both become:\n//\n//   NetVolume\n//\n// This allows quantities with the same meaning to be compared regardless of\n// their originating Quantity Set.\n// -----------------------------------------------------------------------------\nfunction normalizeQtoKey(key) {\n  return key.replace(/^\\[.*?\\][.\\s]/, '').trim();\n}\n\n\n// -----------------------------------------------------------------------------\n// Extract QTO fields from an element.\n//\n// Returns:\n//\n// {\n//     NetVolume : {\n//         value: 15.4,\n//         originalKey: \"[BaseQuantities] NetVolume\"\n//     }\n// }\n//\n// Notes:\n// • Only fields beginning with \"[...]\" are treated as quantities.\n// • If duplicate normalized names exist, the first occurrence is kept.\n// -----------------------------------------------------------------------------\nfunction getQtoMap(obj) {\n\n  const map = {};\n\n  for (const key of Object.keys(obj)) {\n\n    if (qtoPattern.test(key)) {\n\n      const normalized = normalizeQtoKey(key);\n\n      if (!map[normalized]) {\n        map[normalized] = {\n          value: parseFloat(obj[key]),\n          originalKey: key\n        };\n      }\n    }\n  }\n\n  return map;\n}\n\n\n// =============================================================================\n// Compare quantities\n// =============================================================================\n\nconst comparisons = [];\nconst deltas = [];\n\nfor (const gid of sharedGids) {\n\n  const a = lookupA[gid];\n  const b = lookupB[gid];\n\n  const qtoA = getQtoMap(a);\n  const qtoB = getQtoMap(b);\n\n  // Union of all quantity names from both extraction methods.\n  const allQtoKeys = new Set([\n    ...Object.keys(qtoA),\n    ...Object.keys(qtoB)\n  ]);\n\n  for (const qtoKey of allQtoKeys) {\n\n    const entryA = qtoA[qtoKey];\n    const entryB = qtoB[qtoKey];\n\n    const valA = entryA?.value;\n    const valB = entryB?.value;\n\n    const hasA = entryA !== undefined && !isNaN(valA);\n    const hasB = entryB !== undefined && !isNaN(valB);\n\n    let delta   = null;\n    let pctDiff = null;\n    let match   = 'missing';\n\n    if (hasA && hasB) {\n\n      // Absolute difference between extraction methods.\n      delta = valB - valA;\n\n      // Percentage difference relative to Pipeline A.\n      pctDiff =\n        valA !== 0\n          ? Math.abs(delta) / Math.abs(valA) * 100\n          : 0;\n\n      // -----------------------------------------------------------------------\n      // Match classification\n      //\n      // exact        : numerically identical\n      // negligible   : <0.01%\n      // minor        : <1%\n      // significant  : ≥1%\n      //\n      // Thresholds may be adjusted depending on the required comparison\n      // sensitivity.\n      // -----------------------------------------------------------------------\n      if      (Math.abs(delta) < 1e-10) match = 'exact';\n      else if (pctDiff < 0.01)          match = 'negligible';\n      else if (pctDiff < 1)             match = 'minor';\n      else                              match = 'significant';\n\n      deltas.push({\n        gid,\n        field: qtoKey,\n        delta,\n        pctDiff\n      });\n\n    } else {\n\n      // Quantity exists in only one extraction pipeline.\n      match = hasA ? 'only_in_A' : 'only_in_B';\n    }\n\n    comparisons.push({\n      _type:      'qto_comparison',\n\n      GlobalId:   gid,\n      Name:       a.Name || b.Name || '',\n      Category:   a.Category || b.Category || '',\n\n      QtoField:   qtoKey,\n\n      QtoField_A: entryA?.originalKey || null,\n      QtoField_B: entryB?.originalKey || null,\n\n      Value_A:    hasA ? valA : null,\n      Value_B:    hasB ? valB : null,\n\n      Delta:      delta,\n      PctDiff:    pctDiff,\n\n      Match:      match\n    });\n  }\n}\n\n\n// =============================================================================\n// Build summary statistics\n// =============================================================================\n//\n// Reports:\n//\n// • Total elements in each extraction pipeline\n// • Shared elements\n// • Elements unique to each pipeline\n// • Counts grouped by IFC category\n//\n// Useful for identifying extraction coverage differences.\n//\nconst onlyInAGids = Object.keys(lookupA).filter(gid => !lookupB[gid]);\nconst onlyInBGids = Object.keys(lookupB).filter(gid => !lookupA[gid]);\n\nfunction countByType(gids, lookup) {\n\n  const counts = {};\n\n  for (const gid of gids) {\n\n    const type = lookup[gid].Category || 'Unknown';\n\n    counts[type] = (counts[type] || 0) + 1;\n  }\n\n  return counts;\n}\n\nconst summary = {\n\n  _type: 'qto_summary',\n\n  total_elements_A: Object.keys(lookupA).length,\n  total_elements_B: Object.keys(lookupB).length,\n\n  shared_elements: sharedGids.length,\n\n  total_unique_elements:\n    sharedGids.length +\n    onlyInAGids.length +\n    onlyInBGids.length,\n\n  only_in_A: onlyInAGids.length,\n  only_in_B: onlyInBGids.length,\n\n  only_in_A_by_type: countByType(onlyInAGids, lookupA),\n  only_in_B_by_type: countByType(onlyInBGids, lookupB)\n};\n\n\n// -----------------------------------------------------------------------------\n// Pass through original elements.\n//\n// This allows downstream nodes to continue using the original extracted\n// elements alongside the comparison results.\n// -----------------------------------------------------------------------------\nconst passthrough =\n  $input.all().filter(item => item.json._type === 'element');\n\n\n// =============================================================================\n// Output\n//\n// 1. Summary statistics\n// 2. Original element records\n// 3. One comparison record per QTO field\n// =============================================================================\nreturn [\n  { json: summary },\n  ...passthrough,\n  ...comparisons.map(c => ({ json: c }))\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3408,
+        560
+      ],
+      "id": "75d54f58-e1ed-4ec4-91eb-ba4b182d1903",
+      "name": "3.2: QTO comparison"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst summaryItem = items.find(i => i.json._type === 'qto_summary');\n\nif (!summaryItem) {\n  return [{\n    json: {\n      _type: 'error',\n      message: 'No qto_summary found. Check that Node 3.2 ran correctly.'\n    }\n  }];\n}\n\nconst summary = summaryItem.json;\n\n// Read coverage threshold from Config, fallback to 95\nconst coverageThreshold = $node['0.1: Config']?.json?.coverage_threshold ?? 95;\n\n// ----------------------------------------------------------------------\n// IFC type severity rules.\n// These classify how serious it is when an element type appears in one\n// extraction pipeline but not the other:\n//   critical          -> load-bearing or space-defining elements. A missing\n//                        one means quantities/risk screening may be wrong.\n//   needs_review      -> secondary or ambiguous elements (incl. proxies and\n//                        any type not listed anywhere = conservative default).\n//   probably_harmless -> non-physical schema constructs; their absence does\n//                        not change quantities or structural risk.\n// The critical list mirrors the high-criticality types in Node 4.3\n// (CRITICALITY_BUILDING >= 0.75), keeping severity and consequence aligned.\n// ----------------------------------------------------------------------\n\nconst criticalTypes = [\n  'IfcWall', 'IfcWallStandardCase',\n  'IfcSlab', 'IfcSlabStandardCase',\n  'IfcBeam', 'IfcBeamStandardCase',\n  'IfcColumn', 'IfcColumnStandardCase',\n  'IfcRoof', 'IfcDoor', 'IfcWindow',\n  'IfcSpace', 'IfcStair', 'IfcStairFlight',\n  'IfcRamp', 'IfcRampFlight',\n  'IfcFooting', 'IfcPile'\n];\n\nconst reviewTypes = [\n  'IfcCovering', 'IfcPlate', 'IfcMember', 'IfcRailing',\n  'IfcCurtainWall', 'IfcFurnishingElement', 'IfcFurniture',\n  'IfcBuildingElementProxy'\n];\n\n// Non-physical or annotation-level entities. A count mismatch in these\n// types does not affect quantities or structural risk screening.\nconst harmlessTypes = [\n  'IfcOpeningElement', 'IfcOpeningStandardCase',\n  'IfcAnnotation', 'IfcGrid', 'IfcGridAxis',\n  'IfcVirtualElement'\n];\n\nfunction classify(type) {\n  if (criticalTypes.includes(type)) return 'critical';\n  if (harmlessTypes.includes(type)) return 'probably_harmless';\n  if (reviewTypes.includes(type))   return 'needs_review';\n  return 'needs_review'; // unknown types are treated conservatively\n}\n\n// --------------------\n// Count severity, without double-penalizing\n// --------------------\n\nconst severity = { critical: 0, needs_review: 0, probably_harmless: 0 };\nconst typesBySeverity = { critical: [], needs_review: [], probably_harmless: [] };\n\nconst missingAByType = summary.only_in_A_by_type || {};\nconst missingBByType = summary.only_in_B_by_type || {};\n\n// An element missing from A and also missing from B would otherwise be\n// counted twice; taking the max over the union of types counts it once.\nconst allMissingTypes = new Set([\n  ...Object.keys(missingAByType),\n  ...Object.keys(missingBByType)\n]);\n\nfor (const type of allMissingTypes) {\n  const maxCount = Math.max(\n    missingAByType[type] || 0,\n    missingBByType[type] || 0\n  );\n  const bucket = classify(type);\n  severity[bucket] += maxCount;\n  if (maxCount > 0) typesBySeverity[bucket].push(`${type} (${maxCount})`);\n}\n\n// --------------------\n// Coverage % = elements found by BOTH pipelines / all unique elements\n// (union denominator, so the percentage is symmetric in A and B).\n// --------------------\n\nconst totalUnique = summary.total_unique_elements\n  || Math.max(summary.total_elements_A, summary.total_elements_B);\n\nconst coveragePct = totalUnique > 0\n  ? Math.round((summary.shared_elements / totalUnique) * 10000) / 100\n  : 0;\n\n// --------------------\n// Verdict logic:\n//   any critical missing            -> FAIL  (HIGH risk)\n//   review items or low coverage    -> REVIEW (MEDIUM risk)\n//   otherwise                       -> PASS  (LOW risk)\n// probably_harmless never affects the verdict, by design.\n// --------------------\n\nlet verdict   = 'PASS';\nlet riskLevel = 'LOW';\n\nif (severity.critical > 0) {\n  verdict   = 'FAIL';\n  riskLevel = 'HIGH';\n} else if (severity.needs_review > 0 || coveragePct < coverageThreshold) {\n  verdict   = 'REVIEW';\n  riskLevel = 'MEDIUM';\n}\n\n// --------------------\n// Output\n// --------------------\n\nconst output = [];\n\noutput.push({\n  json: {\n    _type:                  'coverage_analysis',\n    total_elements_A:       summary.total_elements_A,\n    total_elements_B:       summary.total_elements_B,\n    total_unique_elements:  totalUnique,\n    shared_elements:        summary.shared_elements,\n    coverage_percentage:    coveragePct,\n    coverage_threshold:     coverageThreshold,\n    missing_elements_total: summary.only_in_A + summary.only_in_B,\n    missing_A_by_type:      missingAByType,\n    missing_B_by_type:      missingBByType,\n    severity_breakdown:     severity,\n    // Actual missing IFC types per severity class, e.g. \"IfcWall (3)\".\n    // Node 5.6 prints these under each severity box instead of static examples.\n    missing_types_by_severity: typesBySeverity,\n    verdict,\n    risk_level:             riskLevel\n  }\n});\n\n// Pass everything except qto_summary downstream\nitems.forEach(item => {\n  if (item.json._type !== 'qto_summary') {\n    output.push(item);\n  }\n});\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3632,
+        560
+      ],
+      "id": "03a81b41-aaf8-4075-b91b-9a081b8cc6f1",
+      "name": "3.3: Coverage Analysis"
+    },
+    {
+      "parameters": {
+        "jsCode": "const allItems = $input.all();\n\nconst qtoComparisons = allItems.filter(i => i.json._type === 'qto_comparison');\nconst elements       = allItems.filter(i => i.json._type === 'element');\n\nif (!elements.length) {\n  return [{\n    json: {\n      _type: 'error',\n      message: 'No element items found — check Node 3.1 merge and Node 2.6 filter'\n    }\n  }];\n}\n\nconst qtoByGid = {};\nfor (const comp of qtoComparisons) {\n  const gid = comp.json.GlobalId;\n  if (!qtoByGid[gid]) qtoByGid[gid] = [];\n  qtoByGid[gid].push(comp.json);\n}\n\n// BQI dimension weights. Normally read from Node 0.1 Config (bqi_weights).\n// The object below is only a safety fallback if Config is missing.\n// Weight rationale: completeness > validity > the two QTO dimensions (equal).\nconst WEIGHTS = $node['0.1: Config']?.json?.bqi_weights || {\n  completeness:  0.35,\n  validity:      0.25,\n  qto_coverage:  0.20,\n  qto_agreement: 0.20\n};\n\nconst REQUIRED_PROPS = {\n  IfcWall:                  ['IsExternal', 'LoadBearing'],\n  IfcWallStandardCase:      ['IsExternal', 'LoadBearing'],\n  IfcSlab:                  ['IsExternal', 'LoadBearing'],\n  IfcSlabStandardCase:      ['IsExternal', 'LoadBearing'],\n  IfcBeam:                  ['IsExternal', 'LoadBearing'],\n  IfcBeamStandardCase:      ['IsExternal', 'LoadBearing'],\n  IfcColumn:                ['IsExternal', 'LoadBearing'],\n  IfcColumnStandardCase:    ['IsExternal', 'LoadBearing'],\n  IfcRoof:                  ['IsExternal'],\n  IfcDoor:                  ['IsExternal', 'FireRating'],\n  IfcWindow:                ['IsExternal'],\n  IfcSpace:                 ['IsExternal', 'GrossPlannedArea'],\n};\n\nconst EXPECTED_QTO = {\n  IfcWall:                  ['NetVolume', 'Width', 'Length', 'NetSideArea'],\n  IfcWallStandardCase:      ['NetVolume', 'Width', 'Length', 'NetSideArea'],\n  IfcSlab:                  ['NetVolume', 'Depth', 'NetArea'],\n  IfcSlabStandardCase:      ['NetVolume', 'Depth', 'NetArea'],\n  IfcBeam:                  ['NetVolume', 'Length'],\n  IfcBeamStandardCase:      ['NetVolume', 'Length'],\n  IfcColumn:                ['NetVolume', 'Length'],\n  IfcColumnStandardCase:    ['NetVolume', 'Length'],\n  IfcRoof:                  ['NetVolume'],\n  IfcSpace:                 ['NetFloorArea', 'GrossFloorArea', 'Height'],\n  IfcDoor:                  ['Area', 'Height', 'Width'],\n  IfcWindow:                ['Area', 'Height', 'Width'],\n};\n\n// Checks whether an element carries a property with EXACTLY this name.\n// Keys look like \"[Pset_WallCommon] IsExternal\"; we compare the part after\n// the bracket. Exact match prevents e.g. 'Area' wrongly matching 'NetArea'.\nfunction hasProperty(elem, propName) {\n  return Object.keys(elem).some(k => {\n    const match = k.match(/^\\[.*?\\]\\s(.+)$/);\n    return match && match[1] === propName\n        && elem[k] != null && elem[k] !== '';\n  });\n}\n\nfunction scoreElement(elem) {\n  const type = elem.Category || '';\n  const gid  = elem.GlobalId;\n\n  // hasAnyData = does this element carry ANY property/quantity at all?\n  // Used as a conservative fallback for IFC types that have no rule in the\n  // REQUIRED_PROPS / EXPECTED_QTO tables above: with data -> score 1.0,\n  // with no data at all -> score 0.0 (never \"perfect by default\").\n  const propKeys  = Object.keys(elem).filter(k => k.startsWith('['));\n  const hasAnyData = propKeys.length > 0;\n\n  // D1 Completeness = (required properties found) / (required properties)\n  // for this IFC type, per the REQUIRED_PROPS table.\n  const required     = REQUIRED_PROPS[type] || [];\n  const missingProps = required.filter(p => !hasProperty(elem, p));\n  const completenessScore = required.length > 0\n    ? (required.length - missingProps.length) / required.length\n    // No rule for this type: fall back to the hasAnyData rule (see above).\n    : (hasAnyData ? 1.0 : 0.0);\n\n  // D2 Validity = (property values that are usable) / (all extracted\n  // properties). A value is invalid if it is empty, null, UNSET, or N/A.\n  const invalidProps = propKeys.filter(k => {\n    const v = elem[k];\n    return v === '' || v === null || v === undefined\n        || v === \"['UNSET']\" || v === 'UNSET' || v === 'N/A';\n  });\n  const validityScore = propKeys.length > 0\n    ? (propKeys.length - invalidProps.length) / propKeys.length\n    // No properties extracted at all -> validity is 0, not \"valid by default\".\n    : 0.0;\n\n  // D3 QTO coverage = (expected quantities found) / (expected quantities)\n  // for this IFC type, per the EXPECTED_QTO table.\n  const expectedQto      = EXPECTED_QTO[type] || [];\n  const missingQto       = expectedQto.filter(qty => !hasProperty(elem, qty));\n  const qtoCoverageScore = expectedQto.length > 0\n    ? (expectedQto.length - missingQto.length) / expectedQto.length\n    // No rule for this type: same hasAnyData fallback as D1.\n    : (hasAnyData ? 1.0 : 0.0);\n\n  // D4 QTO agreement = share of Pipeline A vs B quantity comparisons for\n  // this element that matched (exact or negligible difference).\n  // If quantities were expected but no comparison exists, we assign 0.5:\n  // absence of evidence is penalized, but not treated as total disagreement.\n  const qtoComps = qtoByGid[gid] || [];\n  const qtoAgreementScore = qtoComps.length > 0\n    ? qtoComps.filter(c => c.Match === 'exact' || c.Match === 'negligible').length / qtoComps.length\n    // No comparison rows for this element: see the 0.5 rule explained above.\n    : (expectedQto.length === 0 ? (hasAnyData ? 1.0 : 0.0) : 0.5);\n\n  const bqi =\n    WEIGHTS.completeness  * completenessScore  +\n    WEIGHTS.validity      * validityScore      +\n    WEIGHTS.qto_coverage  * qtoCoverageScore   +\n    WEIGHTS.qto_agreement * qtoAgreementScore;\n\n  const confidence =\n    bqi >= 0.85 ? 'high'   :\n    bqi >= 0.60 ? 'medium' : 'low';\n\n  const penalties = [];\n  if (completenessScore  < 0.5) penalties.push('incomplete_properties');\n  if (validityScore      < 0.5) penalties.push('invalid_values');\n  if (qtoCoverageScore   < 0.5) penalties.push('missing_qto');\n  if (qtoAgreementScore  < 0.5) penalties.push('qto_disagreement');\n  if (!elem.Material || elem.Material === '') penalties.push('no_material');\n\n  return {\n    _type:               'bqi_scored',\n    GlobalId:            gid,\n    Name:                elem.Name       || '',\n    Category:            type,\n    Material:            elem.Material   || '',\n    ObjectType:          elem.ObjectType || '',\n    is_external:         elem.is_external ?? false,\n    pipeline:            elem.pipeline   || '',\n    ifc_domain:          elem.ifc_domain || 'Building',\n    ifc_schema:          elem.ifc_schema || '',\n    bqi_score:           bqi,\n    bqi_confidence:      confidence,\n    score_completeness:  completenessScore,\n    score_validity:      validityScore,\n    score_qto_coverage:  qtoCoverageScore,\n    score_qto_agreement: qtoAgreementScore,\n    missing_properties:  missingProps,\n    invalid_properties:  invalidProps,\n    missing_qto:         missingQto,\n    penalties,\n    // All bracketed keys — covers [Pset_], [Qto_], [BaseQuantities]\n    ...Object.fromEntries(Object.entries(elem).filter(([k]) => k.startsWith('[')))\n  };\n}\n\n// Element-level scoring uses Pipeline B (IfcOpenShell) when available,\n// because it is the richer extraction; Pipeline A is the fallback.\n// This choice also fixes which BQI feeds the risk formula in Block 4.\nconst elementsToScore = (() => {\n  const b = elements.filter(i => i.json.pipeline === 'B_ifcopenshell');\n  return b.length > 0 ? b : elements.filter(i => i.json.pipeline === 'A_ddc');\n})();\n\nconst scored = elementsToScore.map(elem => ({ json: scoreElement(elem.json) }));\n\nconst avgBqi = scored.length > 0\n  ? scored.reduce((s, i) => s + i.json.bqi_score, 0) / scored.length\n  : 0;\n\n// ---- Per-pipeline dimension averages (feeds the A-vs-B radar in 5.6) ------\n// Element-level scoring (and the risk formula) still uses Pipeline B only;\n// this block is additive and only feeds the model summary / radar chart.\n// Note: D4 is inherently cross-pipeline agreement, so it is the same value\n// for both pipelines — the radar shows D1–D3 per pipeline, D4 as shared axis.\nfunction dimAverages(elems) {\n  if (!elems.length) return null;\n  const s = elems.map(e => scoreElement(e.json));\n  const avg = k => s.reduce((a, x) => a + (x[k] || 0), 0) / s.length;\n  return {\n    n: s.length,\n    D1_completeness:  avg('score_completeness'),\n    D2_validity:      avg('score_validity'),\n    D3_qto_coverage:  avg('score_qto_coverage'),\n    D4_qto_agreement: avg('score_qto_agreement'),\n    bqi:              avg('bqi_score'),\n  };\n}\nconst dimsByPipeline = {\n  A_ddc:          dimAverages(elements.filter(i => i.json.pipeline === 'A_ddc')),\n  B_ifcopenshell: dimAverages(elements.filter(i => i.json.pipeline === 'B_ifcopenshell')),\n};\n\nconst output = [];\n\noutput.push({\n  json: {\n    _type:                 'bqi_model_summary',\n    model_bqi: avgBqi,\n    model_confidence:      avgBqi >= 0.85 ? 'high' : avgBqi >= 0.60 ? 'medium' : 'low',\n    total_elements_scored: scored.length,\n    pipeline_scored:       elementsToScore[0]?.json?.pipeline || 'unknown',\n    distribution: {\n      high:   scored.filter(i => i.json.bqi_confidence === 'high').length,\n      medium: scored.filter(i => i.json.bqi_confidence === 'medium').length,\n      low:    scored.filter(i => i.json.bqi_confidence === 'low').length,\n    },\n    weights_used:             WEIGHTS,\n    // ⚠️ Key name must match what Node 5.6 reads: dim_averages_by_pipeline\n    dim_averages_by_pipeline: dimsByPipeline,\n  }\n});\n\nscored.forEach(row => output.push(row));\n\nallItems.forEach(item => {\n  if (item.json._type === 'qto_comparison' || item.json._type === 'coverage_analysis') {\n    output.push(item);\n  }\n});\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3856,
+        560
+      ],
+      "id": "d131d7ff-bec9-430f-9b0d-bddbe55c71f9",
+      "name": "3.4: BQI Scoring"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst comparisons = items.filter(\n  i => i.json._type === 'qto_comparison'\n    && i.json.Value_A !== null\n    && i.json.Value_B !== null\n);\n\nconst output = [];\n\nif (!comparisons.length) {\n  // ✅ Emit an honest \"nothing to correlate\" summary instead of an error —\n  // and still pass everything else through instead of discarding it.\n  output.push({\n    json: {\n      _type:                'srcc_summary',\n      total_fields_scored:  0,\n      stable_fields:        0,\n      unstable_fields:      0,\n      average_srcc:         null,\n      overall_rank_stable:  false,\n      overall_note:         'No qto_comparison rows had both Value_A and Value_B present — SRCC cannot be computed for this run',\n      srcc_results:         []\n    }\n  });\n  items.forEach(item => {\n    if (item.json._type !== 'qto_comparison') {\n      output.push(item);\n    }\n  });\n  return output;\n}\n\n// ✅ Group by Category + QtoField for meaningful per-type SRCC\nconst qtoGroups = {};\ncomparisons.forEach(item => {\n  const key = `${item.json.Category}::${item.json.QtoField}`;\n  if (!qtoGroups[key]) {\n    qtoGroups[key] = {\n      field:    item.json.QtoField,\n      category: item.json.Category,\n      rows:     []\n    };\n  }\n  qtoGroups[key].rows.push(item.json);\n});\n\nfunction spearmanRank(values) {\n  const sorted = values.map((v, i) => ({ val: v, idx: i }))\n                       .sort((a, b) => a.val - b.val);\n  const ranks = new Array(values.length);\n  let i = 0;\n  while (i < sorted.length) {\n    let j = i;\n    while (j < sorted.length && sorted[j].val === sorted[i].val) j++;\n    const avgRank = (i + j + 1) / 2;\n    for (let k = i; k < j; k++) ranks[sorted[k].idx] = avgRank;\n    i = j;\n  }\n  return ranks;\n}\n\nfunction calcSRCC(ranksA, ranksB) {\n  const n = ranksA.length;\n  if (n < 3) return null;\n  const dSquaredSum = ranksA.reduce((sum, rA, i) => sum + (rA - ranksB[i]) ** 2, 0);\n  return 1 - (6 * dSquaredSum) / (n * (n * n - 1));\n}\n\nconst srccResults = [];\n\nfor (const [, group] of Object.entries(qtoGroups)) {\n  const { field, category, rows } = group;\n\n  if (rows.length < 3) {\n    srccResults.push({\n      Category:     category,\n      QtoField:     field,\n      ElementCount: rows.length,\n      SRCC:         null,\n      RankStable:   false,\n      Note:         'Too few elements for SRCC (need ≥ 3)'\n    });\n    continue;\n  }\n\n  const ranksA = spearmanRank(rows.map(r => r.Value_A));\n  const ranksB = spearmanRank(rows.map(r => r.Value_B));\n  const srcc   = calcSRCC(ranksA, ranksB);\n  const srccR  = srcc !== null ? Math.round(srcc * 10000) / 10000 : null;\n\n  let note = '';\n  if      (srcc === null)  note = 'Could not compute';\n  else if (srcc === 1)     note = 'Perfect rank agreement';\n  else if (srcc >= 0.95)   note = 'Strong rank agreement';\n  else if (srcc >= 0.80)   note = 'Moderate — risk rankings may differ';\n  else                     note = 'Weak — significant rank instability';\n\n  srccResults.push({\n    Category:     category,\n    QtoField:     field,\n    ElementCount: rows.length,\n    SRCC:         srccR,\n    RankStable:   srcc !== null && srcc >= 0.95,\n    Note:         note\n  });\n}\n\nconst scoredFields   = srccResults.filter(r => r.SRCC !== null);\nconst stableFields   = scoredFields.filter(r => r.RankStable);\nconst unstableFields = scoredFields.filter(r => !r.RankStable);\n\n// ✅ Average SRCC — less strict than all-or-nothing\nconst avgSRCC = scoredFields.length > 0\n  ? Math.round(scoredFields.reduce((s, r) => s + r.SRCC, 0) / scoredFields.length * 10000) / 10000\n  : null;\n\nconst overallStable = avgSRCC !== null && avgSRCC >= 0.95;\n\nlet overallNote = '';\nif      (scoredFields.length === 0) overallNote = 'No fields had enough data for SRCC';\nelse if (overallStable)             overallNote = 'Overall rank agreement is strong (avg SRCC ≥ 0.95)';\nelse if (unstableFields.length > 0) overallNote = `${unstableFields.length} field(s) have unstable rankings — review before using in risk model`;\n\n// 1. SRCC summary\noutput.push({\n  json: {\n    _type:                'srcc_summary',\n    total_fields_scored:  scoredFields.length,\n    stable_fields:        stableFields.length,\n    unstable_fields:      unstableFields.length,\n    average_srcc:         avgSRCC,\n    overall_rank_stable:  overallStable,\n    overall_note:         overallNote,\n    srcc_results:         srccResults\n  }\n});\n\n// 2. Individual SRCC rows — easier for Excel/report export\nsrccResults.forEach(r => {\n  output.push({ json: { _type: 'srcc_result', ...r } });\n});\n\n// 3. Pass everything except qto_comparison downstream\nitems.forEach(item => {\n  if (item.json._type !== 'qto_comparison') {\n    output.push(item);\n  }\n});\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4080,
+        560
+      ],
+      "id": "12d52fcc-e69c-4abe-ba79-95d5592ba656",
+      "name": "3.5: SRCC Analysis"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst SUSCEPTIBILITY_BUILDING = {\n  IfcRoof:                0.80,\n  IfcChimney:             0.70,\n  IfcWindow:              0.65,\n  IfcDoor:                0.55,\n  IfcWall:                0.45,\n  IfcWallStandardCase:    0.45,\n  IfcSlab:                0.40,\n  IfcSlabStandardCase:    0.40,\n  IfcColumn:              0.35,\n  IfcColumnStandardCase:  0.35,\n  IfcBeam:                0.35,\n  IfcBeamStandardCase:    0.35,\n  IfcFooting:             0.30,\n  IfcPile:                0.25,\n  IfcStair:               0.50,\n  IfcStairFlight:         0.50,\n  IfcRamp:                0.45,\n  IfcRampFlight:          0.45,\n  IfcCurtainWall:         0.60,\n  IfcCovering:            0.55,\n  IfcPlate:               0.40,\n  IfcMember:              0.35,\n  IfcRailing:             0.40,\n  IfcFurnishingElement:   0.20,\n  IfcFurniture:           0.20,\n  IfcSpace:               0.15,\n  IfcBuildingElementProxy: 0.30,\n};\n\nconst SUSCEPTIBILITY_ROAD = {\n  IfcPavement:            0.75,\n  IfcKerb:                0.65,\n  IfcRoadPart:            0.60,\n  IfcEarthworksFill:      0.55,\n  IfcEarthworksCut:       0.55,\n  IfcCourse:              0.70,\n  IfcSignal:              0.45,\n  IfcSign:                0.40,\n  IfcCivilElement:        0.45,\n};\n\nconst SUSCEPTIBILITY_RAIL = {\n  IfcRail:                0.75,\n  IfcTrackElement:        0.70,\n  IfcFacilityPart:        0.55,\n  IfcCivilElement:        0.50,\n  IfcEarthworksFill:      0.50,\n  IfcEarthworksCut:       0.50,\n  IfcSignal:              0.65,\n  IfcSign:                0.35,\n};\n\nconst SUSCEPTIBILITY_BRIDGE = {\n  IfcBridgePart:          0.75,\n  IfcBearing:             0.85,\n  IfcCourse:              0.65,\n  IfcCivilElement:        0.60,\n  IfcColumn:              0.55,\n  IfcColumnStandardCase:  0.55,\n  IfcBeam:                0.60,\n  IfcBeamStandardCase:    0.60,\n  IfcSlab:                0.55,\n  IfcSlabStandardCase:    0.55,\n  IfcEarthworksFill:      0.45,\n  IfcEarthworksCut:       0.45,\n  IfcDeepFoundation:      0.50,\n};\n\nconst DEFAULT_SUSCEPTIBILITY = 0.30;\nconst DEFAULT_LIKELIHOOD     = 0.30;\n\nfunction selectTable(domain) {\n  if (domain === 'Road')   return { table: SUSCEPTIBILITY_ROAD,     warn: false };\n  if (domain === 'Rail')   return { table: SUSCEPTIBILITY_RAIL,     warn: false };\n  if (domain === 'Bridge') return { table: SUSCEPTIBILITY_BRIDGE,   warn: false };\n  if (domain === 'Mixed')  return { table: SUSCEPTIBILITY_BUILDING, warn: true  };\n  return                          { table: SUSCEPTIBILITY_BUILDING, warn: false };\n}\n\nfunction materialModifier(material) {\n  if (!material || typeof material !== 'string') return 0;\n  const m = material.toLowerCase();\n  if (m.includes('wood')   || m.includes('timber'))         return  0.15;\n  if (m.includes('masonry')|| m.includes('brick'))          return  0.10;\n  if (m.includes('glass'))                                  return  0.10;\n  if (m.includes('steel')  || m.includes('metal'))          return  0.05;\n  if (m.includes('concrete')|| m.includes('reinforced'))    return -0.05;\n  return 0;\n}\n\nreturn items.map(item => {\n  if (item.json._type !== 'risk_exposure') return item;\n\n  const json          = item.json;\n  const ifcType       = json.Category    || '';\n  const domain        = json.domain      || json.ifc_domain || 'Building';\n  const exposureScore = typeof json.exposure_score === 'number'\n    ? json.exposure_score : 0.30;\n\n  if (!ifcType) {\n    return {\n      json: {\n        ...json,\n        _type:               'risk_likelihood',\n        likelihood_score:    DEFAULT_LIKELIHOOD,\n        susceptibility_base: DEFAULT_SUSCEPTIBILITY,\n        material_modifier:   0,\n      }\n    };\n  }\n\n  const { table, warn }    = selectTable(domain);\n  const susceptibilityBase = table[ifcType] !== undefined\n    ? table[ifcType]\n    : DEFAULT_SUSCEPTIBILITY;\n\n  const matMod = materialModifier(json.Material || '');\n\n  // BQI no longer nudges the point estimate here — it's applied once,\n  // as an uncertainty band, in Node 4.4. Nudging it here too would\n  // double-count data quality against the same risk score.\n  const likelihood = Math.min(1, Math.max(0,\n    exposureScore * (susceptibilityBase + matMod)\n  ));\n\n  return {\n    json: {\n      ...json,\n      _type:               'risk_likelihood',\n      likelihood_score:    Math.round(likelihood * 10000) / 10000,\n      susceptibility_base: susceptibilityBase,\n      material_modifier:   matMod,\n      ...(warn && { domain_warning: true }),\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4528,
+        560
+      ],
+      "id": "2552a24c-0161-4bdf-8f28-6786ea085f41",
+      "name": "4.2: Likelihood",
+      "notes": "Code JS — exposure × defect susceptibility rules"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst CRITICALITY_BUILDING = {\n  IfcColumn:                1.00,\n  IfcColumnStandardCase:    1.00,\n  IfcFooting:               1.00,\n  IfcPile:                  1.00,\n  IfcBeam:                  0.90,\n  IfcBeamStandardCase:      0.90,\n  IfcSlab:                  0.85,\n  IfcSlabStandardCase:      0.85,\n  IfcWall:                  0.80,\n  IfcWallStandardCase:      0.80,\n  IfcRoof:                  0.75,\n  IfcStair:                 0.65,\n  IfcStairFlight:           0.65,\n  IfcRamp:                  0.60,\n  IfcRampFlight:            0.60,\n  IfcWindow:                0.50,\n  IfcDoor:                  0.50,\n  IfcCurtainWall:           0.55,\n  IfcCovering:              0.40,\n  IfcPlate:                 0.60,\n  IfcMember:                0.65,\n  IfcRailing:               0.35,\n  IfcChimney:               0.45,\n  IfcFurnishingElement:     0.10,\n  IfcFurniture:             0.10,\n  IfcSpace:                 0.20,\n  IfcBuildingElementProxy:  0.50,\n  // ✅ Removed IfcFlowTerminal — not in pipeline\n};\n\nconst CRITICALITY_ROAD = {\n  IfcPavement:            0.85,\n  IfcKerb:                0.60,\n  IfcRoadPart:            0.80,\n  IfcEarthworksFill:      0.70,\n  IfcEarthworksCut:       0.70,\n  IfcCourse:              0.75,\n  IfcSignal:              0.55,\n  IfcSign:                0.40,\n  IfcCivilElement:        0.60,\n};\n\nconst CRITICALITY_RAIL = {\n  IfcRail:                0.95,\n  IfcTrackElement:        0.90,\n  // ✅ Removed IfcRailway — spatial type\n  IfcFacilityPart:        0.70,\n  IfcCivilElement:        0.65,\n  IfcEarthworksFill:      0.60,\n  IfcEarthworksCut:       0.60,\n  IfcSignal:              0.80,\n  IfcSign:                0.45,\n};\n\nconst CRITICALITY_BRIDGE = {\n  // ✅ Removed IfcBridge — spatial type\n  IfcBridgePart:          0.95,\n  IfcBearing:             1.00,\n  IfcCourse:              0.75,\n  IfcCivilElement:        0.80,\n  IfcColumn:              0.90,\n  IfcColumnStandardCase:  0.90,\n  IfcBeam:                0.90,\n  IfcBeamStandardCase:    0.90,\n  IfcSlab:                0.85,\n  IfcSlabStandardCase:    0.85,\n  IfcEarthworksFill:      0.60,\n  IfcEarthworksCut:       0.60,\n  IfcDeepFoundation:      0.80,\n};\n\nconst DEFAULT_CRITICALITY = 0.50;\nconst DEFAULT_CONSEQUENCE  = DEFAULT_CRITICALITY * 0.7; // ✅ consistent with formula\n\nfunction selectTable(domain) {\n  if (domain === 'Road')   return { table: CRITICALITY_ROAD,     warn: false };\n  if (domain === 'Rail')   return { table: CRITICALITY_RAIL,     warn: false };\n  if (domain === 'Bridge') return { table: CRITICALITY_BRIDGE,   warn: false };\n  if (domain === 'Mixed')  return { table: CRITICALITY_BUILDING, warn: true  };\n  return                          { table: CRITICALITY_BUILDING, warn: false };\n}\n\n// ✅ Both dot and space separator formats — covers Pipeline A and B\nfunction readExtent(json) {\n  const candidates = [\n    json['[BaseQuantities] GrossVolume'],\n    json['[BaseQuantities].GrossVolume'],\n    json['[BaseQuantities] GrossArea'],\n    json['[BaseQuantities].GrossArea'],\n    json['[BaseQuantities] NetFloorArea'],\n    json['[BaseQuantities].NetFloorArea'],\n    json['[Qto_SpaceBaseQuantities] NetFloorArea'],\n    json['[Dimensions] Volume'],\n    json['[Dimensions] Area'],\n  ];\n  for (const v of candidates) {\n    const f = parseFloat(v);\n    if (!isNaN(f) && f > 0) return f;\n  }\n  return 0;\n}\n\nconst targets   = items.filter(i => i.json._type === 'risk_likelihood');\nconst extents   = targets.map(i => readExtent(i.json));\n\n// ✅ Normalize per Category — prevents large slabs from dwarfing small columns\nconst maxExtentByCategory = {};\ntargets.forEach((item, i) => {\n  const cat = item.json.Category || 'Unknown';\n  if (!maxExtentByCategory[cat] || extents[i] > maxExtentByCategory[cat]) {\n    maxExtentByCategory[cat] = extents[i];\n  }\n});\n\n// Global max as fallback\nconst maxExtent = extents.length > 0 ? Math.max(...extents) : 1;\n\nconst extentMap = new Map();\ntargets.forEach((item, i) => {\n  extentMap.set(item.json.GlobalId, extents[i]);\n});\n\nreturn items.map(item => {\n  if (item.json._type !== 'risk_likelihood') return item;\n\n  const json    = item.json;\n  const ifcType = json.Category || '';\n  const domain  = json.domain   || json.ifc_domain || 'Building';\n  const extent  = extentMap.get(json.GlobalId) ?? 0;\n\n  if (!ifcType) {\n    return {\n      json: {\n        ...json,\n        _type:             'risk_consequence',\n        consequence_score: DEFAULT_CONSEQUENCE,\n        criticality_base:  DEFAULT_CRITICALITY,\n        qto_extent:        extent,\n      }\n    };\n  }\n\n  const { table, warn } = selectTable(domain);\n  const criticalityBase = table[ifcType] !== undefined\n    ? table[ifcType]\n    : DEFAULT_CRITICALITY;\n\n  // ✅ Normalize within same Category — columns vs slabs compared fairly\n  const catMax           = maxExtentByCategory[ifcType] || maxExtent || 1;\n  const normalizedExtent = catMax > 0 ? extent / catMax : 0;\n  const consequence      = criticalityBase * (0.7 + 0.3 * normalizedExtent);\n\n  return {\n    json: {\n      ...json,\n      _type:             'risk_consequence',\n      consequence_score: Math.round(consequence * 10000) / 10000,\n      criticality_base:  criticalityBase,\n      qto_extent:        extent,\n      normalized_extent: Math.round(normalizedExtent * 10000) / 10000,\n      ...(warn && { domain_warning: true }),\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4752,
+        560
+      ],
+      "id": "5b8c337d-6f8e-48b2-9d87-856cf879bfce",
+      "name": "4.3: Consequence",
+      "notes": "Code JS — element role/criticality × QTO (extent)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// α (alpha) — uncertainty sensitivity constant. Fixed and version-controlled\n// via Config, not inferred per-model, so bound widths stay comparable and\n// reproducible across different runs (see Config: alpha, default 0.55).\nconst ALPHA = $node['0.1: Config']?.json?.alpha ?? 0.5;\n\nconst output = [];\n\nfor (const item of items) {\n\n  if (item.json._type !== 'risk_consequence') {\n    output.push(item);\n    continue;\n  }\n\n  const json = item.json;\n\n  const L   = json.likelihood_score  || 0;\n  const C   = json.consequence_score || 0;\n  const bqi = typeof json.bqi_score === 'number' ? json.bqi_score : 0;\n\n  // R_raw = L × C — deterministic base estimate, independent of data quality\n  const R_raw = Math.min(1, Math.max(0, L * C));\n\n  // Uncertainty widening — grows toward α as BQI drops to 0,\n  // vanishes to 0 as BQI reaches 1 (cone converges, per thesis diagram)\n  const widening = ALPHA * (1 - bqi);\n\n  // R_adj = R_raw × (1 + α × (1 − BQI))  — thesis formula (slide 7).\n  // Conservative/upper-leaning adjusted estimate — the headline score.\n  const R_adj   = Math.min(1, R_raw * (1 + widening));\n  const R_upper = R_adj;\n  const R_lower = Math.max(0, R_raw * (1 - widening));\n\n  output.push({\n    json: {\n      ...json,\n      _type:             'risk_element',\n      risk_score:         R_adj,   // kept as 'risk_score' — Block 5 compatibility\n      risk_score_raw:     R_raw,\n      risk_score_lower:   R_lower,\n      risk_score_upper:   R_upper,\n      uncertainty_band:   (R_upper - R_lower),\n      alpha_used:         ALPHA,\n      bqi_used:           bqi,\n    }\n  });\n}\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4976,
+        560
+      ],
+      "id": "2aec67d0-c203-4a94-be88-38748065436e",
+      "name": "4.4: Risk score",
+      "notes": "Code JS — combine L×C, apply BQI confidence bounds"
+    },
+    {
+      "parameters": {
+        "executeOnce": false,
+        "command": "=\"{{$node[\"0.1: Config\"].json[\"path_to_converter\"]}}\" \"{{$node[\"0.1: Config\"].json[\"project_file\"]}}\""
+      },
+      "id": "45de2c51-96d0-4108-9beb-bc5eac10b0f5",
+      "name": "1.3b: Run DDC converter",
+      "type": "n8n-nodes-base.executeCommand",
+      "position": [
+        1168,
+        448
+      ],
+      "typeVersion": 1,
+      "notesInFlow": true,
+      "continueOnFail": true,
+      "notes": "Runs IfcExporter.exe on the IFC file. Produces _ifc.xlsx + .dae geometry."
+    },
+    {
+      "parameters": {},
+      "id": "7c8a3ff7-5430-4783-aaec-1e9c23df6a68",
+      "name": "1.5: Merge",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        1840,
+        224
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "path-id",
+              "name": "xlsx_path",
+              "type": "string",
+              "value": "={{ $json.xlsx_filename }}"
+            },
+            {
+              "id": "77f1b265-2138-4ca2-9ecd-c65f769f8fd8",
+              "name": "sheet_name",
+              "value": "={{ ($json.xlsx_filename || '').split('\\\\').pop().replace(/\\.[^/.]+$/, '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "262e80b4-1f11-4d0e-b6c7-4d1a9cffd49e",
+      "name": "1.6: Set XLSX path",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        2064,
+        224
+      ],
+      "typeVersion": 3.4,
+      "notesInFlow": false,
+      "notes": "Passes xlsx path to the reader.\nAdd sheet_name field if needed."
+    },
+    {
+      "parameters": {
+        "filePath": "={{ $json.xlsx_path }}"
+      },
+      "id": "57c2ccbb-9fb1-4a4a-a3b8-fdd5954e7ad7",
+      "name": "1.7: Read XLSX",
+      "type": "n8n-nodes-base.readBinaryFile",
+      "position": [
+        2288,
+        224
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "fileFormat": "xlsx",
+        "options": {
+          "headerRow": true,
+          "includeEmptyCells": false,
+          "sheetName": ""
+        }
+      },
+      "id": "2bd6add4-1e11-4f4f-83eb-50c864fd48a0",
+      "name": "1.8: Parse rows",
+      "type": "n8n-nodes-base.spreadsheetFile",
+      "position": [
+        2512,
+        224
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c0d656bc-1829-4849-98ac-a13515a05f79",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcProject",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "60bb74e9-d494-4d27-97f8-dce5e5a7e7d0",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcSite",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "0ca6bdea-112d-4fdb-b2fc-6948fee7178b",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcBuilding",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "453b2a5f-45be-4b94-a235-95a472dd6e18",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcBuildingStorey",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "99c543c5-bb50-45ad-870c-ef8caec3867a",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcZone",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "713947c0-e66e-4ac7-afec-5b4423ed900c",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcBridge",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "d2053a63-d24d-4b3d-afb8-a1d99ee862e5",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcRoad",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "1407a389-ed19-44b7-b64e-571da8786078",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcFacility",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "daebb890-13d5-4f4b-9e10-9f4e3556ca7d",
+              "leftValue": "={{ $json.Category }}",
+              "rightValue": "IfcRailway",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            },
+            {
+              "id": "b9520444-d05d-4ec3-9447-4909d1cfaedf",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "Advertisement: For an ad-free version",
+              "operator": {
+                "type": "string",
+                "operation": "notStartsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        2736,
+        224
+      ],
+      "id": "9904748c-73fe-4b76-8f4a-a5f5aac047f7",
+      "name": "1.9: Filter spatial"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8fc0cba1-e64a-4072-a870-1ebda85a7a89",
+              "name": "pipeline",
+              "value": "A_ddc",
+              "type": "string"
+            },
+            {
+              "id": "6da3d2a8-5ebb-410e-89d9-0f9b16f806a7",
+              "name": "_type",
+              "value": "element",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2960,
+        224
+      ],
+      "id": "682bc5a8-1d54-4285-9a04-e5c9a6f395cd",
+      "name": "1.10: Tag as Pipeline A"
+    },
+    {
+      "parameters": {
+        "errorMessage": "An error occurred!"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        448
+      ],
+      "id": "c9ce5e66-2ca1-41a4-a8fe-22ff434ed4d9",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "error-message-id",
+              "name": "error_message",
+              "type": "string",
+              "value": "=Extraction failed: {{ $node[\"1.3b: Run DDC converter\"].json.error || \"Unknown error\" }}"
+            },
+            {
+              "id": "f373cd1f-2aad-4eb6-a043-1ac3dc09b8f9",
+              "name": "error_code",
+              "value": "={{ $node[\"1.3b: Run DDC converter\"].json.code || -1 }}",
+              "type": "number"
+            },
+            {
+              "id": "xlsx-filename-error",
+              "name": "xlsx_filename",
+              "type": "string",
+              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "574a2d12-5e7a-4d14-8645-44dc54b7302b",
+      "name": "1.4b: DDC Converter error",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1616,
+        448
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "jsCode": "// =============================================================================\n// Node 2.6 · Filter Analysis Elements\n//\n// Purpose:\n// Removes records that are not required for downstream civil infrastructure\n// analysis, leaving only relevant physical IFC elements.\n//\n// Excluded:\n//   • Metadata records\n//   • Spatial hierarchy entities generated during IFC extraction\n//   • IFC categories intentionally excluded from the analysis\n//\n// Notes:\n// - Spatial hierarchy objects are primarily filtered using \"_type\".\n// - The category list below acts as a safeguard in case spatial objects are\n//   received as regular elements or if additional non-structural objects\n//   should be excluded.\n// =============================================================================\n\n// -----------------------------------------------------------------------------\n// IFC categories excluded from analysis.\n//\n// Spatial hierarchy objects are included as a fallback safeguard.\n// IfcFurniture is intentionally excluded because it is outside the scope of\n// civil infrastructure risk assessment.\n//\n// Extend this list if additional categories should be ignored.\n// -----------------------------------------------------------------------------\nconst excludedCategories = new Set([\n  // Spatial hierarchy (fallback)\n  'IfcProject',\n  'IfcSite',\n  'IfcBuilding',\n  'IfcBuildingStorey',\n  'IfcSpace',\n\n  // Non-structural objects\n  'IfcFurniture'\n]);\n\nreturn $input.all().filter(item => {\n  const el = item.json;\n\n  // Remove project-level metadata\n  if (el._type === 'metadata') return false;\n\n  // Remove spatial hierarchy entities produced by the extraction node.\n  // This automatically covers IFC4 and IFC4X3 entities such as:\n  //   - IfcProject\n  //   - IfcSite\n  //   - IfcBuilding\n  //   - IfcFacility\n  //   - IfcBridge\n  //   - IfcRoad\n  //   - IfcRailway\n  if (el._type === 'spatial_entity') return false;\n\n  // Remove categories intentionally excluded from the analysis\n  if (excludedCategories.has(el.Category)) return false;\n\n  // Keep all remaining physical IFC elements\n  return true;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2736,
+        896
+      ],
+      "id": "4942bafc-02ed-4c23-b155-a7d64f5bc65b",
+      "name": "2.6: Filter elements"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n// n8n Code node — \"5.1: Generate HTML\"\n// Mode: Run Once for All Items · Language: JavaScript\n// ----------------------------------------------------------------------------\n// v4 — fixes vs v3:\n//   (1) syntax: stray double comma after `filename` removed\n//   (2) provenance fields now use the same trimmed test as dual_file_mode,\n//       so the flag and the recorded sources can never disagree\n//   (3) report filename carries a _DUALFILE marker on dual-file runs\n//   (4) alpha fallback corrected 0.5 -> 0.55 to match Config\n//   (5) dimension table states which pipeline its averages come from\n//\n// Carried over from v3: A-vs-B radar, BQI Dimension Performance table,\n// uncertainty band visual for the top-ranked element, page-break classes.\n// Requires Node 3.4 to emit `dim_averages_by_pipeline` in bqi_model_summary.\n// Returns TWO items (report_html + report_summary).\n// ============================================================================\n\nconst allItems = $input.all();\n\n// Project name\nlet projectFilePath = '';\ntry {\n  projectFilePath = $node['0.1: Config'].json.project_file || '';\n} catch (e) {\n  projectFilePath = 'Unknown Project';\n}\nconst projectFileName = (projectFilePath || 'Unknown Project')\n  .split('\\\\').pop()\n  .split('/').pop()\n  .replace(/\\.[^/.]+$/, '') || 'Unknown Project';\n\n// ---- Run configuration ------------------------------------------------------\n// project_file_b is trimmed before testing: a Set node that leaves a stray\n// space would otherwise make the run silently dual-file. The same test drives\n// the filename marker, the dual_file_mode flag, and the recorded sources, so\n// the three can never contradict each other.\nconst _cfg     = $node['0.1: Config'].json;\nconst _sourceA = String(_cfg.project_file   || '').trim();\nconst _sourceB = String(_cfg.project_file_b || '').trim();\nconst _isDual  = _sourceB.length > 0;\n\nconst _nameSrc = (_isDual ? _sourceB : _sourceA) || 'Unknown Project';   // ADD\nconst fileTag  = _nameSrc\n  .split('\\\\').pop()\n  .split('/').pop()\n  .replace(/\\.[^/.]+$/, '') + (_isDual ? '_DUALFILE' : '');\n\n\n// Read pipeline outputs\nconst modelSummary     = allItems.find(i => i.json._type === 'bqi_model_summary')    || { json: {} };\nconst srccSummary      = allItems.find(i => i.json._type === 'srcc_summary')          || { json: {} };\nconst coverageAnalysis = allItems.find(i => i.json._type === 'coverage_analysis')     || { json: {} };\nconst riskSummary      = allItems.find(i => i.json._type === 'risk_register_summary') || { json: {} };\nconst riskElements     = allItems.filter(i => i.json._type === 'risk_element');\nconst aiAnalysis       = allItems.find(i => i.json._type === 'ai_analysis')           || { json: {} };\n\n// AI fields\nconst execSummary     = aiAnalysis.json.executive_summary  || '';\nconst bqiInterp       = aiAnalysis.json.bqi_interpretation || '';\nconst coverageFinding = aiAnalysis.json.coverage_finding   || '';\nconst srccFinding     = aiAnalysis.json.srcc_finding       || '';\nconst topRiskFinding  = aiAnalysis.json.top_risk_finding   || '';\nconst recommendations = aiAnalysis.json.recommendations    || [];\n\n// Deterministic executive summary, used when the AI branch is disabled.\n// Built later (after the KPI values are read) — see buildRuleSummary().\n\n// BQI values\nconst modelBQI    = +(modelSummary.json.model_bqi || 0).toFixed(3);\nconst modelConf   = modelSummary.json.model_confidence      || 'low';\nconst totalScored = modelSummary.json.total_elements_scored || 0;\nconst weights     = modelSummary.json.weights_used          || { completeness: 0.35, validity: 0.25, qto_coverage: 0.20, qto_agreement: 0.20 };\n\n// Per-pipeline dimension averages (from updated Node 3.4)\nconst dimsByPipe = modelSummary.json.dim_averages_by_pipeline || {};\nconst dimsA = dimsByPipe.A_ddc, dimsB = dimsByPipe.B_ifcopenshell;\nconst dimsMain = dimsB || dimsA || null;   // averages for the dimension table\nconst dimSourceLabel = dimsB ? 'Pipeline B (IfcOpenShell)' : (dimsA ? 'Pipeline A (DDC)' : 'unavailable');\n\n// SRCC values\nconst srccResults       = srccSummary.json.srcc_results || [];\nconst overallNote       = srccSummary.json.overall_note || '';\nconst overallRankStable = srccSummary.json.overall_rank_stable ?? null;\nconst avgSRCC = srccSummary.json.average_srcc != null ? srccSummary.json.average_srcc : 'N/A';\n\n// Coverage values\nconst coverageVerdict   = coverageAnalysis.json.verdict               || 'N/A';\nconst coverageRisk      = coverageAnalysis.json.risk_level            || 'N/A';\nconst coveragePct       = coverageAnalysis.json.coverage_percentage   ?? 'N/A';\nconst sb = coverageAnalysis.json.severity_breakdown || {};\nconst severityBreakdown = {\n  critical:          sb.critical          ?? 0,\n  needs_review:      sb.needs_review      ?? 0,\n  probably_harmless: sb.probably_harmless ?? 0,\n};\n// Actual missing IFC types per severity class (from updated Node 3.3)\nconst sevTypes = coverageAnalysis.json.missing_types_by_severity || {};\nfunction sevCaption(list) {\n  if (!list || !list.length) return 'None missing';\n  const shown = list.slice(0, 4).join(', ');\n  return list.length > 4 ? `${shown} and ${list.length - 4} more` : shown;\n}\nconst missingTotal      = coverageAnalysis.json.missing_elements_total || 0;\n\n// Risk counts\nconst highRisk = riskSummary.json.high_count   ?? riskElements.filter(i => i.json.risk_label === 'High').length;\nconst medRisk  = riskSummary.json.medium_count ?? riskElements.filter(i => i.json.risk_label === 'Medium').length;\nconst lowRisk  = riskSummary.json.low_count    ?? riskElements.filter(i => i.json.risk_label === 'Low').length;\n\n// Top-10 pre-ranked\nconst top10 = riskElements\n  .filter(i => (i.json.risk_rank || 999) <= 10)\n  .sort((a, b) => (a.json.risk_rank || 0) - (b.json.risk_rank || 0));\n\n// ---- helpers ---------------------------------------------------------------\nfunction plural(n, word) { return `${n} ${word}${n === 1 ? '' : 's'}`; }\nfunction confColor(conf)  { return conf === 'high' ? '#009a44' : conf === 'medium' ? '#ffa726' : '#dc3545'; }\nfunction verdictColor(v)  { return v === 'PASS' ? '#009a44' : v === 'REVIEW' ? '#ffa726' : v === 'FAIL' ? '#dc3545' : '#999'; }\nfunction riskColor(label) { return label === 'High' ? '#dc3545' : label === 'Medium' ? '#ffa726' : '#66bb6a'; }\nfunction bqiBar(score) {\n  const pct = Math.round((score || 0) * 100);\n  const col = score >= 0.85 ? '#009a44' : score >= 0.60 ? '#ffa726' : '#dc3545'; // aligned with 3.4 confidence bands\n  return `<div style=\"background:#e0e0e0;height:6px;border-radius:3px;width:80px;display:inline-block;vertical-align:middle;margin-left:8px\"><div style=\"height:100%;width:${pct}%;background:${col};border-radius:3px\"></div></div>`;\n}\n\n// ============================================================================\n// SVG / CSS CHART BUILDERS\n// ============================================================================\n\n// 1) Risk-distribution donut ------------------------------------------------\nfunction donutSvg(vals, colors) {\n  const total = vals.reduce((a, b) => a + (+b || 0), 0);\n  const r = 52, cx = 70, cy = 70, C = 2 * Math.PI * r;\n  let off = 0, arcs = '';\n  if (total > 0) {\n    vals.forEach((v, i) => {\n      const len = (v / total) * C;\n      if (len > 0) {\n        arcs += `<circle cx=\"${cx}\" cy=\"${cy}\" r=\"${r}\" fill=\"none\" stroke=\"${colors[i]}\" stroke-width=\"18\" stroke-linecap=\"butt\" stroke-dasharray=\"${len.toFixed(3)} ${(C - len).toFixed(3)}\" stroke-dashoffset=\"${(-off).toFixed(3)}\" transform=\"rotate(-90 ${cx} ${cy})\"></circle>`;\n      }\n      off += len;\n    });\n  } else {\n    arcs = `<circle cx=\"${cx}\" cy=\"${cy}\" r=\"${r}\" fill=\"none\" stroke=\"#e0e0e0\" stroke-width=\"18\"></circle>`;\n  }\n  return `<svg width=\"140\" height=\"140\" viewBox=\"0 0 140 140\" style=\"display:block;margin:0 auto\">${arcs}<text x=\"70\" y=\"66\" text-anchor=\"middle\" font-size=\"26\" font-weight=\"700\" fill=\"#2e2e38\" font-family=\"Arial,sans-serif\">${total}</text><text x=\"70\" y=\"84\" text-anchor=\"middle\" font-size=\"9\" fill=\"#999\" font-family=\"Arial,sans-serif\">ELEMENTS</text></svg>`;\n}\nfunction donutLegend(pairs) {\n  return `<div style=\"display:flex;justify-content:center;gap:16px;margin-top:10px;font-size:11px\">` +\n    pairs.map(p => `<span style=\"display:inline-flex;align-items:center;gap:5px\"><span style=\"width:10px;height:10px;border-radius:50%;background:${p.color};display:inline-block\"></span>${p.label} (${p.value})</span>`).join('') +\n    `</div>`;\n}\n\n// 2) Horizontal bar rows (used by the SRCC chart) ----------------------------\nfunction hbars(rows) {\n  return rows.map(r => `<div style=\"margin-bottom:11px\">\n    <div style=\"display:flex;justify-content:space-between;font-size:11px;color:#4a4a4a;margin-bottom:3px\">\n      <span>${r.label}</span><span style=\"font-weight:600;color:${r.color}\">${r.text}</span>\n    </div>\n    <div style=\"background:#e0e0e0;height:10px;border-radius:5px;overflow:hidden\">\n      <div style=\"width:${Math.max(0, Math.min(100, r.pct))}%;height:100%;background:${r.color};border-radius:5px\"></div>\n    </div>\n  </div>`).join('');\n}\n\n// 3) Radar — BQI dimensions, Pipeline A vs B ---------------------------------\nfunction radarSvg() {\n  if (!dimsA && !dimsB) return '<p style=\"color:#999;font-size:12px\">Per-pipeline dimension data unavailable. Re-run the workflow with the updated Node 3.4.</p>';\n  const axes = ['D1_completeness', 'D2_validity', 'D3_qto_coverage', 'D4_qto_agreement'];\n  const labels = ['D1 Compl.', 'D2 Valid.', 'D3 QTO Cov.', 'D4 Agree.'];\n  const cx = 120, cy = 110, R = 78, n = axes.length;\n  const pt = (i, v) => {\n    const a = -Math.PI / 2 + i * 2 * Math.PI / n;\n    return `${(cx + R * v * Math.cos(a)).toFixed(3)},${(cy + R * v * Math.sin(a)).toFixed(3)}`;\n  };\n  let s = `<svg width=\"240\" height=\"230\" viewBox=\"0 0 240 230\" xmlns=\"http://www.w3.org/2000/svg\" style=\"display:block;margin:0 auto\">`;\n  [0.25, 0.5, 0.75, 1].forEach(r => {\n    s += `<polygon points=\"${axes.map((_, i) => pt(i, r)).join(' ')}\" fill=\"none\" stroke=\"#e0e0e0\"/>`;\n  });\n  axes.forEach((_, i) => {\n    const [x, y] = pt(i, 1).split(',');\n    s += `<line x1=\"${cx}\" y1=\"${cy}\" x2=\"${x}\" y2=\"${y}\" stroke=\"#e0e0e0\"/>`;\n  });\n  const series = (d, col) => {\n    if (!d) return;\n    s += `<polygon points=\"${axes.map((k, i) => pt(i, d[k] || 0)).join(' ')}\" fill=\"${col}\" fill-opacity=\"0.20\" stroke=\"${col}\" stroke-width=\"2\"/>`;\n  };\n  series(dimsA, '#0061a0');\n  series(dimsB, '#009a44');\n  labels.forEach((lb, i) => {\n    const [x, y] = pt(i, 1.22).split(',');\n    s += `<text x=\"${x}\" y=\"${y}\" font-size=\"10\" fill=\"#555\" text-anchor=\"middle\" font-family=\"Arial,sans-serif\">${lb}</text>`;\n  });\n  s += `</svg><div style=\"font-size:11px;color:#666;text-align:center\">\n    ${dimsA ? '<span style=\"color:#0061a0\">&#9632;</span> Pipeline A (DDC)&nbsp;&nbsp;' : ''}\n    ${dimsB ? '<span style=\"color:#009a44\">&#9632;</span> Pipeline B (IfcOpenShell)' : ''}\n    <br>D4 measures cross-pipeline agreement and applies to both series</div>`;\n  return s;\n}\n\n// 4) BQI Dimension Performance table rows -------------------------------------\nconst dimRows = !dimsMain ? '' : [\n  ['Completeness (D1)',  'completeness',  dimsMain.D1_completeness],\n  ['Validity (D2)',      'validity',      dimsMain.D2_validity],\n  ['QTO Coverage (D3)',  'qto_coverage',  dimsMain.D3_qto_coverage],\n  ['QTO Agreement (D4)', 'qto_agreement', dimsMain.D4_qto_agreement],\n].map(([label, wKey, score]) => `<tr>\n  <td style=\"padding:8px 12px\">${label}</td>\n  <td style=\"padding:8px 12px;text-align:center;white-space:nowrap\">${(score ?? 0).toFixed(3)} ${bqiBar(score)}</td>\n  <td style=\"padding:8px 12px;text-align:center\">${Math.round((weights[wKey] || 0) * 100)}%</td>\n  <td style=\"padding:8px 12px;text-align:center;font-weight:700\">${((weights[wKey] || 0) * (score || 0)).toFixed(3)}</td>\n</tr>`).join('') + `<tr style=\"border-top:2px solid #ccc\">\n  <td colspan=\"3\" style=\"padding:8px 12px;font-weight:700\">Model BQI (&Sigma; weight &times; score)</td>\n  <td style=\"padding:8px 12px;text-align:center;font-weight:800\">${modelBQI.toFixed(3)}</td></tr>`;\n\n// Fallback (only used if dim averages are missing): weights-only rows\nconst weightRows = Object.entries(weights).map(([k, v]) =>\n  `<tr><td>${k.replace(/_/g, ' ')}</td><td style=\"text-align:center;color:#999\">n/a</td><td style=\"text-align:center\">${(v * 100).toFixed(3)}%</td><td>${bqiBar(v)}</td></tr>`\n).join('');\n\n// 5) Scatter — top-10 risk score vs BQI score --------------------------------\nfunction scatterSvg(points) {\n  const W = 680, H = 240, padL = 48, padR = 20, padT = 16, padB = 42;\n  const iw = W - padL - padR, ih = H - padT - padB;\n  const maxY = Math.max(0.01, ...points.map(p => p.y)) * 1.15;\n  const sx = x => padL + Math.max(0, Math.min(1, x)) * iw;\n  const sy = y => padT + ih - (y / maxY) * ih;\n  let g = '';\n  for (let k = 0; k <= 4; k++) {\n    const yy = padT + ih - (k / 4) * ih;\n    g += `<line x1=\"${padL}\" y1=\"${yy}\" x2=\"${padL + iw}\" y2=\"${yy}\" stroke=\"#eee\"></line>`;\n    g += `<text x=\"${padL - 6}\" y=\"${yy + 3}\" text-anchor=\"end\" font-size=\"9\" fill=\"#999\" font-family=\"Arial,sans-serif\">${(maxY * k / 4).toFixed(3)}</text>`;\n  }\n  [0, 0.25, 0.5, 0.75, 1].forEach(t => {\n    const xx = sx(t);\n    g += `<line x1=\"${xx}\" y1=\"${padT}\" x2=\"${xx}\" y2=\"${padT + ih}\" stroke=\"#f5f5f5\"></line>`;\n    g += `<text x=\"${xx}\" y=\"${padT + ih + 16}\" text-anchor=\"middle\" font-size=\"9\" fill=\"#999\" font-family=\"Arial,sans-serif\">${t}</text>`;\n  });\n  g += `<text x=\"${padL + iw / 2}\" y=\"${H - 4}\" text-anchor=\"middle\" font-size=\"10\" fill=\"#696969\" font-family=\"Arial,sans-serif\">BQI Score (0 = poor, 1 = complete)</text>`;\n  g += `<text x=\"12\" y=\"${padT + ih / 2}\" text-anchor=\"middle\" font-size=\"10\" fill=\"#696969\" font-family=\"Arial,sans-serif\" transform=\"rotate(-90 12 ${padT + ih / 2})\">Risk Score</text>`;\n  points.forEach(p => {\n    g += `<circle cx=\"${sx(p.x).toFixed(3)}\" cy=\"${sy(p.y).toFixed(3)}\" r=\"6\" fill=\"${p.color}\" fill-opacity=\"0.85\" stroke=\"#fff\" stroke-width=\"1.5\"></circle>`;\n  });\n  if (!points.length) {\n    g += `<text x=\"${W / 2}\" y=\"${H / 2}\" text-anchor=\"middle\" font-size=\"12\" fill=\"#999\" font-family=\"Arial,sans-serif\">No risk elements scored yet</text>`;\n  }\n  return `<svg width=\"100%\" viewBox=\"0 0 ${W} ${H}\" preserveAspectRatio=\"xMidYMid meet\" style=\"display:block\">${g}</svg>`;\n}\n\n// 6) Uncertainty band — R_lower / R_raw / R_adj for the top-ranked element ----\nfunction riskBandHtml() {\n  const t = top10[0]; if (!t) return '';\n  const j = t.json, pct = v => Math.min(100, Math.max(0, (v || 0) * 100)).toFixed(3);\n  const lo = pct(j.risk_score_lower), raw = pct(j.risk_score_raw), adj = pct(j.risk_score);\n  return `<div style=\"margin:14px 0\">\n    <div style=\"font-size:11px;color:#666;margin-bottom:6px\">Top-ranked element (${(j.GlobalId || '').slice(0, 12)} · ${j.Category || ''}): R_lower, R_raw, and R_adj on a 0 to 1 scale</div>\n    <div style=\"position:relative;height:30px;background:#f0f2f5;border-radius:6px\">\n      ${[25, 50, 75].map(g => `<div style=\"position:absolute;top:0;height:100%;left:${g}%;width:1px;background:#dde3ea\"></div>`).join('')}\n      <div style=\"position:absolute;left:${lo}%;width:${(adj - lo).toFixed(3)}%;height:100%;background:#ffa72622;border:1px solid #ffa72666;border-radius:4px\"></div>\n      <div style=\"position:absolute;top:0;height:100%;left:${lo}%;width:2px;background:#999\"></div>\n      <div style=\"position:absolute;top:0;height:100%;left:${raw}%;width:2px;background:#555;border-left:1px dashed #555\"></div>\n      <div style=\"position:absolute;top:0;height:100%;left:${adj}%;width:3px;background:#dc3545\"></div>\n    </div>\n    <div style=\"display:flex;justify-content:space-between;font-size:10px;color:#999;margin-top:2px\">\n      <span>0</span><span>0.25</span><span>0.50</span><span>0.75</span><span>1.00</span>\n    </div>\n    <div style=\"font-size:11px;color:#475569;margin-top:10px;line-height:2\">\n      <div><span style=\"color:#555;font-weight:700\">&#124;</span> <b>R_raw</b> = L &times; C = ${(j.risk_score_raw || 0).toFixed(3)} (deterministic base, dashed marker)</div>\n      <div><span style=\"color:#dc3545;font-weight:700\">&#124;</span> <b>R_adj</b> = R_raw &times; (1 <b>+</b> &alpha;(1 &minus; BQI)) = ${(j.risk_score || 0).toFixed(3)} (upper limit, red marker; used for the ranking)</div>\n      <div><span style=\"color:#999;font-weight:700\">&#124;</span> <b>R_lower</b> = R_raw &times; (1 <b>&minus;</b> &alpha;(1 &minus; BQI)) = ${(j.risk_score_lower || 0).toFixed(3)} (lower limit, grey marker)</div>\n      <div><b>Band width</b> = R_adj &minus; R_lower = ${(j.uncertainty_band || 0).toFixed(3)}, with &alpha; = ${(j.alpha_used ?? 0.55).toFixed(3)} and BQI<sub>element</sub> = ${(j.bqi_used ?? 0).toFixed(3)}</div>\n    </div></div>`;\n}\n\n// ---- Overall screening verdict ----------------------------------------------\n// Combines the two orthogonal checks: data DEPTH (model BQI confidence) and\n// element BREADTH (cross-pipeline coverage). Deterministic rule, printed with\n// its reasons so the verdict is auditable.\nlet overallVerdict = 'RELIABLE', overallColor = '#009a44';\nconst overallReasons = [];\nif (modelConf === 'low')          overallReasons.push('model BQI confidence is LOW');\nif (coverageVerdict === 'FAIL')   overallReasons.push('element coverage verdict is FAIL');\nif (modelConf === 'medium')       overallReasons.push('model BQI confidence is MEDIUM');\nif (coverageVerdict === 'REVIEW') overallReasons.push('element coverage needs review');\nif (highRisk > 0)                 overallReasons.push(plural(highRisk, 'element') + ' screened as high risk');\nif (modelConf === 'low' || coverageVerdict === 'FAIL') {\n  overallVerdict = 'DATA UNRELIABLE'; overallColor = '#dc3545';\n} else if (modelConf === 'medium' || coverageVerdict === 'REVIEW' || highRisk > 0) {\n  overallVerdict = 'USE WITH CAUTION'; overallColor = '#ffa726';\n}\n\n// ---- build the chart markup ------------------------------------------------\nconst distDonut = donutSvg([highRisk, medRisk, lowRisk], ['#dc3545', '#ffa726', '#66bb6a']) +\n  donutLegend([\n    { label: 'High',   value: highRisk, color: '#dc3545' },\n    { label: 'Medium', value: medRisk,  color: '#ffa726' },\n    { label: 'Low',    value: lowRisk,  color: '#66bb6a' },\n  ]);\n\nconst srccBars = srccResults.length\n  ? hbars(srccResults.slice(0, 8).map(r => {\n      const s = +(r.SRCC || 0);\n      const col = s >= 0.95 ? '#009a44' : s >= 0.80 ? '#ffa726' : '#dc3545';\n      const field = `${(r.QtoField || '').replace('[Qto_', '').replace(']', ' ')}`.slice(0, 24) || (r.Category || '-');\n      return { label: field, pct: Math.round(s * 100), text: s.toFixed(3), color: col };\n    }))\n  : `<p style=\"color:#999;font-size:12px;text-align:center;padding:20px\">SRCC not yet computed for this run</p>`;\n\nconst scatterChart = scatterSvg(top10.map(i => ({\n  x: +(i.json.bqi_score || 0),\n  y: +(i.json.risk_score || 0),\n  color: riskColor(i.json.risk_label || 'Low'),\n})));\n\n// ---- table rows ------------------------------------------------------------\nconst riskRows = top10.map((item, idx) => {\n  const d = item.json;\n  const label = d.risk_label || 'Low';\n  return `<tr>\n    <td>${idx + 1}</td>\n    <td style=\"font-family:monospace;font-size:11px\">${(d.GlobalId || '-').slice(0, 16)}</td>\n    <td>${d.Category || '-'}</td>\n    <td>${d.zone || '-'}</td>\n    <td>${(+(d.bqi_score || 0)).toFixed(3)} ${bqiBar(d.bqi_score)}</td>\n    <td>${d.bqi_confidence || '-'}</td>\n    <td>${(+(d.likelihood_score  || 0)).toFixed(3)}</td>\n    <td>${(+(d.consequence_score || 0)).toFixed(3)}</td>\n    <td><strong>${(+(d.risk_score || 0)).toFixed(3)}</strong></td>\n    <td><span style=\"display:inline-block;padding:2px 8px;background:${riskColor(label)};color:white;font-size:11px;font-weight:600;border-radius:2px\">${label.toUpperCase()}</span></td>\n  </tr>`;\n}).join('') || `<tr><td colspan=\"10\" style=\"text-align:center;color:#999;padding:20px\">No risk elements scored yet</td></tr>`;\n\nconst srccRows = srccResults.length\n  ? srccResults.slice(0, 8).map(r => {\n      const srcc  = +(r.SRCC || 0).toFixed(3);\n      const label = srcc >= 0.95 ? 'Strong' : srcc >= 0.80 ? 'Moderate' : 'Weak';\n      const col   = srcc >= 0.95 ? '#009a44' : srcc >= 0.80 ? '#ffa726' : '#dc3545';\n      return `<tr>\n        <td style=\"font-size:11px;font-family:monospace\">${(r.QtoField || '').replace('[Qto_', '').replace(']', ' ').slice(0, 28)}</td>\n        <td>${srcc}</td>\n        <td>${r.ElementCount || '-'}</td>\n        <td><span style=\"color:${col};font-weight:600\">${label}</span></td>\n        <td style=\"font-size:11px;color:#696969\">${r.Note || ''}</td>\n      </tr>`;\n    }).join('')\n  : `<tr><td colspan=\"5\" style=\"text-align:center;color:#999;padding:16px\">SRCC not yet computed for this run</td></tr>`;\n\n// ---- D1/D2/D3 drilldowns: which fields are actually missing or invalid -----\n// Aggregated from the per-element lists produced by Node 3.4\n// (missing_properties -> D1, invalid_properties -> D2, missing_qto -> D3).\nfunction topCounts(field) {\n  const counts = {};\n  for (const el of riskElements) {\n    for (const p of (el.json[field] || [])) counts[p] = (counts[p] || 0) + 1;\n  }\n  return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 8);\n}\nfunction findingsTable(rows, emptyMsg) {\n  if (!rows.length) return `<p style=\"color:#999;font-size:12px;padding:12px 16px\">${emptyMsg}</p>`;\n  return `<table><thead><tr><th>Field</th><th style=\"text-align:center\">Elements affected</th></tr></thead><tbody>` +\n    rows.map(([k, v]) => `<tr><td style=\"font-family:monospace;font-size:11px\">${k}</td><td style=\"text-align:center\">${v}</td></tr>`).join('') +\n    `</tbody></table>`;\n}\nconst d1Table = findingsTable(topCounts('missing_properties'), 'No required properties missing');\nconst d2Table = findingsTable(topCounts('invalid_properties'), 'No invalid property values found');\nconst d3Table = findingsTable(topCounts('missing_qto'),        'No expected quantity fields missing');\n\n// ---- Summary text: AI if available, otherwise a recommended-action note ----\n// Deliberately does NOT repeat the banner or KPI numbers. It answers the one\n// question those layers leave open: what should the reader do next?\nlet summarySource = execSummary ? 'ai' : 'rule';\nlet execSummaryText = execSummary;\nlet execSummaryParas = execSummary ? [execSummary] : [];\nif (!execSummaryText && riskElements.length > 0) {\n  const s = [];\n  if (overallVerdict === 'DATA UNRELIABLE') {\n    s.push('Improve the model data before acting on the risk ranking: with data this sparse, the scores mainly reflect missing information rather than real risk.');\n  } else if (overallVerdict === 'USE WITH CAUTION') {\n    s.push('The ranking is usable, but verify flagged elements against the source model before committing decisions.');\n  } else {\n    s.push('Data quality is sufficient to act on the ranking directly.');\n  }\n  const t = top10[0];\n  if (t) {\n    s.push(`Start with the top-ranked element (${t.json.Category || 'unknown type'}, ${(t.json.GlobalId || '').slice(0, 8)}…): R_adj ${(t.json.risk_score || 0).toFixed(3)} with an uncertainty band of ${(t.json.uncertainty_band || 0).toFixed(3)}. ${(t.json.uncertainty_band || 0) > 0.15 ? 'The wide band means better data would sharpen this score considerably' : 'The narrow band means this score is driven by the element itself, not by data gaps'}.`);\n  }\n  const md1 = topCounts('missing_properties')[0];\n  const md3 = topCounts('missing_qto')[0];\n  if (md1 && md3) {\n    s.push(`For the fastest data improvement, add ${md1[0]} (missing on ${plural(md1[1], 'element')}) and the quantity ${md3[0]} (missing on ${plural(md3[1], 'element')}). See Section 2 for the full repair list.`);\n  } else if (md1) {\n    s.push(`For the fastest data improvement, add ${md1[0]} (missing on ${plural(md1[1], 'element')}). See Section 2 for the full repair list.`);\n  } else if (md3) {\n    s.push(`For the fastest data improvement, add the quantity ${md3[0]} (missing on ${plural(md3[1], 'element')}). See Section 2 for the full repair list.`);\n  }\n  execSummaryText = s.join(' ');   // kept for report_summary compatibility\n  execSummaryParas = s;            // rendered as one <p> per sentence group\n}\n\n// ============================================================================\n// HTML  (no Chart.js, no client-side <script>)\n// ============================================================================\nconst html = `<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">\n<title>Uncertainty-Aware Risk Register | ${projectFileName}</title>\n<style>\n*{margin:0;padding:0;box-sizing:border-box}\nbody{font-family:Arial,'Helvetica Neue',sans-serif;background:#f5f5f5;color:#2e2e38;font-size:13px;line-height:1.6}\n.container{max-width:1200px;margin:0 auto;padding:40px 20px}\n.header{background:#fff;padding:24px 30px;border-left:6px solid #0061a0;margin-bottom:30px;display:flex;justify-content:space-between;align-items:flex-start}\n.header-text h1{font-size:26px;font-weight:300;color:#0061a0;margin-bottom:6px}\n.header-text .subtitle{color:#696969;font-size:13px}\n.print-btn{background:#0061a0;color:white;border:none;padding:10px 20px;font-size:12px;cursor:pointer;border-radius:2px;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;margin-left:20px}\n.print-btn:hover{background:#004d85}\n.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}\n.kpi-card{background:#fff;border:1px solid #e0e0e0;padding:20px;border-top:4px solid #ccc}\n.kpi-card.blue{border-top-color:#0061a0}.kpi-card.green{border-top-color:#009a44}.kpi-card.amber{border-top-color:#ffa726}.kpi-card.red{border-top-color:#dc3545}.kpi-card.purple{border-top-color:#460073}\n.kpi-value{font-size:32px;font-weight:300;color:#0061a0;line-height:1;margin-bottom:6px}\n.kpi-label{font-size:11px;color:#696969;text-transform:uppercase;letter-spacing:.5px;font-weight:600}\n.kpi-sub{font-size:11px;color:#999;margin-top:4px}\n.section{background:#fff;border:1px solid #e0e0e0;margin-bottom:24px}\n.section-header{background:#fafafa;padding:14px 20px;border-bottom:1px solid #e0e0e0}\n.section-header h2{font-size:15px;font-weight:600;color:#2e2e38;margin:0}\n.section-header p{font-size:12px;color:#696969;margin-top:3px}\n.section-body{padding:20px}\n.charts-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:24px}\n.chart-box{background:#fff;border:1px solid #e0e0e0;padding:16px}\n.chart-box h3{font-size:13px;font-weight:600;margin-bottom:12px;color:#2e2e38}\n.chart-box.wide{grid-column:1/-1}\n.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}\n.ai-card{padding:14px 16px;border-left:3px solid}\ntable{width:100%;border-collapse:collapse;font-size:12px}\nth{background:#f5f5f5;padding:10px 12px;text-align:left;font-weight:600;color:#2e2e38;border-bottom:2px solid #e0e0e0;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}\ntd{padding:10px 12px;border-bottom:1px solid #f0f0f0;color:#4a4a4a;vertical-align:middle}\ntr:hover{background:#fafafa}\n.rec-row{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #f0f0f0}\n.rec-num{background:#0061a0;color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:2px;flex-shrink:0;margin-top:1px}\n.severity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center}\n.severity-box{padding:20px;border-radius:4px;border:1px solid}\n.alert-box{border-left:4px solid #ffa726;background:#fff8e1;padding:16px 20px;margin-bottom:24px;font-size:13px}\n.footer{margin-top:40px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#999;font-size:11px}\n@media print{\n  body{background:white;font-size:11px}\n  .container{padding:0;max-width:100%}\n  .print-btn{display:none !important}\n  .charts-grid{grid-template-columns:1fr 1fr}.chart-box.wide{grid-column:1/-1}\n  .section{break-inside:avoid;box-shadow:none}.ai-grid{grid-template-columns:1fr 1fr}\n  .page-break{page-break-before:always}\n  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important}\n  @page{size:A4 landscape;margin:15mm}\n}\n@media(max-width:768px){\n  .charts-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:1fr 1fr}\n  .header{flex-direction:column;gap:12px}.print-btn{margin-left:0}\n  .ai-grid{grid-template-columns:1fr}.severity-grid{grid-template-columns:1fr}\n}\n</style>\n</head>\n<body>\n<div class=\"container\">\n\n  <div class=\"header\">\n    <div class=\"header-text\">\n      <h1>Uncertainty-Aware Risk Register</h1>\n      <div class=\"subtitle\">\n        Project: <strong>${projectFileName}</strong> &nbsp;|&nbsp;\n        BIM Quality Index (BQI) + Risk Screening &nbsp;|&nbsp;\n        Generated: ${new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}\n      </div>\n      ${_isDual ? `<div style=\"font-size:11px;color:#8a5220;margin-top:6px;padding:4px 8px;background:#faf0e4;border-left:3px solid #c77a30;display:inline-block\">\n        Dual-file run &nbsp;&middot;&nbsp; Pipeline A read <strong>${_sourceA.split('\\\\').pop().split('/').pop()}</strong> &nbsp;&middot;&nbsp; Pipeline B read <strong>${_sourceB.split('\\\\').pop().split('/').pop()}</strong>\n      </div>` : ''}\n    </div>\n    <button class=\"print-btn\" onclick=\"window.print()\">Export / Print PDF</button>\n  </div>\n\n  ${riskElements.length === 0 ? `\n  <div class=\"alert-box\">\n    <strong>&#9888; No risk scores yet.</strong> This run did not produce risk elements.\n    The report layout is ready and will fill in once the full pipeline has run.\n  </div>` : ''}\n\n  <div style=\"background:${overallColor}11;border:1px solid ${overallColor};border-left:6px solid ${overallColor};padding:14px 20px;margin-bottom:24px\">\n    <span style=\"font-weight:700;font-size:14px;color:${overallColor}\">Screening verdict: ${overallVerdict}</span>\n    <span style=\"color:#4a4a4a;font-size:12px\">&nbsp;${overallReasons.length ? '(' + overallReasons.join('; ') + ')' : '(no issues detected)'}</span>\n    <div style=\"font-size:11px;color:#696969;margin-top:4px\">Verdict based on three checks: BQI confidence, element coverage, and the high-risk count.</div>\n  </div>\n\n  <div style=\"font-size:12px;color:#696969;margin:-12px 0 20px 2px\">\n    How to read this report: Section 1 gives the screening result (which elements to look at first).\n    Section 2 shows the quality of the data behind those scores. Section 3 checks that two independent\n    tools read the file the same way.\n  </div>\n\n  <div class=\"kpi-grid\">\n    <div class=\"kpi-card blue\">\n      <div class=\"kpi-value\">${modelBQI}</div>\n      <div class=\"kpi-label\">Model BQI Score</div>\n      <div class=\"kpi-sub\" style=\"color:${confColor(modelConf)};font-weight:600\">${String(modelConf).toUpperCase()} confidence</div>\n    </div>\n    <div class=\"kpi-card purple\">\n      <div class=\"kpi-value\">${coveragePct}%</div>\n      <div class=\"kpi-label\">Element Coverage</div>\n      <div class=\"kpi-sub\" style=\"color:${verdictColor(coverageVerdict)};font-weight:600\">${coverageVerdict} &nbsp;&middot;&nbsp; ${coverageRisk} coverage risk</div>\n    </div>\n    <div class=\"kpi-card red\">\n      <div class=\"kpi-value\">${highRisk}</div>\n      <div class=\"kpi-label\">High-Risk Elements</div>\n      <div class=\"kpi-sub\">look at these first</div>\n    </div>\n    <div class=\"kpi-card amber\">\n      <div class=\"kpi-value\">${medRisk}</div>\n      <div class=\"kpi-label\">Medium-Risk Elements</div>\n      <div class=\"kpi-sub\">check when time allows</div>\n    </div>\n    <div class=\"kpi-card green\">\n      <div class=\"kpi-value\">${totalScored}</div>\n      <div class=\"kpi-label\">Elements Scored</div>\n      <div class=\"kpi-sub\">avg SRCC: ${avgSRCC}</div>\n    </div>\n  </div>\n\n  ${execSummaryText ? `\n  <div class=\"section\" style=\"margin-bottom:24px\">\n    <div class=\"section-header\">\n      <h2>${summarySource === 'ai' ? 'Executive Summary' : 'Recommended Action'}</h2>\n      <p>${summarySource === 'ai'\n        ? 'Written by an AI model from the pipeline numbers. Read critically before quoting it anywhere.'\n        : 'What to do with this result. Derived from the numbers with fixed rules.'}</p>\n    </div>\n    <div class=\"section-body\">\n      ${execSummaryParas.map(p => `<p style=\"margin-bottom:14px;line-height:1.8;color:#2e2e38;font-size:13px\">${p}</p>`).join('')}\n      ${(bqiInterp || coverageFinding || srccFinding || topRiskFinding) ? `\n      <div class=\"ai-grid\">\n        ${bqiInterp ? `<div class=\"ai-card\" style=\"background:#f0f7ff;border-color:#0061a0\"><div style=\"font-size:10px;font-weight:700;text-transform:uppercase;color:#0061a0;margin-bottom:6px;letter-spacing:.5px\">BQI Score</div><div style=\"font-size:12px;color:#2e2e38;line-height:1.7\">${bqiInterp}</div></div>` : ''}\n        ${coverageFinding ? `<div class=\"ai-card\" style=\"background:#f5f0ff;border-color:#460073\"><div style=\"font-size:10px;font-weight:700;text-transform:uppercase;color:#460073;margin-bottom:6px;letter-spacing:.5px\">Coverage</div><div style=\"font-size:12px;color:#2e2e38;line-height:1.7\">${coverageFinding}</div></div>` : ''}\n        ${srccFinding ? `<div class=\"ai-card\" style=\"background:#f0faf4;border-color:#009a44\"><div style=\"font-size:10px;font-weight:700;text-transform:uppercase;color:#009a44;margin-bottom:6px;letter-spacing:.5px\">Pipeline Agreement</div><div style=\"font-size:12px;color:#2e2e38;line-height:1.7\">${srccFinding}</div></div>` : ''}\n        ${topRiskFinding ? `<div class=\"ai-card\" style=\"background:#fff5f5;border-color:#dc3545\"><div style=\"font-size:10px;font-weight:700;text-transform:uppercase;color:#dc3545;margin-bottom:6px;letter-spacing:.5px\">Top Risk Elements</div><div style=\"font-size:12px;color:#2e2e38;line-height:1.7\">${topRiskFinding}</div></div>` : ''}\n      </div>` : ''}\n      ${recommendations.length ? `\n      <div style=\"margin-top:20px\">\n        <div style=\"font-size:11px;font-weight:700;text-transform:uppercase;color:#696969;margin-bottom:10px;letter-spacing:.5px\">Recommendations</div>\n        ${recommendations.map((r, i) => `<div class=\"rec-row\"><span class=\"rec-num\">${i + 1}</span><span style=\"font-size:12px;color:#2e2e38;line-height:1.7\">${r}</span></div>`).join('')}\n      </div>` : ''}\n    </div>\n  </div>` : ''}\n\n  <div class=\"section page-break\">\n    <div class=\"section-header\">\n      <h2>1. Risk Screening Results</h2>\n      <p>Ranked by R_adj = R_raw &times; (1 + &alpha;(1 &minus; BQI)), the conservative upper bound under data quality uncertainty</p>\n    </div>\n    <div class=\"section-body\">\n      <div style=\"display:grid;grid-template-columns:260px 1fr;gap:24px;align-items:start\">\n        <div><h3 style=\"font-size:13px;font-weight:600;margin-bottom:12px\">Risk distribution</h3>${distDonut}</div>\n        <div><h3 style=\"font-size:13px;font-weight:600;margin-bottom:12px\">Top 10 Risk Elements: Risk Score vs BQI Score</h3>${scatterChart}</div>\n      </div>\n      ${riskBandHtml()}\n    </div>\n    <div class=\"section-body\" style=\"padding:0;overflow-x:auto\">\n      <table>\n        <thead><tr>\n          <th>#</th><th>GlobalId</th><th>IFC Type</th><th>Zone</th>\n          <th>BQI Score</th><th>Confidence</th>\n          <th>Likelihood</th><th>Consequence</th><th>Risk Score</th><th>Level</th>\n        </tr></thead>\n        <tbody>${riskRows}</tbody>\n      </table>\n    </div>\n  </div>\n\n  <div class=\"section page-break\">\n    <div class=\"section-header\">\n      <h2>2. Data Quality Evidence (BQI)</h2>\n      <p>How much usable data the model carries, and where the gaps are. This explains how much the risk scores above can be trusted.</p>\n    </div>\n    <div class=\"section-body\">\n      <div style=\"display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start\">\n        <div><h3 style=\"font-size:13px;font-weight:600;margin-bottom:12px\">BQI Dimensions by Pipeline (A vs B)</h3>${radarSvg()}</div>\n        <div>\n          <h3 style=\"font-size:13px;font-weight:600;margin-bottom:4px\">BQI Dimension Performance</h3>\n          <p style=\"font-size:11px;color:#696969;margin-bottom:10px\">Averages from ${dimSourceLabel}. D4 measures cross-pipeline agreement and is the same for both series; see the radar for the A-vs-B comparison.</p>\n          <table>\n            <thead><tr><th>Dimension</th><th style=\"text-align:center\">Avg Score</th><th style=\"text-align:center\">Weight</th><th style=\"text-align:center\">Contribution</th></tr></thead>\n            <tbody>${dimRows || weightRows}</tbody>\n          </table>\n        </div>\n      </div>\n      <div style=\"margin-top:24px\">\n        <h3 style=\"font-size:13px;font-weight:600;margin-bottom:4px\">Property Quality Findings</h3>\n        <p style=\"font-size:12px;color:#696969;margin-bottom:12px\">Most frequent data gaps behind the dimension scores. Use these lists as the model repair priority list.</p>\n        <div style=\"display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px\">\n          <div><div style=\"font-size:11px;font-weight:700;text-transform:uppercase;color:#0061a0;margin-bottom:6px\">Missing required properties (D1)</div>${d1Table}</div>\n          <div><div style=\"font-size:11px;font-weight:700;text-transform:uppercase;color:#00a19a;margin-bottom:6px\">Invalid property values (D2)</div>${d2Table}</div>\n          <div><div style=\"font-size:11px;font-weight:700;text-transform:uppercase;color:#460073;margin-bottom:6px\">Missing quantity fields (D3)</div>${d3Table}</div>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"section page-break\">\n    <div class=\"section-header\">\n      <h2>3. Pipeline Cross-Check: A vs B</h2>\n      <p>Do two independent extraction tools read this file the same way? Quantities compared via SRCC, element presence via coverage.</p>\n    </div>\n    <div class=\"section-body\">\n      <div style=\"display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start\">\n        <div><h3 style=\"font-size:13px;font-weight:600;margin-bottom:12px\">QTO agreement (SRCC)</h3>${srccBars}</div>\n        <div>\n          <h3 style=\"font-size:13px;font-weight:600;margin-bottom:12px\">SRCC per quantity field</h3>\n          <p style=\"font-size:12px;color:#696969;margin-bottom:8px\">${overallNote || 'Spearman rank correlation per quantity field (1.0 = perfect)'}</p>\n          <table>\n            <thead><tr><th>QTO Field</th><th>SRCC</th><th>Elements</th><th>Agreement</th><th>Note</th></tr></thead>\n            <tbody>${srccRows}</tbody>\n          </table>\n        </div>\n      </div>\n      <div style=\"margin-top:24px\">\n        <h3 style=\"font-size:13px;font-weight:600;margin-bottom:4px\">Element coverage: missing element severity</h3>\n        <p style=\"font-size:12px;color:#696969;margin-bottom:12px\">Checks whether the same elements exist in both pipelines (breadth). This is separate from D3 QTO coverage, which checks quantity fields per element (depth). Missing elements are classified by IFC type criticality.</p>\n        <div class=\"severity-grid\">\n          <div class=\"severity-box\" style=\"background:#fff5f5;border-color:#f5c2c7\">\n            <div style=\"font-size:28px;font-weight:300;color:#dc3545\">${severityBreakdown.critical}</div>\n            <div style=\"font-size:11px;text-transform:uppercase;font-weight:600;color:#dc3545;margin-top:4px\">Critical</div>\n            <div style=\"font-size:11px;color:#999;margin-top:4px\">${sevCaption(sevTypes.critical)}</div>\n          </div>\n          <div class=\"severity-box\" style=\"background:#fff8e1;border-color:#ffe08a\">\n            <div style=\"font-size:28px;font-weight:300;color:#ffa726\">${severityBreakdown.needs_review}</div>\n            <div style=\"font-size:11px;text-transform:uppercase;font-weight:600;color:#ffa726;margin-top:4px\">Needs Review</div>\n            <div style=\"font-size:11px;color:#999;margin-top:4px\">${sevCaption(sevTypes.needs_review)}</div>\n          </div>\n          <div class=\"severity-box\" style=\"background:#f0faf4;border-color:#b7dfca\">\n            <div style=\"font-size:28px;font-weight:300;color:#009a44\">${severityBreakdown.probably_harmless}</div>\n            <div style=\"font-size:11px;text-transform:uppercase;font-weight:600;color:#009a44;margin-top:4px\">Probably Harmless</div>\n            <div style=\"font-size:11px;color:#999;margin-top:4px\">${sevCaption(sevTypes.probably_harmless)}</div>\n          </div>\n        </div>\n        <div style=\"margin-top:16px;font-size:12px;color:#696969;text-align:center\">\n          Total missing elements: <strong>${missingTotal}</strong> &nbsp;|&nbsp;\n          Verdict: <strong style=\"color:${verdictColor(coverageVerdict)}\">${coverageVerdict}</strong> &nbsp;|&nbsp;\n          Coverage risk level: <strong>${coverageRisk}</strong>\n        </div>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"footer\">\n    <p><strong>Uncertainty-Aware Risk Screening from Imperfect BIM</strong> &nbsp;|&nbsp; EMJM NORISK &nbsp;|&nbsp; ${new Date().toLocaleString()}</p>\n    <p style=\"margin-top:6px\">Pipeline A: DDC Converter &nbsp;|&nbsp; Pipeline B: IfcOpenShell &nbsp;|&nbsp; Orchestrated via n8n</p>\n  </div>\n\n</div>\n</body>\n</html>`;\n\n// ---- RETURN -----------------------------------------------------------------\nconst ts    = new Date();\nconst pad   = n => String(n).padStart(2, '0');\nconst stamp = `${ts.getFullYear()}-${pad(ts.getMonth() + 1)}-${pad(ts.getDate())}-${pad(ts.getHours())}-${pad(ts.getMinutes())}`;\n\nreturn [\n  {\n    json: {\n      _type:     'report_html',\n      html:      html,\n      filename:  `risk-register-${fileTag}-${stamp}.html`,\n      timestamp: new Date().toISOString(),\n    }\n  },\n  {\n    json: {\n      _type:               'report_summary',\n      project:             projectFileName,\n      timestamp:           new Date().toISOString(),\n      model_bqi:           modelBQI,\n      model_confidence:    modelConf,\n      total_elements:      totalScored,\n      coverage_pct:        coveragePct,\n      coverage_verdict:    coverageVerdict,\n      coverage_risk:       coverageRisk,\n      high_risk:           highRisk,\n      medium_risk:         medRisk,\n      low_risk:            lowRisk,\n      avg_srcc:            avgSRCC,\n      overall_rank_stable: overallRankStable,\n      ai_summary_included: !!execSummary,\n      // Run provenance — all three derived from the same trimmed test, so the\n      // flag and the recorded sources can never contradict each other.\n      dual_file_mode:      _isDual,\n      pipeline_a_source:   _sourceA || null,\n      pipeline_b_source:   _sourceB || _sourceA || null,\n    }\n  }\n];"
+      },
+      "id": "abfd27b8-4dc7-42b6-b169-6863fd4fc1bd",
+      "name": "5.1: Generate HTML",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        5424,
+        560
+      ],
+      "typeVersion": 2,
+      "notes": "Code JS — adapt from n8n_Annisa_Learn pattern (Chart.js, comparison table)"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst meta = items.find(i => i.json._type === 'metadata');\nconst schemaDetected = meta?.json?.schema || 'unknown';\nconst metaAllKeys = meta ? Object.keys(meta.json) : [];   // ← new: see everything metadata actually carries\n\nconst sample = items.find(i => i.json.ifc_domain);\nconst domainDetected = sample?.json?.ifc_domain || 'not set';\n\nconst byType = {};\nfor (const item of items) {\n  const el = item.json;\n  if (el._type !== 'element' && el._type !== 'spatial_entity') continue;\n  const type = el.Category || 'Unknown';\n  const key = `${el._type}::${type}`;\n  if (!byType[key]) byType[key] = new Set();\n  Object.keys(el)\n    .filter(k => k.startsWith('['))\n    .forEach(k => byType[key].add(k));\n}\n\nconst output = [\n  {\n    json: {\n      _diagnostic: 'schema_domain_summary',\n      schema_detected: schemaDetected,\n      domain_detected: domainDetected,\n      metadata_raw: meta ? meta.json : null,       // ← new: full metadata object, unfiltered\n      metadata_keys: metaAllKeys                     // ← new: just the key names, easy to scan\n    }\n  }\n];\n\nObject.entries(byType).forEach(([key, keys]) => {\n  const [entityType, category] = key.split('::');\n  output.push({ json: { entity_type: entityType, Category: category, keys: [...keys].sort() } });\n});\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2736,
+        1120
+      ],
+      "id": "daf2abf5-3cb2-4e64-ba05-e5836dab7c39",
+      "name": "Diagnostic Pipeline B"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst byType = {};\nfor (const item of items) {\n  const el = item.json;\n  if (el._type !== 'element') continue;\n  const type = el.Category || 'Unknown';\n  if (!byType[type]) byType[type] = { count: 0, keys: new Set() };\n  byType[type].count++;\n  Object.keys(el)\n    .filter(k => k.startsWith('['))\n    .forEach(k => byType[type].keys.add(k));\n}\n\nconst totalItems = items.length;\nconst totalElements = items.filter(i => i.json._type === 'element').length;\n\nreturn [\n  { json: { _diagnostic: 'pipeline_a_totals', total_items: totalItems,\n            total_elements: totalElements, categories: Object.keys(byType).length } },\n  ...Object.entries(byType).map(([type, data]) => ({\n    json: { Category: type, element_count: data.count, keys: [...data.keys].sort() }\n  })),\n];\n\nreturn Object.entries(byType).map(([type, data]) => ({\n  json: {\n    Category: type,\n    element_count: data.count,\n    keys: [...data.keys].sort()\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        448
+      ],
+      "id": "49fcc851-5c4f-4685-8160-4dc689199d7f",
+      "name": "Diagnostic Pipeline A"
+    },
+    {
+      "parameters": {
+        "jsCode": "// HTML to Binary — select report_html explicitly, get project_file from Config\nconst reportItem = $input.all().find(i => i.json._type === 'report_html');\n\nif (!reportItem || typeof reportItem.json.html !== 'string') {\n  throw new Error('No report_html item found — check Node 5.6 output');\n}\n\nconst html        = reportItem.json.html;\nconst projectFile = $node['0.1: Config'].json.project_file;\nconst fileName    = reportItem.json.filename\n  || `IFC_Risk_Register_${new Date().toISOString().slice(0, 10)}.html`;\n\nreturn [{\n  json: {\n    fileName:     fileName,\n    project_file: projectFile,\n  },\n  binary: {\n    data: {\n      data:          Buffer.from(html, 'utf8').toString('base64'),\n      mimeType:      'text/html',\n      fileName:      fileName,\n      fileExtension: 'html',\n    }\n  }\n}];"
+      },
+      "id": "8a61a6cb-38b0-4331-a5db-f12921ce63b6",
+      "name": "5.2: HTML to Binary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        5648,
+        560
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "// 5.8: Prepare HTML Path — writes to Config output_dir, falls back to IFC folder\nconst fileName    = $input.first().json.fileName;\nconst projectFile = $input.first().json.project_file || '';\n\nconst configured = $node['0.1: Config'].json.output_dir;\n\nlet directory;\nif (configured && configured.trim() !== '') {\n  directory = configured.replace(/[\\\\/]+$/, '');   // strip trailing slash\n} else {\n  const lastSlash = Math.max(projectFile.lastIndexOf('\\\\'), projectFile.lastIndexOf('/'));\n  directory = projectFile.substring(0, lastSlash);\n}\n\nconst fullPath = `${directory}\\\\${fileName}`;\n\nreturn [{\n  json: {\n    html_filename: fileName,\n    full_path:     fullPath,\n    directory:     directory,\n    project_file:  projectFile,\n  },\n  binary: $input.first().binary,\n}];"
+      },
+      "id": "5da2b7b5-b4a6-4b26-b86b-f5930084b4e3",
+      "name": "5.3: Prepare HTML Path",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        5872,
+        560
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "fileName": "={{ $json.full_path }}",
+        "options": {}
+      },
+      "id": "22bb05d1-f82d-47ea-8315-d809758afa1a",
+      "name": "5.4: Write HTML to Project Folder",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "position": [
+        6096,
+        560
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "command": "=start \"\" \"{{ $node['5.3: Prepare HTML Path'].json.full_path }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        6320,
+        560
+      ],
+      "id": "6104b251-76da-4f9a-8160-02355f072300",
+      "name": "5.5: Open HTML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================================\n// 5.6: Sensitivity Analysis — dead-end export node after 4.5\n// ----------------------------------------------------------------------------\n// Exports the per-element inputs required by the offline analysis scripts\n// (sensitivity_analysis.py, alpha_characterization.py, fault_analysis.py):\n// the four BQI dimension scores plus the likelihood and consequence proxies.\n// Values are exported at full precision; rounding happens only at display\n// time in the HTML report, never on the computation path.\n//\n// FILE NAMING CONTRACT\n//   Baseline run     sensitivity-<model>.json\n//   Single-file run  sensitivity-<model>__F4-r25-s42_PIPELINE-B-ONLY.json\n//   Dual-file run    sensitivity-<model>__F4-r25-s42_PIPELINE-B-ONLY_DUALFILE.json\n//\n// The model name is taken from project_file_b when that field is set, and from\n// project_file otherwise, so a fault variant read by Pipeline B alone never\n// writes over the baseline export that fault_analysis.py computes deltas\n// against. The _DUALFILE marker is required because fault_injection.py names\n// every F4 and F6 variant with the _PIPELINE-B-ONLY suffix regardless of how\n// it is later fed: without the marker, the single-file and dual-file runs of\n// the same fault and severity resolve to the same filename and one silently\n// overwrites the other.\n//\n// Downstream: connect a \"Write Binary File\" node\n//   File Name (expression):  {{ $json.full_path }}\n//   Property Name:           data\n// ============================================================================\n\nconst fields = [\n  'GlobalId', 'Category',\n  'score_completeness', 'score_validity',\n  'score_qto_coverage', 'score_qto_agreement',\n  'likelihood_score', 'consequence_score',\n];\n\nconst rows = $input.all()\n  .filter(i => i.json._type === 'risk_element')\n  .map(i => Object.fromEntries(fields.map(f => [f, i.json[f]])));\n\n// ---- Run configuration -----------------------------------------------------\n// project_file_b is trimmed before testing: a Set node that leaves a stray\n// space would otherwise make Boolean() true and turn every run into a\n// dual-file run without any visible sign.\nconst cfg      = $node['0.1: Config'].json;\nconst sourceB  = String(cfg.project_file_b || '').trim();\nconst sourceA  = String(cfg.project_file   || '').trim();\nconst isDual   = sourceB.length > 0;\n\nconst projectFile = isDual ? sourceB : (sourceA || 'unknown-model');\n\nconst baseName = projectFile\n  .split('\\\\').pop()\n  .split('/').pop()\n  .replace(/\\.[^/.]+$/, '');\n\nconst modelName = baseName + (isDual ? '_DUALFILE' : '');\n\n// ---- Output path -----------------------------------------------------------\nconst outputDir = String(cfg.output_dir || 'C:\\\\temp').replace(/[\\\\/]+$/, '');\nconst fileName  = `sensitivity-${modelName}.json`;\nconst fullPath  = `${outputDir}\\\\${fileName}`;\n\n// ---- Guard: an empty export means nothing reached this node ----------------\n// Without this, a broken upstream branch produces a valid but empty JSON file\n// that the analysis scripts skip with a one-line message, which is easy to\n// miss across a 130-run campaign.\nif (rows.length === 0) {\n  throw new Error(\n    `5.6 Sensitivity Analysis: no risk_element items received for ${baseName}. ` +\n    `Check that Block 4 completed and that the typed-item filter is intact.`\n  );\n}\n\nreturn [{\n  json: {\n    model:             modelName,\n    count:             rows.length,\n    full_path:         fullPath,\n    // Run provenance — recorded in the export so the configuration of every\n    // run is visible in its own output rather than inferred from the machine.\n    dual_file_mode:    isDual,\n    pipeline_a_source: sourceA || null,\n    pipeline_b_source: sourceB || sourceA || null,\n  },\n  binary: {\n    data: {\n      data:          Buffer.from(JSON.stringify(rows, null, 1)).toString('base64'),\n      mimeType:      'application/json',\n      fileName:      fileName,\n      fileExtension: 'json',\n    }\n  }\n}];\n\n\n// ============================================================================\n// PATCH FOR 5.1: Generate HTML — traceability, not overwrite\n// ----------------------------------------------------------------------------\n// CORRECTION: an earlier version of this note claimed a dual-file run would\n// overwrite the baseline report. It will not. The report filename carries a\n// timestamp down to the minute:\n//\n//     filename: `risk-register-${projectFileName}-${stamp}.html`\n//\n// so every run writes a uniquely named file and nothing is lost.\n//\n// The remaining issue is labelling. projectFileName comes from project_file\n// alone. For single-file fault runs that is fine, because project_file holds\n// the variant and the fault tag lands in the filename. But on the six\n// dual-file runs project_file holds the BASELINE, so the report is named\n//\n//     risk-register-IFC4-Building-Architecture-2026-08-05-14-32.html\n//\n// with nothing indicating it was the dual-file F4 run at 10% severity. Among\n// hundreds of timestamped files those six look like ordinary baseline\n// reports, and the only way to tell is to open them.\n//\n// Insert after the projectFileName block (around line 24):\n//\n//     const _cfg     = $node['0.1: Config'].json;\n//     const _sourceB = String(_cfg.project_file_b || '').trim();\n//     const _isDual  = _sourceB.length > 0;\n//     const fileTag  = projectFileName + (_isDual ? '_DUALFILE' : '');\n//\n// Then change two lines:\n//\n//     // ~line 641\n//     filename: `risk-register-${fileTag}-${stamp}.html`,\n//\n//     // ~line 664 — must use the same test as 5.6 above\n//     dual_file_mode: _isDual,        // was: Boolean(cfg.project_file_b)\n//\n// projectFileName itself is left alone, so the report title and the\n// \"Project:\" line stay clean and keep naming what Pipeline A read. Only the\n// filename carries the marker.\n//\n// The second line matters as much as the first. 5.1 still uses\n// Boolean(project_file_b) while 5.6 uses String(...).trim(). If that field\n// ever held a single space, 5.1 would report dual_file_mode: true while 5.6\n// treated the same run as single-file — two artefacts from one run\n// contradicting each other, with no way to tell which was right.\n// ============================================================================"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5424,
+        336
+      ],
+      "id": "78eb46c0-2e36-4d8c-bbe7-237d63f1db67",
+      "name": "5.6: Sensitivity Analysis"
+    },
+    {
+      "parameters": {
+        "jsCode": "const all       = $input.all();\nconst others    = all.filter(i => i.json._type !== 'risk_element');\nconst riskItems = all.filter(i => i.json._type === 'risk_element');\n\nriskItems.sort((a, b) => (b.json.risk_score || 0) - (a.json.risk_score || 0));\n\nconst scores = riskItems.map(i => i.json.risk_score || 0).sort((a, b) => a - b);\nconst n      = scores.length;\n\nconst HIGH_T = n > 0\n  ? Math.max(scores[Math.floor(n * 0.75)] ?? 0, 0.40)\n  : 0.40;\n\nconst LOW_T = n > 0\n  ? Math.min(\n      Math.max(scores[Math.floor(n * 0.25)] ?? 0, 0.15),\n      HIGH_T - 0.01\n    )\n  : 0.15;\n\nconst labeled = riskItems.map((item, idx) => {\n  const s     = item.json.risk_score || 0;\n  const label = s >= HIGH_T ? 'High' : s >= LOW_T ? 'Medium' : 'Low';\n\n  return {\n    json: {\n      ...item.json,\n      risk_label:      label,\n      risk_rank:       idx + 1,\n      // ✅ Fixed percentile — highest risk = 100, lowest = 0\n      risk_percentile: Math.round((1 - (idx / Math.max(n - 1, 1))) * 100),\n      zone:            item.json.is_external ? 'Exterior' : 'Interior',\n      // ✅ Removed location_tag — same as zone, redundant\n    }\n  };\n});\n\nconst highCount   = labeled.filter(i => i.json.risk_label === 'High').length;\nconst mediumCount = labeled.filter(i => i.json.risk_label === 'Medium').length;\nconst lowCount    = labeled.filter(i => i.json.risk_label === 'Low').length;\n\nconst output = [\n  {\n    json: {\n      _type:            'risk_register_summary',\n      total_elements:   n,\n      high_count:       highCount,\n      medium_count:     mediumCount,\n      low_count:        lowCount,\n      high_threshold:   Math.round(HIGH_T * 1000) / 1000,\n      low_threshold:    Math.round(LOW_T  * 1000) / 1000,\n      threshold_method: 'dynamic_percentile_p75_p25',  // ✅ audit trail\n      score_min:        scores[0]                ?? 0,\n      score_max:        scores[n - 1]            ?? 0,\n      score_median:     scores[Math.floor(n / 2)] ?? 0,\n    }\n  },\n  ...others,\n  ...labeled,\n];\n\nreturn output;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5200,
+        560
+      ],
+      "id": "95d1aa05-ecdd-447e-9eb0-ed515d489a75",
+      "name": "4.5: Rank & label",
+      "notes": "Code JS — sort, assign High/Med/Low label"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Diagnostic BQI+Risk — dead-end inspector after Node 4.5\nconst items = $input.all();\n\nconst byType = {};\nfor (const i of items) {\n  const t = i.json._type || 'untyped';\n  byType[t] = (byType[t] || 0) + 1;\n}\n\nconst modelSummary = items.find(i => i.json._type === 'bqi_model_summary')?.json    || {};\nconst riskSummary  = items.find(i => i.json._type === 'risk_register_summary')?.json || {};\nconst srccSummary  = items.find(i => i.json._type === 'srcc_summary')?.json          || {};\nconst coverage     = items.find(i => i.json._type === 'coverage_analysis')?.json     || {};\nconst riskEls      = items.filter(i => i.json._type === 'risk_element');\n\n// Averages of the four BQI dimensions across all scored elements\nconst avg = key => riskEls.length\n  ? Math.round(riskEls.reduce((s, i) => s + (i.json[key] || 0), 0) / riskEls.length * 1000) / 1000\n  : null;\n\nconst top5 = riskEls\n  .filter(i => (i.json.risk_rank || 999) <= 5)\n  .sort((a, b) => a.json.risk_rank - b.json.risk_rank)\n  .map(i => ({\n    rank:        i.json.risk_rank,\n    GlobalId:    (i.json.GlobalId || '').slice(0, 10),\n    Category:    i.json.Category,\n    D1:          i.json.score_completeness,\n    D2:          i.json.score_validity,\n    D3:          i.json.score_qto_coverage,\n    D4:          i.json.score_qto_agreement,\n    BQI:         i.json.bqi_score,\n    L:           i.json.likelihood_score,\n    C:           i.json.consequence_score,\n    R_raw:       i.json.risk_score_raw,\n    R_adj:       i.json.risk_score,\n    band:        i.json.uncertainty_band,\n    label:       i.json.risk_label,\n    penalties:   i.json.penalties,\n  }));\n\nreturn [{\n  json: {\n    _diagnostic:      'bqi_risk_summary',\n    item_counts:      byType,\n    model_bqi:        modelSummary.model_bqi,\n    model_confidence: modelSummary.model_confidence,\n    pipeline_scored:  modelSummary.pipeline_scored,\n    weights_used:     modelSummary.weights_used,\n    dim_averages:     { D1: avg('score_completeness'), D2: avg('score_validity'),\n                        D3: avg('score_qto_coverage'), D4: avg('score_qto_agreement') },\n    alpha_used:       riskEls[0]?.json.alpha_used ?? null,\n    thresholds:       { high: riskSummary.high_threshold, low: riskSummary.low_threshold,\n                        method: riskSummary.threshold_method },\n    risk_counts:      { high: riskSummary.high_count, medium: riskSummary.medium_count,\n                        low: riskSummary.low_count },\n    avg_srcc:         srccSummary.average_srcc,\n    coverage_pct:     coverage.coverage_percentage,\n    coverage_verdict: coverage.verdict,\n  },\n}, ...top5.map(t => ({ json: { _diagnostic: 'top5_risk', ...t } }))];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5200,
+        784
+      ],
+      "id": "0e327d8c-4e8d-4354-a0a3-c093e14187af",
+      "name": "Diagnostic BQI & Risk"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              },
+              "leftValue": "={{ $json.error !== undefined && $json.error !== null }}",
+              "rightValue": ""
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3fcbe067-c9b2-4fc8-ac72-74734c1d7760",
+      "name": "1.4: DDC Converter, OK?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1392,
+        448
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "xlsx-filename-success",
+              "name": "xlsx_filename",
+              "type": "string",
+              "value": "={{ $node[\"1.1: Build XLSX path\"].json[\"xlsx_filename\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "72cbaaa9-89c7-4a88-b677-08a48ee63afa",
+      "name": "1.4a: DDC success",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1616,
+        672
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "fileName": "={{ $json.full_path }}",
+        "options": {}
+      },
+      "id": "39fa8263-c3ec-4b2d-aad0-5890ebbcb296",
+      "name": "5.7: Write sensitivity JSON",
+      "type": "n8n-nodes-base.writeBinaryFile",
+      "position": [
+        5648,
+        336
+      ],
+      "typeVersion": 1
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "0.0: Trigger": {
+      "main": [
+        [
+          {
+            "node": "0.1: Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "0.1: Config": {
+      "main": [
+        [
+          {
+            "node": "2.1: Download script",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "1.1: Build XLSX path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.1: Build XLSX path": {
+      "main": [
+        [
+          {
+            "node": "1.2: XLSX exists?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.2: XLSX exists?": {
+      "main": [
+        [
+          {
+            "node": "1.3: Skip if converted?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.3: Skip if converted?": {
+      "main": [
+        [
+          {
+            "node": "1.3a: Skip (file exists)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "1.3b: Run DDC converter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.3a: Skip (file exists)": {
+      "main": [
+        [
+          {
+            "node": "1.5: Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.1: Download script": {
+      "main": [
+        [
+          {
+            "node": "2.2: Verify Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.2: Verify Python": {
+      "main": [
+        [
+          {
+            "node": "2.3: Run extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.3: Run extraction": {
+      "main": [
+        [
+          {
+            "node": "2.4: Parse output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.4: Parse output": {
+      "main": [
+        [
+          {
+            "node": "2.5: Detect domain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.5: Detect domain": {
+      "main": [
+        [
+          {
+            "node": "2.6: Filter elements",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Diagnostic Pipeline B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.7: Tag as Pipeline B": {
+      "main": [
+        [
+          {
+            "node": "3.1: Merge A+B",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "3.1: Merge A+B": {
+      "main": [
+        [
+          {
+            "node": "3.2: QTO comparison",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4.1: Exposure": {
+      "main": [
+        [
+          {
+            "node": "4.2: Likelihood",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3.2: QTO comparison": {
+      "main": [
+        [
+          {
+            "node": "3.3: Coverage Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3.3: Coverage Analysis": {
+      "main": [
+        [
+          {
+            "node": "3.4: BQI Scoring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3.4: BQI Scoring": {
+      "main": [
+        [
+          {
+            "node": "3.5: SRCC Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "3.5: SRCC Analysis": {
+      "main": [
+        [
+          {
+            "node": "4.1: Exposure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4.2: Likelihood": {
+      "main": [
+        [
+          {
+            "node": "4.3: Consequence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4.3: Consequence": {
+      "main": [
+        [
+          {
+            "node": "4.4: Risk score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4.4: Risk score": {
+      "main": [
+        [
+          {
+            "node": "4.5: Rank & label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.3b: Run DDC converter": {
+      "main": [
+        [
+          {
+            "node": "1.4: DDC Converter, OK?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.5: Merge": {
+      "main": [
+        [
+          {
+            "node": "1.6: Set XLSX path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.6: Set XLSX path": {
+      "main": [
+        [
+          {
+            "node": "1.7: Read XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.7: Read XLSX": {
+      "main": [
+        [
+          {
+            "node": "1.8: Parse rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.8: Parse rows": {
+      "main": [
+        [
+          {
+            "node": "1.9: Filter spatial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.9: Filter spatial": {
+      "main": [
+        [
+          {
+            "node": "1.10: Tag as Pipeline A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.10: Tag as Pipeline A": {
+      "main": [
+        [
+          {
+            "node": "3.1: Merge A+B",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Diagnostic Pipeline A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.4b: DDC Converter error": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "2.6: Filter elements": {
+      "main": [
+        [
+          {
+            "node": "2.7: Tag as Pipeline B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5.1: Generate HTML": {
+      "main": [
+        [
+          {
+            "node": "5.2: HTML to Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5.2: HTML to Binary": {
+      "main": [
+        [
+          {
+            "node": "5.3: Prepare HTML Path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5.3: Prepare HTML Path": {
+      "main": [
+        [
+          {
+            "node": "5.4: Write HTML to Project Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5.4: Write HTML to Project Folder": {
+      "main": [
+        [
+          {
+            "node": "5.5: Open HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5.6: Sensitivity Analysis": {
+      "main": [
+        [
+          {
+            "node": "5.7: Write sensitivity JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "4.5: Rank & label": {
+      "main": [
+        [
+          {
+            "node": "Diagnostic BQI & Risk",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "5.6: Sensitivity Analysis",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "5.1: Generate HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.4: DDC Converter, OK?": {
+      "main": [
+        [
+          {
+            "node": "1.4b: DDC Converter error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "1.4a: DDC success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "1.4a: DDC success": {
+      "main": [
+        [
+          {
+            "node": "1.5: Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "f2857dd8-2278-46b0-a21d-9ba481d50ee6",
+  "meta": {
+    "instanceId": "04adcdbc4b2ff3c2e3e85a32e9e18c5432e2d4b85688194ce6155f1530721ac2"
+  },
+  "id": "A87FYPjzosKowT35",
+  "tags": [
+    {
+      "updatedAt": "2026-04-05T14:41:44.826Z",
+      "createdAt": "2026-04-05T14:41:44.826Z",
+      "id": "JE2SarMgX6TjN5f5",
+      "name": "Annisa"
+    }
+  ]
+}
