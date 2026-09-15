@@ -51,7 +51,7 @@
     },
     {
       "parameters": {
-        "content": "# Uncertainty-Aware Risk Screening from Imperfect BIM Using N8N with IFC Validation, QTO Robustness, and Explainable Risk Registers\nDataDrivenConstruction [GitHub](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto)\nN8N Thesis Documentation [N8N-Thesis](https://github.com/ulnirah/n8n-thesis)\nIFC Sample [buildingSMART](https://github.com/buildingSMART/Sample-Test-Files.git)",
+        "content": "# Uncertainty-Aware Risk Screening from Imperfect Building Information Models: Schema Validation, Quantity Take-Off Robustness, and Explainable Risk Registers in an n8n Workflow\nDataDrivenConstruction [GitHub](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN-pipeline-with-conversion-validation-qto)\nN8N Thesis Documentation [N8N-Thesis](https://github.com/ulnirah/n8n-thesis)\nIFC Sample [buildingSMART](https://github.com/buildingSMART/Sample-Test-Files.git)",
         "height": 144,
         "width": 6480,
         "color": 3
