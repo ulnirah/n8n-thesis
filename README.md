@@ -60,7 +60,7 @@ The repository combines external infrastructure from the DataDrivenConstruction 
 The original DDC workflow collection is retained separately under:
 
 ```text
-workflows/ddc-reference/
+workflows/ddc-base/
 ```
 
 The DDC IFC Exporter is used as the extraction component for Pipeline A. The thesis-specific BQI, comparison, fault-injection, risk-screening, sensitivity, verification, and reporting logic is implemented in the thesis workflow and supporting scripts.
@@ -265,7 +265,7 @@ n8n-thesis/
 │
 ├── workflows/
 │   ├── README.md
-│   ├── ddc-reference/
+│   ├── ddc-base/
 │   └── thesis/
 │       ├── README.md
 │       └── n8n_ifc_dual_pipeline_v16.json
@@ -321,7 +321,7 @@ The principal thesis software artefacts are:
 The original DDC workflow collection is separately preserved under:
 
 ```text
-workflows/ddc-reference/
+workflows/ddc-base/
 ```
 
 The SHA-256 values of the principal artefacts used for thesis deposit are recorded in the thesis provenance table.
