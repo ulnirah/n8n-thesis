@@ -2,7 +2,7 @@
 
 This document defines the deterministic rules used by the thesis **uncertainty-aware risk screening model**.
 
-The model is a BIM-only, relative screening framework. It does **not** estimate empirical probabilities of failure and is not calibrated against field deterioration data. Likelihood, susceptibility, criticality, exposure, and material values are ordinal engineering screening parameters. Their purpose is to produce a reproducible relative ranking within the analysed model. :contentReference[oaicite:2]{index=2}
+The model is a BIM-only, relative screening framework. It does **not** estimate empirical probabilities of failure and is not calibrated against field deterioration data. Likelihood, susceptibility, criticality, exposure, and material values are ordinal engineering screening parameters. Their purpose is to produce a reproducible relative ranking within the analysed model.
 
 The risk-screening chain is:
 
@@ -45,7 +45,7 @@ The implementation clamps the result to `[0, 1]`:
 R_raw = min(1, max(0, L × C))
 ```
 
-`R_raw` represents the deterministic risk estimate before information-quality uncertainty is propagated. :contentReference[oaicite:3]{index=3}
+`R_raw` represents the deterministic risk estimate before information-quality uncertainty is propagated.
 
 ---
 
@@ -65,7 +65,7 @@ where:
 | `S_base` | Baseline susceptibility for IFC category and domain |
 | `m_mat` | Material modifier |
 
-The resulting `L` is dimensionless and is used for **relative screening only**. It must not be interpreted as an empirical failure probability. :contentReference[oaicite:4]{index=4}
+The resulting `L` is dimensionless and is used for **relative screening only**. It must not be interpreted as an empirical failure probability.
 
 ---
 
@@ -102,7 +102,7 @@ from:
 IFC Category + Domain
 ```
 
-The values are ordinal engineering judgements rather than calibrated probabilities. The lookup values were frozen before the corpus was scored, avoiding post-hoc adjustment of individual results. :contentReference[oaicite:5]{index=5}
+The values are ordinal engineering judgements rather than calibrated probabilities. The lookup values were frozen before the corpus was scored, avoiding post-hoc adjustment of individual results.
 
 ### Building
 
@@ -136,7 +136,7 @@ The values are ordinal engineering judgements rather than calibrated probabiliti
 | `IfcWallStandardCase` | 0.45 | 0.80 |
 | `IfcWindow` | 0.65 | 0.50 |
 
-These are the Building-domain susceptibility and criticality values published in Annex II. :contentReference[oaicite:6]{index=6}
+These are the Building-domain susceptibility and criticality values published in Annex II.
 
 ### Bridge
 
@@ -154,8 +154,6 @@ These are the Building-domain susceptibility and criticality values published in
 | `IfcSlab` | 0.55 | 0.85 |
 | `IfcSlabStandardCase` | 0.55 | 0.85 |
 
-:contentReference[oaicite:7]{index=7}
-
 ### Road
 
 | IFC Entity | Susceptibility | Criticality |
@@ -170,8 +168,6 @@ These are the Building-domain susceptibility and criticality values published in
 | `IfcSign` | 0.40 | 0.40 |
 | `IfcSignal` | 0.45 | 0.55 |
 
-:contentReference[oaicite:8]{index=8}
-
 ### Rail
 
 | IFC Entity | Susceptibility | Criticality |
@@ -184,8 +180,6 @@ These are the Building-domain susceptibility and criticality values published in
 | `IfcSign` | 0.35 | 0.45 |
 | `IfcSignal` | 0.65 | 0.80 |
 | `IfcTrackElement` | 0.70 | 0.90 |
-
-:contentReference[oaicite:9]{index=9}
 
 ---
 
@@ -210,7 +204,7 @@ The modifier is bounded between:
 
 The category/domain susceptibility remains the dominant term.
 
-The values are author-defined ordinal adjustments, not material-specific calibrated failure probabilities. :contentReference[oaicite:10]{index=10}
+The values are author-defined ordinal adjustments, not material-specific calibrated failure probabilities.
 
 ---
 
@@ -239,7 +233,7 @@ Thus:
 30% of consequence = relative quantity extent
 ```
 
-The coefficients `0.7` and `0.3` are author-defined screening parameters. :contentReference[oaicite:11]{index=11}
+The coefficients `0.7` and `0.3` are author-defined screening parameters.
 
 ---
 
@@ -280,7 +274,7 @@ In the final case:
 C = 0.7 × Crit_base
 ```
 
-This is relevant to the M8 negative control, where no quantity data are available. :contentReference[oaicite:12]{index=12}
+This is relevant to the M8 negative control, where no quantity data are available.
 
 ---
 
@@ -292,7 +286,7 @@ After likelihood and consequence are computed:
 R_raw = min(1, max(0, L × C))
 ```
 
-`R_raw` is the unadjusted risk proxy before BQI uncertainty propagation. :contentReference[oaicite:13]{index=13}
+`R_raw` is the unadjusted risk proxy before BQI uncertainty propagation.
 
 ---
 
@@ -340,7 +334,7 @@ R_raw
 R_adj
 ```
 
-`R_adj` is the **upper bound of the uncertainty band** and is the score used for screening ranking. :contentReference[oaicite:14]{index=14}
+`R_adj` is the **upper bound of the uncertainty band** and is the score used for screening ranking.
 
 ---
 
@@ -364,7 +358,7 @@ A narrow band indicates that the element remains risky even with relatively good
 
 A wide band indicates that the risk estimate is strongly affected by information uncertainty.
 
-The band is a **deterministic sensitivity envelope**, not a statistical confidence interval. No probabilistic interpretation is intended. :contentReference[oaicite:15]{index=15}
+The band is a **deterministic sensitivity envelope**, not a statistical confidence interval. No probabilistic interpretation is intended.
 
 ---
 
@@ -382,8 +376,7 @@ The rationale is conservative:
 - ranking on `R_lower` would incorrectly make poorly known elements appear safer;
 - ranking on the midpoint would preserve the raw ordering and therefore remove the decision effect of the symmetric dilation.
 
-Using the upper bound is therefore consistent with a conservative minimax screening interpretation. :contentReference[oaicite:16]{index=16}
-
+Using the upper bound is therefore consistent with a conservative minimax screening interpretation.
 ---
 
 # 7. Risk Labels
@@ -420,7 +413,7 @@ The `0.15` floor prevents the Low threshold from collapsing towards zero.
 
 The `T_high − 0.01` constraint guarantees separation between the two thresholds.
 
-These threshold floors are author-defined screening conventions. :contentReference[oaicite:17]{index=17}
+These threshold floors are author-defined screening conventions.
 
 ---
 
@@ -459,7 +452,7 @@ The deterministic rule is:
 | Otherwise, model confidence **MEDIUM**, coverage **REVIEW**, or at least one High-risk element | **USE WITH CAUTION** |
 | Otherwise | **RELIABLE** |
 
-This is intentionally asymmetric: one failing condition is sufficient to withhold the RELIABLE verdict, while RELIABLE requires every condition to pass. :contentReference[oaicite:18]{index=18}
+This is intentionally asymmetric: one failing condition is sufficient to withhold the RELIABLE verdict, while RELIABLE requires every condition to pass.
 
 ---
 
@@ -482,7 +475,7 @@ The operational threshold is:
 95%
 ```
 
-The threshold is an author-defined convention and was not swept in the reported sensitivity analysis. :contentReference[oaicite:19]{index=19}
+The threshold is an author-defined convention and was not swept in the reported sensitivity analysis.
 
 Coverage is conceptually distinct from:
 
@@ -517,7 +510,7 @@ Interpretation:
 
 The ranking is less sensitive to BIM information uncertainty, so attention can focus on the physical or functional risk represented by the element.
 
-The report prints the reason for the recommendation so that the action is auditable rather than generated from a free-form language model. :contentReference[oaicite:20]{index=20}
+The report prints the reason for the recommendation so that the action is auditable rather than generated from a free-form language model.
 
 ---
 
@@ -536,7 +529,7 @@ The following defaults are used where no explicit lookup entry is available:
 | Low threshold floor | 0.15 |
 | Element coverage threshold | 95% |
 
-The published Annex II specifies the default susceptibility as `0.30` and the default criticality as `0.50 × 0.7` when an entity is absent from the domain table. :contentReference[oaicite:21]{index=21}
+The published Annex II specifies the default susceptibility as `0.30` and the default criticality as `0.50 × 0.7` when an entity is absent from the domain table.
 
 Unknown categories are treated conservatively rather than being given artificially high scores.
 
@@ -559,7 +552,7 @@ The risk parameters have different origins and should not be interpreted as if t
 | Coverage threshold | `95%` | Author-defined convention |
 | QTO agreement tolerances | `10^-10`, `0.01%`, `1%` | Author-defined fixed thresholds |
 
-None of the lookup values should be described as empirical failure probabilities or calibrated field-data coefficients. The thesis explicitly characterises them as ordinal screening parameters. :contentReference[oaicite:22]{index=22}
+None of the lookup values should be described as empirical failure probabilities or calibrated field-data coefficients. The thesis explicitly characterises them as ordinal screening parameters.
 
 ---
 
@@ -575,7 +568,7 @@ The lookup values for exposure, susceptibility, criticality, and material modifi
 
 The thesis therefore treats the lookup tables as a transparent, version-controlled engineering judgement rather than as empirically calibrated risk probabilities.
 
-Calibration against field deterioration data is identified as future work. :contentReference[oaicite:23]{index=23}
+Calibration against field deterioration data is identified as future work.
 
 ---
 
@@ -623,7 +616,7 @@ The reported band width is approximately:
 0.108 − 0.094 = 0.014
 ```
 
-The thesis reports the full-precision calculation as approximately `0.013` after rounding/display effects. :contentReference[oaicite:24]{index=24}
+The thesis reports the full-precision calculation as approximately `0.013` after rounding/display effects.
 
 ---
 
@@ -752,7 +745,7 @@ risk label
 screening verdict
 ```
 
-The workflow therefore contains no generative component between extracted data and the final risk score. :contentReference[oaicite:25]{index=25}
+The workflow therefore contains no generative component between extracted data and the final risk score.
 
 ---
 
@@ -767,7 +760,7 @@ The principal limitations of the current risk rules are:
 5. The risk model is intended for relative screening rather than cross-project probability calibration.
 6. The small synthetic corpus does not support statistical claims about industrial asset populations.
 
-The thesis identifies calibration on real project data and extension of the lookup/rule coverage as further developments. :contentReference[oaicite:26]{index=26}
+The thesis identifies calibration on real project data and extension of the lookup/rule coverage as further developments.
 
 ---
 
