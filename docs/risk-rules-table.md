@@ -1,191 +1,207 @@
 # Risk Rules Table
 
-This document defines the deterministic rules used by the thesis **uncertainty-aware risk screening model**.
+This document defines the deterministic rules of the thesis **uncertainty-aware risk screening model**, as implemented in workflow nodes 4.1–4.5 and in the verdict logic of the report.
 
-The model is a BIM-only, relative screening framework. It does **not** estimate empirical probabilities of failure and is not calibrated against field deterioration data. Likelihood, susceptibility, criticality, exposure, and material values are ordinal engineering screening parameters. Their purpose is to produce a reproducible relative ranking within the analysed model.
-
-The risk-screening chain is:
+The model is a BIM-only, relative screening framework. It does **not** estimate probabilities of failure and is not calibrated against field deterioration data. Exposure, susceptibility, criticality and material values are ordinal engineering screening parameters, used to produce a reproducible ranking within the analysed model.
 
 ```text
 IFC properties
       ↓
-Exposure
+Exposure E (node 4.1)
       ↓
-Likelihood proxy
+Likelihood proxy L (node 4.2)
       ↓
-Consequence proxy
+Consequence proxy C (node 4.3)
       ↓
-R_raw
+R_raw = L × C
       ↓
-BQI-dependent uncertainty band
+BQI-dependent uncertainty band (node 4.4)
       ↓
 R_lower / R_raw / R_adj
       ↓
-Risk ranking and labels
+Ranking on R_adj and labels (node 4.5)
+      ↓
+Screening verdict and recommended action (report)
 ```
 
 ---
 
 ## 1. Core Risk Formulation
 
-The baseline risk follows a likelihood × consequence formulation:
-
-```text
-R_raw = L × C
-```
-
-where:
-
-- `L` = likelihood proxy;
-- `C` = consequence proxy.
-
-The implementation clamps the result to `[0, 1]`:
-
 ```text
 R_raw = min(1, max(0, L × C))
 ```
 
-`R_raw` represents the deterministic risk estimate before information-quality uncertainty is propagated.
+where `L` is the likelihood proxy and `C` the consequence proxy. `R_raw` is the deterministic risk estimate before information-quality uncertainty is applied.
 
 ---
 
-# 2. Likelihood Proxy
+## 2. Domain Selection
 
-The likelihood proxy is:
+Every lookup table below exists per domain: Building, Bridge, Road and Rail. The domain comes from node 2.5:
+
+- **IFC 4.3 files:** the domain is inferred from the element and spatial types present (for example `IfcBridge`/`IfcBearing` → Bridge, `IfcRoad`/`IfcPavement` → Road). A file with both infrastructure and building indicators is classed as **Mixed** and scored with the Building tables, with a domain warning.
+- **IFC 4 files:** IFC 4 has no infrastructure spatial entities, so these files are assigned the **Building** domain.
+
+In the thesis corpus, M1–M7 are scored with the Building tables. This includes M5 and M7 (IFC 4) and M6, the IFC 4.3 bridge, which contains building element types and is therefore classed as Mixed. Only M8, the IFC 4.3 road, is scored with an infrastructure table (Road).
+
+---
+
+## 3. Likelihood Proxy
 
 ```text
 L = min(1, max(0, E × (S_base + m_mat)))
 ```
 
-where:
-
 | Symbol | Meaning |
 |---|---|
 | `E` | Exposure score |
-| `S_base` | Baseline susceptibility for IFC category and domain |
+| `S_base` | Susceptibility for the IFC category and domain |
 | `m_mat` | Material modifier |
 
-The resulting `L` is dimensionless and is used for **relative screening only**. It must not be interpreted as an empirical failure probability.
+`L` is dimensionless and used for relative screening only.
 
----
+### 3.1 Exposure
 
-## 2.1 Exposure
+Exposure answers *how exposed is the element?*, kept separate from *how susceptible is this element type?*
 
-Exposure is derived from the element's location-related information, including:
+`E` is read from a domain table by IFC category. For five envelope types, the Building table holds separate values for internal and external elements, selected with `IsExternal`; all other entries are a single value. Categories not in the table receive the default `E = 0.30`.
 
-- `IsExternal`; and
-- the available zone/location information.
+**Building**
 
-Exposure is implemented by domain-specific IFC-category lookup tables in the n8n workflow.
+| IFC Entity | Internal | External |
+|---|---:|---:|
+| `IfcRoof` | 0.90 | 0.90 |
+| `IfcWall`, `IfcWallStandardCase` | 0.45 | 0.40 |
+| `IfcWindow` | 0.50 | 0.45 |
+| `IfcDoor` | 0.40 | 0.35 |
+| `IfcCurtainWall` | 0.60 | 0.55 |
 
-The exposure term is deliberately kept separate from susceptibility:
+| IFC Entity | Exposure |
+|---|---:|
+| `IfcChimney` | 0.80 |
+| `IfcFooting` | 0.65 |
+| `IfcStair`, `IfcStairFlight`, `IfcPile` | 0.60 |
+| `IfcColumn`, `IfcColumnStandardCase`, `IfcSlab`, `IfcSlabStandardCase`, `IfcRamp`, `IfcRampFlight` | 0.55 |
+| `IfcBeam`, `IfcBeamStandardCase` | 0.50 |
+| `IfcPlate` | 0.45 |
+| `IfcMember` | 0.40 |
+| `IfcCovering`, `IfcRailing` | 0.35 |
+| `IfcBuildingElementProxy` | 0.30 |
+| `IfcSpace` | 0.20 |
+| `IfcFurnishingElement`, `IfcFurniture` | 0.10 |
 
-```text
-Likelihood = Exposure × (Susceptibility + Material Modifier)
-```
+**Bridge**
 
-This separates the question:
+| IFC Entity | Exposure |
+|---|---:|
+| `IfcBridgePart` | 0.85 |
+| `IfcBearing` | 0.80 |
+| `IfcCourse` | 0.75 |
+| `IfcCivilElement`, `IfcBeam`, `IfcBeamStandardCase` | 0.70 |
+| `IfcColumn`, `IfcColumnStandardCase`, `IfcSlab`, `IfcSlabStandardCase` | 0.65 |
+| `IfcDeepFoundation` | 0.60 |
+| `IfcEarthworksCut`, `IfcEarthworksFill` | 0.50 |
 
-> How exposed is the element?
+**Road**
 
-from:
+| IFC Entity | Exposure |
+|---|---:|
+| `IfcPavement` | 0.85 |
+| `IfcCourse` | 0.80 |
+| `IfcRoadPart` | 0.75 |
+| `IfcKerb` | 0.70 |
+| `IfcEarthworksCut`, `IfcEarthworksFill` | 0.60 |
+| `IfcCivilElement` | 0.55 |
+| `IfcSignal` | 0.50 |
+| `IfcSign` | 0.45 |
 
-> How susceptible is this element type under that exposure?
+**Rail**
 
----
+| IFC Entity | Exposure |
+|---|---:|
+| `IfcRail` | 0.80 |
+| `IfcTrackElement` | 0.75 |
+| `IfcSignal` | 0.70 |
+| `IfcFacilityPart` | 0.60 |
+| `IfcCivilElement`, `IfcEarthworksCut`, `IfcEarthworksFill` | 0.55 |
+| `IfcSign` | 0.40 |
 
-## 2.2 Susceptibility Lookup
+The exposure tables are part of the released workflow; they are not listed in thesis Annex II.
 
-`S_base` is selected by:
+### 3.2 Susceptibility and Criticality
 
-```text
-IFC Category + Domain
-```
+`S_base` and `Crit_base` are looked up by IFC category and domain. The values are ordinal engineering judgements, frozen before the corpus was scored. Categories not in the table receive the defaults `S_base = 0.30` and `Crit_base = 0.50`.
 
-The values are ordinal engineering judgements rather than calibrated probabilities. The lookup values were frozen before the corpus was scored, avoiding post-hoc adjustment of individual results.
-
-### Building
+**Building**
 
 | IFC Entity | Susceptibility | Criticality |
 |---|---:|---:|
-| `IfcBeam` | 0.35 | 0.90 |
-| `IfcBeamStandardCase` | 0.35 | 0.90 |
+| `IfcBeam`, `IfcBeamStandardCase` | 0.35 | 0.90 |
 | `IfcBuildingElementProxy` | 0.30 | 0.50 |
 | `IfcChimney` | 0.70 | 0.45 |
-| `IfcColumn` | 0.35 | 1.00 |
-| `IfcColumnStandardCase` | 0.35 | 1.00 |
+| `IfcColumn`, `IfcColumnStandardCase` | 0.35 | 1.00 |
 | `IfcCovering` | 0.55 | 0.40 |
 | `IfcCurtainWall` | 0.60 | 0.55 |
 | `IfcDoor` | 0.55 | 0.50 |
 | `IfcFooting` | 0.30 | 1.00 |
-| `IfcFurnishingElement` | 0.20 | 0.10 |
-| `IfcFurniture` | 0.20 | 0.10 |
+| `IfcFurnishingElement`, `IfcFurniture` | 0.20 | 0.10 |
 | `IfcMember` | 0.35 | 0.65 |
 | `IfcPile` | 0.25 | 1.00 |
 | `IfcPlate` | 0.40 | 0.60 |
 | `IfcRailing` | 0.40 | 0.35 |
-| `IfcRamp` | 0.45 | 0.60 |
-| `IfcRampFlight` | 0.45 | 0.60 |
+| `IfcRamp`, `IfcRampFlight` | 0.45 | 0.60 |
 | `IfcRoof` | 0.80 | 0.75 |
-| `IfcSlab` | 0.40 | 0.85 |
-| `IfcSlabStandardCase` | 0.40 | 0.85 |
+| `IfcSlab`, `IfcSlabStandardCase` | 0.40 | 0.85 |
 | `IfcSpace` | 0.15 | 0.20 |
-| `IfcStair` | 0.50 | 0.65 |
-| `IfcStairFlight` | 0.50 | 0.65 |
-| `IfcWall` | 0.45 | 0.80 |
-| `IfcWallStandardCase` | 0.45 | 0.80 |
+| `IfcStair`, `IfcStairFlight` | 0.50 | 0.65 |
+| `IfcWall`, `IfcWallStandardCase` | 0.45 | 0.80 |
 | `IfcWindow` | 0.65 | 0.50 |
 
-These are the Building-domain susceptibility and criticality values published in Annex II.
-
-### Bridge
+**Bridge**
 
 | IFC Entity | Susceptibility | Criticality |
 |---|---:|---:|
+| `IfcBeam`, `IfcBeamStandardCase` | 0.60 | 0.90 |
 | `IfcBearing` | 0.85 | 1.00 |
 | `IfcBridgePart` | 0.75 | 0.95 |
 | `IfcCivilElement` | 0.60 | 0.80 |
-| `IfcColumn` | 0.55 | 0.90 |
-| `IfcColumnStandardCase` | 0.55 | 0.90 |
+| `IfcColumn`, `IfcColumnStandardCase` | 0.55 | 0.90 |
 | `IfcCourse` | 0.65 | 0.75 |
 | `IfcDeepFoundation` | 0.50 | 0.80 |
-| `IfcEarthworksCut` | 0.45 | 0.60 |
-| `IfcEarthworksFill` | 0.45 | 0.60 |
-| `IfcSlab` | 0.55 | 0.85 |
-| `IfcSlabStandardCase` | 0.55 | 0.85 |
+| `IfcEarthworksCut`, `IfcEarthworksFill` | 0.45 | 0.60 |
+| `IfcSlab`, `IfcSlabStandardCase` | 0.55 | 0.85 |
 
-### Road
+**Road**
 
 | IFC Entity | Susceptibility | Criticality |
 |---|---:|---:|
 | `IfcCivilElement` | 0.45 | 0.60 |
 | `IfcCourse` | 0.70 | 0.75 |
-| `IfcEarthworksCut` | 0.55 | 0.70 |
-| `IfcEarthworksFill` | 0.55 | 0.70 |
+| `IfcEarthworksCut`, `IfcEarthworksFill` | 0.55 | 0.70 |
 | `IfcKerb` | 0.65 | 0.60 |
 | `IfcPavement` | 0.75 | 0.85 |
 | `IfcRoadPart` | 0.60 | 0.80 |
 | `IfcSign` | 0.40 | 0.40 |
 | `IfcSignal` | 0.45 | 0.55 |
 
-### Rail
+**Rail**
 
 | IFC Entity | Susceptibility | Criticality |
 |---|---:|---:|
 | `IfcCivilElement` | 0.50 | 0.65 |
-| `IfcEarthworksCut` | 0.50 | 0.60 |
-| `IfcEarthworksFill` | 0.50 | 0.60 |
+| `IfcEarthworksCut`, `IfcEarthworksFill` | 0.50 | 0.60 |
 | `IfcFacilityPart` | 0.55 | 0.70 |
-| `IfcRail` | 0.78 | 0.95 |
+| `IfcRail` | 0.75¹ | 0.95 |
 | `IfcSign` | 0.35 | 0.45 |
 | `IfcSignal` | 0.65 | 0.80 |
 | `IfcTrackElement` | 0.70 | 0.90 |
 
----
+¹ Thesis Annex II lists 0.78; the released workflow uses 0.75. No corpus model is scored with the Rail table, so no reported result is affected.
 
-# 3. Material Modifier
+### 3.3 Material Modifier
 
-The material modifier is a secondary adjustment to susceptibility.
+A secondary adjustment to susceptibility, matched on the element's material string (first match wins):
 
 | Material string contains | Modifier |
 |---|---:|
@@ -194,586 +210,259 @@ The material modifier is a secondary adjustment to susceptibility.
 | `glass` | +0.10 |
 | `steel` or `metal` | +0.05 |
 | `concrete` or `reinforced` | −0.05 |
-| Other / unclassified | 0.00 |
+| Other or no material | 0.00 |
 
-The modifier is bounded between:
-
-```text
-−0.05 ≤ m_mat ≤ +0.15
-```
-
-The category/domain susceptibility remains the dominant term.
-
-The values are author-defined ordinal adjustments, not material-specific calibrated failure probabilities.
+The modifier is bounded to `−0.05 ≤ m_mat ≤ +0.15`, so the category and domain susceptibility stays the dominant term. The values are author-defined ordinal adjustments, not calibrated material failure rates.
 
 ---
 
-# 4. Consequence Proxy
-
-The consequence proxy combines:
-
-1. baseline category/domain criticality; and
-2. the relative quantity extent of the element.
-
-The formulation is:
+## 4. Consequence Proxy
 
 ```text
 C = Crit_base × (0.7 + 0.3 × q_hat)
 ```
 
-where:
+- `Crit_base` = criticality lookup value (Section 3.2)
+- `q_hat` = quantity extent of the element, normalised within its IFC category
 
-- `Crit_base` = criticality lookup value;
-- `q_hat` = quantity extent normalised within the element's IFC category.
+Seventy per cent of consequence comes from baseline criticality and thirty per cent from relative extent. Both coefficients are author-defined screening parameters.
 
-Thus:
+### 4.1 Quantity Extent
+
+Node 4.3 reads the extent from the first positive value among these fields, in this order:
 
 ```text
-70% of consequence = baseline criticality
-30% of consequence = relative quantity extent
+[BaseQuantities] GrossVolume
+[BaseQuantities] GrossArea
+[BaseQuantities] NetFloorArea
+[Qto_SpaceBaseQuantities] NetFloorArea
+[Dimensions] Volume
+[Dimensions] Area
 ```
 
-The coefficients `0.7` and `0.3` are author-defined screening parameters.
+(`[BaseQuantities]` fields are accepted with a space or a dot after the bracket.) The extent is then normalised within the element's category:
+
+```text
+q_hat = element_extent / maximum_extent_in_same_category
+```
+
+so a column is compared with the largest column, not with the largest slab. If no element of the category has a readable extent, the model-wide maximum is used as the denominator, and `q_hat` evaluates to zero for that category.
+
+**Corpus note.** None of the eight corpus models carries any of the fields above; their quantities are stored under element-specific sets such as `Qto_WallBaseQuantities`. `q_hat` is therefore zero for every element in the reported results, and consequence reduces to `C = 0.7 × Crit_base` throughout, not only in the negative control. Rankings within each model are driven by exposure, susceptibility, material and criticality.
 
 ---
 
-## 4.1 Quantity Extent Normalisation
-
-Quantity extent is normalised **within each IFC category**, rather than across the entire model.
-
-For an element:
+## 5. BQI-Based Uncertainty Propagation
 
 ```text
-q_hat = element_extent / maximum_extent_of_same_category
+u       = α × (1 − BQI)
+
+R_adj   = min(1, R_raw × (1 + u))
+R_lower = max(0, R_raw × (1 − u))
 ```
 
-This means, for example:
+with `α = 0.55`, read from node 0.1 Config. (Node 4.4 falls back to 0.5 only if the Config value is missing.)
 
-```text
-column → compared against largest column
-slab   → compared against largest slab
-beam   → compared against largest beam
-```
+The node exports `R_lower`, `R_raw`, `R_adj` and the band width `R_adj − R_lower`. `R_adj` is the upper edge of the band and is the score used for ranking.
 
-A very large slab therefore does not suppress the relative extent of every smaller element category.
-
-### Fallback hierarchy
-
-If no element of a category has a readable quantity:
-
-1. use the corpus-wide maximum extent as the normalisation denominator;
-2. if that is also zero, set:
-
-```text
-q_hat = 0
-```
-
-In the final case:
-
-```text
-C = 0.7 × Crit_base
-```
-
-This is relevant to the M8 negative control, where no quantity data are available.
-
----
-
-# 5. Raw Risk
-
-After likelihood and consequence are computed:
-
-```text
-R_raw = min(1, max(0, L × C))
-```
-
-`R_raw` is the unadjusted risk proxy before BQI uncertainty propagation.
-
----
-
-# 6. BQI-Based Uncertainty Propagation
-
-The BQI is used as a deterministic uncertainty modifier.
-
-Define:
-
-```text
-u = α × (1 − BQI)
-```
-
-where:
-
-```text
-α = 0.55
-```
-
-The uncertainty band is then:
-
-```text
-R_adj =
-min(1, R_raw × (1 + u))
-
-R_lower =
-max(0, R_raw × (1 − u))
-```
-
-Equivalently:
-
-```text
-R_adj =
-min(1, R_raw × [1 + α(1 − BQI)])
-
-R_lower =
-max(0, R_raw × [1 − α(1 − BQI)])
-```
-
-The three reported quantities are therefore:
-
-```text
-R_lower
-R_raw
-R_adj
-```
-
-`R_adj` is the **upper bound of the uncertainty band** and is the score used for screening ranking.
-
----
-
-## 6.1 Interpretation of the Band
-
-The band behaves as follows:
+### 5.1 Interpreting the Band
 
 | Data quality | Effect |
 |---|---|
-| `BQI = 1` | No widening; `R_lower = R_raw = R_adj` |
+| `BQI = 1` | No widening: `R_lower = R_raw = R_adj` |
 | `0 < BQI < 1` | Symmetric widening around `R_raw` |
-| `BQI = 0` | Maximum widening for the selected `α` |
+| `BQI = 0` | Maximum widening for the chosen `α` (factor 1.55 on the upper edge) |
 
-The band width is:
+The cap at 1 binds only where `R_raw > 1 / (1 + α) = 0.645`; no element in the corpus reaches that value, so the dilation is strictly proportional in every reported result.
 
-```text
-R_adj − R_lower
-```
+The band is a deterministic sensitivity envelope, not a statistical confidence interval.
 
-A narrow band indicates that the element remains risky even with relatively good information.
+### 5.2 Why Ranking Uses `R_adj`
 
-A wide band indicates that the risk estimate is strongly affected by information uncertainty.
-
-The band is a **deterministic sensitivity envelope**, not a statistical confidence interval. No probabilistic interpretation is intended.
+- Ranking on the midpoint (`R_raw`) would ignore data quality, because the band is symmetric around it.
+- Ranking on `R_lower` would make the least-known elements look safest.
+- Ranking on `R_adj` treats a missed risk as costlier than an unnecessary review: a minimax screening rule.
 
 ---
 
-## 6.2 Why Ranking Uses `R_adj`
+## 6. Risk Labels
 
-Screening ranks elements using the upper bound:
-
-```text
-Ranking score = R_adj
-```
-
-The rationale is conservative:
-
-- ranking on `R_raw` would ignore the BQI uncertainty modifier;
-- ranking on `R_lower` would incorrectly make poorly known elements appear safer;
-- ranking on the midpoint would preserve the raw ordering and therefore remove the decision effect of the symmetric dilation.
-
-Using the upper bound is therefore consistent with a conservative minimax screening interpretation.
----
-
-# 7. Risk Labels
-
-After calculating `R_adj`, the elements are sorted in descending order.
-
-Two dynamic label thresholds are then calculated from the distribution of `R_adj`.
-
-## 7.1 High threshold
+Node 4.5 sorts the elements by `R_adj` and derives two thresholds from the model's own score distribution. Percentiles are index-based: the scores are sorted ascending and `P_p = scores[floor(n × p)]`.
 
 ```text
 T_high = max(P75(R_adj), 0.40)
+T_low  = min(max(P25(R_adj), 0.15), T_high − 0.01)
 ```
 
-where `P75` is the 75th percentile of the adjusted-risk distribution.
+| Condition | Label |
+|---|---|
+| `R_adj ≥ T_high` | High |
+| `T_low ≤ R_adj < T_high` | Medium |
+| `R_adj < T_low` | Low |
 
-The absolute floor of `0.40` prevents the High category from disappearing on a uniformly low-risk or highly uncertain model.
+The construction combines a relative and an absolute component:
+
+- the **percentile** terms keep the labels adaptive to each model's distribution;
+- the **absolute floors** (0.40 and 0.15) stop a model in which no element carries meaningful risk from labelling its top quarter High anyway;
+- the `T_high − 0.01` clamp guarantees the two thresholds cannot cross.
+
+Labels use the BQI-adjusted score, so poor data can escalate an element. In the negative control M8, no raw score exceeds 0.40, but the factor 1.55 lifts the 16 elements with raw scores between 0.258 and 0.40 into High (thesis Section 4.5).
+
+The floors are author-defined conventions and were not swept.
 
 ---
 
-## 7.2 Low threshold
+## 7. Element Coverage
+
+Coverage is a separate diagnostic, not part of the BQI, computed in node 3.3 from the two pipelines' `GlobalId` sets:
 
 ```text
-T_low =
-min(
-    max(P25(R_adj), 0.15),
-    T_high − 0.01
-)
+Coverage (%) = shared elements / union of elements × 100
 ```
 
-where `P25` is the 25th percentile.
+The coverage verdict combines this percentage with the type of the unmatched elements:
 
-The `0.15` floor prevents the Low threshold from collapsing towards zero.
+| Condition | Coverage verdict |
+|---|---|
+| Any element of a critical type is found by only one pipeline | **FAIL** |
+| Otherwise, any other element is unmatched, or coverage is below 95% | **REVIEW** |
+| Otherwise | **PASS** |
 
-The `T_high − 0.01` constraint guarantees separation between the two thresholds.
+Critical types are walls, slabs, beams and columns (with their StandardCase variants), roofs, doors, windows, spaces, stairs, stair flights, ramps, ramp flights, footings and piles. Non-physical constructs (openings, annotations, grids, virtual elements) never affect the verdict.
 
-These threshold floors are author-defined screening conventions.
+This is why M1 and M2 return FAIL at 77.78% while M3 and M4 return REVIEW at 88.89%. Coverage is kept separate because an element missing from one pipeline cannot contribute a D4 score. The 95% threshold is an author-defined convention and was not swept.
 
 ---
 
-## 7.3 Element Labels
-
-For each element:
-
-```text
-R_adj ≥ T_high
-    → High
-
-T_low ≤ R_adj < T_high
-    → Medium
-
-R_adj < T_low
-    → Low
-```
-
-The label is therefore based on the **BQI-adjusted screening score**, not on `R_raw`.
-
----
-
-# 8. Model-Level Screening Verdict
-
-The model-level verdict combines:
-
-1. model BQI confidence;
-2. cross-pipeline element coverage; and
-3. presence of High-risk elements.
-
-The deterministic rule is:
+## 8. Model-Level Screening Verdict
 
 | Condition | Verdict |
 |---|---|
-| Model confidence **LOW** OR coverage **FAIL** | **DATA UNRELIABLE** |
-| Otherwise, model confidence **MEDIUM**, coverage **REVIEW**, or at least one High-risk element | **USE WITH CAUTION** |
+| Model BQI confidence **LOW**, or coverage **FAIL** | **DATA UNRELIABLE** |
+| Otherwise, confidence **MEDIUM**, coverage **REVIEW**, or at least one High element | **USE WITH CAUTION** |
 | Otherwise | **RELIABLE** |
 
-This is intentionally asymmetric: one failing condition is sufficient to withhold the RELIABLE verdict, while RELIABLE requires every condition to pass.
+One failing condition withholds RELIABLE; RELIABLE requires every condition to pass. On the thesis corpus every model returns DATA UNRELIABLE; thesis Table 4.8 shows by construction the inputs under which the other two states fire.
 
 ---
 
-# 9. Element Coverage
+## 9. Recommended Action
 
-Element coverage is kept as a separate diagnostic rather than being folded into BQI.
+The report derives a recommended action from fixed rules, based on the band width `R_adj − R_lower` of the top-ranked element:
 
-Coverage is calculated from the two pipelines' `GlobalId` sets:
-
-```text
-Coverage (%) =
-shared elements
------------------------------ × 100
-union of elements
-```
-
-The operational threshold is:
-
-```text
-95%
-```
-
-The threshold is an author-defined convention and was not swept in the reported sensitivity analysis.
-
-Coverage is conceptually distinct from:
-
-- D3, which asks whether expected quantity fields are present **within an element**;
-- D4, which asks whether comparable quantity values **agree** between pipelines.
-
-This separation is important because an element absent from one pipeline cannot contribute an element-level D4 score. The thesis therefore retains element coverage as an independent screening instrument.
-
----
-
-# 10. Recommended Action
-
-The report assigns a deterministic recommended action based on the uncertainty-band width of the highest-ranked element.
-
-### Wide uncertainty band
-
-Recommended action:
-
-> Repair or improve BIM data before acting on the risk ranking.
-
-Interpretation:
-
-The element's apparent priority may be substantially affected by missing or unreliable information.
-
-### Narrow uncertainty band
-
-Recommended action:
-
-> Inspect the identified element itself.
-
-Interpretation:
-
-The ranking is less sensitive to BIM information uncertainty, so attention can focus on the physical or functional risk represented by the element.
-
-The report prints the reason for the recommendation so that the action is auditable rather than generated from a free-form language model.
-
----
-
-# 11. Default Values and Fallbacks
-
-The following defaults are used where no explicit lookup entry is available:
-
-| Parameter | Default |
-|---|---:|
-| Default susceptibility | 0.30 |
-| Default criticality | 0.50 |
-| Default consequence when no readable extent | `0.7 × 0.50 = 0.35` |
-| Unknown material modifier | 0.00 |
-| `α` | 0.55 |
-| High threshold floor | 0.40 |
-| Low threshold floor | 0.15 |
-| Element coverage threshold | 95% |
-
-The published Annex II specifies the default susceptibility as `0.30` and the default criticality as `0.50 × 0.7` when an entity is absent from the domain table.
-
-Unknown categories are treated conservatively rather than being given artificially high scores.
-
----
-
-# 12. Parameter Provenance
-
-The risk parameters have different origins and should not be interpreted as if they all had the same evidential status.
-
-| Parameter | Value / Source | Provenance |
+| Band width | Treated as | Recommended action |
 |---|---|---|
-| Exposure lookup | Domain/category rules | Author-defined ordinal screening value |
-| Susceptibility lookup | Annex II | Author-defined ordinal screening value |
-| Criticality lookup | Annex II | Author-defined ordinal screening value |
-| Material modifier | Material rules | Author-defined ordinal adjustment |
-| Consequence blend | `0.7 / 0.3` | Author-defined screening convention |
-| BQI coefficient `α` | `0.55` | Empirically characterised |
-| High threshold floor | `0.40` | Author-defined convention |
-| Low threshold floor | `0.15` | Author-defined convention |
-| Coverage threshold | `95%` | Author-defined convention |
-| QTO agreement tolerances | `10^-10`, `0.01%`, `1%` | Author-defined fixed thresholds |
+| `> 0.15` | Wide | Improve the model data before acting on the ranking; better data would sharpen the score |
+| `≤ 0.15` | Narrow | Inspect the element itself; the score is driven by the element rather than by data gaps |
 
-None of the lookup values should be described as empirical failure probabilities or calibrated field-data coefficients. The thesis explicitly characterises them as ordinal screening parameters.
+The report also names the missing properties and quantities that would most improve the data.
+
+The 0.15 cut-off is an author-defined convention. Because absolute band width grows with `R_raw`, it separates data-driven from element-driven scores reliably only among elements of comparable raw risk. For example, the top element of M5 has BQI 0.325 but a low raw score (0.173), so its band width is 0.128 and it is reported as narrow.
 
 ---
 
-# 13. Sensitivity and Calibration Status
+## 10. Defaults and Fallbacks
 
-The thesis characterises the sensitivity of:
-
-- BQI weights;
-- `α`; and
-- confidence-band boundaries.
-
-The lookup values for exposure, susceptibility, criticality, and material modifiers were **not** independently swept.
-
-The thesis therefore treats the lookup tables as a transparent, version-controlled engineering judgement rather than as empirically calibrated risk probabilities.
-
-Calibration against field deterioration data is identified as future work.
+| Parameter | Value | Applies when |
+|---|---:|---|
+| Default exposure | 0.30 | Category absent from the exposure table |
+| Default susceptibility | 0.30 | Category absent from the susceptibility table |
+| Default criticality | 0.50 | Category absent from the criticality table |
+| Default consequence | 0.35 (`0.7 × 0.50`) | Element has no category |
+| Default likelihood | 0.30 | Element has no category |
+| Material modifier | 0.00 | Material absent or not recognised |
 
 ---
 
-# 14. Worked Example
+## 11. Parameter Provenance
 
-For the worked `IfcWall` example in M1:
+| Parameter | Value | Provenance |
+|---|---|---|
+| Exposure lookup | Per category and domain (Section 3.1) | Author-defined ordinal; not swept |
+| Susceptibility and criticality lookup | Annex II | Author-defined ordinal; not swept |
+| Material modifier | −0.05 to +0.15 | Author-defined ordinal; not swept |
+| Consequence blend | 0.7 / 0.3 | Author-defined convention; not swept |
+| `α` | 0.55 | Empirically characterised (thesis Sections 3.6.4, 4.4.2) |
+| Label floors | 0.40 / 0.15 | Author-defined convention (Section 3.6.3); not swept |
+| Coverage threshold | 95% | Author-defined convention; not swept |
+| Recommended-action cut-off | 0.15 band width | Author-defined convention; not swept |
+| QTO comparison boundaries | 10⁻¹⁰, 0.01%, 1% | Author-defined constants; not swept |
 
-```text
-BQI = 0.879
-Likelihood proxy L = 0.180
-Consequence proxy C = 0.560
-α = 0.55
-```
-
-Raw risk:
-
-```text
-R_raw = 0.180 × 0.560
-      ≈ 0.101
-```
-
-Relative uncertainty half-width:
-
-```text
-α(1 − BQI)
-= 0.55 × (1 − 0.879)
-≈ 0.067
-```
-
-Adjusted upper value:
-
-```text
-R_adj ≈ 0.108
-```
-
-Lower value:
-
-```text
-R_lower ≈ 0.094
-```
-
-The reported band width is approximately:
-
-```text
-0.108 − 0.094 = 0.014
-```
-
-The thesis reports the full-precision calculation as approximately `0.013` after rounding/display effects.
+None of these values is an empirical failure probability or a field-calibrated coefficient.
 
 ---
 
-# 15. Interpretation Boundaries
+## 12. Sensitivity and Calibration Status
 
-The risk model should be interpreted carefully.
-
-### It is a screening model, not a failure-probability model
-
-`L` and `C` are proxies used for relative ranking.
-
-They are not estimates of empirical probability of failure or loss.
-
-### It is model-relative
-
-The quantity extent is normalised within category, and the risk labels use percentile thresholds. Results should therefore primarily be interpreted within the analysed model.
-
-### It is deterministic
-
-Given the same IFC data, rule tables, configuration, and workflow version, the same risk outputs are produced.
-
-### BQI affects uncertainty, not the raw physical proxy
-
-The workflow deliberately computes:
-
-```text
-R_raw = L × C
-```
-
-before applying the BQI-based widening.
-
-BQI therefore communicates uncertainty in the information supporting the score rather than directly pretending that poor data means a physically larger likelihood or consequence.
+The thesis characterises the sensitivity of the BQI weights, `α` and the confidence-band boundaries (Section 4.4). The lookup tables, material modifier, consequence blend, label floors and coverage threshold were not swept. Calibration against field deterioration data is further work (Section 6.3).
 
 ---
 
-# 16. Repository Implementation
+## 13. Worked Example
 
-The risk rules are implemented in:
-
-`workflows/thesis/n8n_ifc_dual_pipeline.json`
-
-The main stages are:
+The `IfcWall` element `1AQAupaRP1txwK1AGiN61V` in M1 (thesis Section 3.3.5):
 
 ```text
-4.1: Exposure
-        ↓
-4.2: Likelihood
-        ↓
-4.3: Consequence
-        ↓
-4.4: Risk score
-        ↓
-4.5: Rank & label
+BQI = 0.879    L = 0.180    C = 0.560 (= 0.7 × 0.80)    α = 0.55
+
+R_raw          = 0.180 × 0.560           = 0.101
+u              = 0.55 × (1 − 0.879)      = 0.067
+R_adj          = 0.101 × 1.067           = 0.108
+R_lower        = 0.101 × 0.933           = 0.094
+band width     = 2 × R_raw × u           = 0.013
 ```
 
-### Node 4.1 — Exposure
-
-Maps IFC category/domain and location-related information to the exposure score.
-
-### Node 4.2 — Likelihood
-
-Calculates:
-
-```text
-L = E × (S_base + m_mat)
-```
-
-with clamping to `[0, 1]`.
-
-### Node 4.3 — Consequence
-
-Calculates:
-
-```text
-C = Crit_base × (0.7 + 0.3 × q_hat)
-```
-
-### Node 4.4 — Risk score
-
-Calculates:
-
-```text
-R_raw
-R_lower
-R_adj
-uncertainty_band
-```
-
-using `α = 0.55`.
-
-### Node 4.5 — Rank & label
-
-Sorts elements by `R_adj`, calculates the percentile-based thresholds, and assigns:
-
-```text
-High / Medium / Low
-```
-
-The final HTML report then combines these element-level results with BQI, coverage, and SRCC evidence.
+The band width computed at full precision is 0.013; subtracting the rounded bounds gives 0.014.
 
 ---
 
-# 17. Verification
+## 14. Interpretation Boundaries
 
-The risk-screening results are checked through the repository's downstream analysis and verification outputs.
+**A screening model, not a failure-probability model.** `L` and `C` are proxies for relative ranking, not estimates of failure probability or loss.
 
-The thesis also demonstrates internal consistency using a worked element example and independently checks the exported sensitivity data.
+**Model-relative.** Extent is normalised within category and labels use the model's own percentiles, so results are interpreted within the analysed model.
 
-The final workflow keeps the calculation path deterministic from:
+**Deterministic.** The same IFC data, rule tables, configuration and workflow version produce the same scores, bands and labels. There is no generative component between the extracted data and the risk register.
 
-```text
-IFC properties
-    ↓
-L, C
-    ↓
-R_raw
-    ↓
-BQI propagation
-    ↓
-R_lower / R_adj
-    ↓
-ranking
-    ↓
-risk label
-    ↓
-screening verdict
-```
-
-The workflow therefore contains no generative component between extracted data and the final risk score.
+**BQI affects uncertainty, not the physical proxy.** `R_raw = L × C` is computed first; BQI only widens the band around it. Poor data is reported as uncertainty, not as a physically larger likelihood or consequence.
 
 ---
 
-# 18. Limitations
+## 15. Repository Implementation
 
-The principal limitations of the current risk rules are:
+All rules are in `workflows/thesis/n8n_ifc_dual_pipeline.json`:
 
-1. The lookup values are ordinal engineering judgements rather than field-calibrated probabilities.
-2. The exposure, susceptibility, and criticality lookup values were not independently swept.
-3. The quantity-comparison thresholds are fixed parameters.
-4. The element coverage threshold of 95% was not swept.
-5. The risk model is intended for relative screening rather than cross-project probability calibration.
-6. The small synthetic corpus does not support statistical claims about industrial asset populations.
+| Node | Step |
+|---|---|
+| 2.5 Detect domain | Infers the domain used to select the lookup tables |
+| 3.3 Coverage Analysis | Coverage percentage and coverage verdict |
+| 4.1 Exposure | `E` from the exposure table and `IsExternal` |
+| 4.2 Likelihood | `S_base`, material modifier and `L` |
+| 4.3 Consequence | `Crit_base`, extent normalisation and `C` |
+| 4.4 Risk score | `R_raw`, `R_adj`, `R_lower`, band width |
+| 4.5 Rank & label | Ranking, thresholds and High/Medium/Low labels |
+| 5.1 Generate HTML | Verdict, recommended action and report |
 
-The thesis identifies calibration on real project data and extension of the lookup/rule coverage as further developments.
+The per-element `likelihood_score`, `consequence_score` and BQI dimension scores are exported in the sensitivity JSON, so every band and label can be recomputed offline (`scripts/sensitivity_analysis.py`, `scripts/alpha_characterization.py`).
+
+---
+
+## 16. Limitations
+
+1. The lookup values are ordinal engineering judgements, not field-calibrated probabilities.
+2. The lookup tables, material modifier, consequence blend, label floors and coverage threshold were not swept.
+3. Exposure depends on `IsExternal` and category only.
+4. The quantity-extent term reads a fixed list of generic quantity fields; in the corpus it never contributes (Section 4.1).
+5. Only M8 is scored with an infrastructure table; M1–M7 use the Building tables (Section 2).
+6. The model supports relative screening within a model, not probability calibration across projects.
+7. The eight-model corpus does not support statistical claims about real asset populations.
 
 ---
 
 ## Canonical Sources
 
-The formal risk-screening methodology is defined in:
+- Thesis Section 3.6: Uncertainty-Aware Risk Screening
+- Thesis Section 3.7.4: Verdict Logic and Report
+- Thesis Annex II: Risk Lookup Tables
 
-- **Thesis Chapter 3, Section 3.6 — Uncertainty-Aware Risk Screening**
-- **Section 3.7.4 — Verdict Logic and Report**
-- **Thesis Annex II — Risk Lookup Tables**
-
-The corresponding executable implementation is:
-
-`workflows/thesis/n8n_ifc_dual_pipeline.json`
-
-The repository document should remain synchronized with the workflow version associated with the final thesis release.
+This document describes the behaviour of repository release `v1.0.2`.
