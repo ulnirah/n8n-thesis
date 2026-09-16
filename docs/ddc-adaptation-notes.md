@@ -2,29 +2,26 @@
 
 ## Purpose
 
-This document records how the original Data-Driven Construction (DDC) IFC workflow was used and adapted as the Pipeline A extraction path in this thesis.
+This document records how the external DataDrivenConstruction (DDC) tooling is used as the Pipeline A extraction path of the thesis workflow.
 
-The purpose is to preserve a clear boundary between:
+It keeps a clear boundary between:
 
-1. the original DDC workflow artefacts,
-2. the thesis-specific orchestration and analysis logic, and
-3. the external DDC IFC Exporter used as the IFC-to-tabular conversion component.
+1. the original DDC workflow artefacts, preserved in `workflows/ddc-base/`;
+2. the DDC IFC Exporter, a closed binary used for IFC-to-tabular conversion; and
+3. the orchestration, comparison, scoring and screening logic developed for this thesis.
 
-This distinction is important for reproducibility and attribution. The thesis does not present the original DDC workflow as if it were newly developed here, nor does it claim ownership of the closed-source conversion component.
+The distinction matters for reproducibility and attribution. The thesis does not present DDC workflows as its own work, and does not claim ownership of the DDC IFC Exporter.
 
 ---
 
 ## 1. Role of DDC in the Thesis
 
-The thesis evaluates uncertainty-aware risk screening from imperfect BIM/IFC data using two independent extraction paths.
+The thesis screens risk from imperfect IFC data using two independent extraction paths:
 
-Pipeline A uses the DDC IFC Exporter to convert an IFC model into a tabular representation.
+- **Pipeline A** converts the IFC model to a table with the DDC IFC Exporter (version 17.1.1.0).
+- **Pipeline B** reads the same model with IfcOpenShell (version 0.8.5) through `scripts/extract_ifc.py`.
 
-Pipeline B uses IfcOpenShell through the thesis extraction script.
-
-The two pipelines are then compared downstream using shared identifiers and quantity information. Their agreement contributes to the D4 component of the Building Quality Index (BQI).
-
-Conceptually:
+The two outputs are matched on `GlobalId` and compared downstream. Their agreement is dimension D4 of the BIM Quality Index (BQI).
 
 ```text
                          IFC model
@@ -32,469 +29,313 @@ Conceptually:
              +--------------+--------------+
              |                             |
              v                             v
-       Pipeline A                     Pipeline B
-       DDC exporter                  IfcOpenShell
-             |                             |
-             v                             v
-      tabular extraction             JSON extraction
+        Pipeline A                    Pipeline B
+    DDC IFC Exporter                 IfcOpenShell
+      (IFC → XLSX)             (extract_ifc.py → JSON)
              |                             |
              +--------------+--------------+
                             |
                             v
-                   QTO comparison
+          Merge by GlobalId, QTO comparison
                             |
                             v
-                     BQI calculation
+                     BQI (D1–D4)
                             |
                             v
-                     Risk screening
+                  Risk screening, report
 ```
 
-The DDC path therefore provides one independent representation of the source model. It is not the complete thesis methodology by itself.
+The DDC path provides one independent observation of the model. It is not the thesis methodology by itself.
 
 ---
 
 ## 2. Original DDC Artefacts
 
-The repository contains the original DDC workflow JSON files under:
+`workflows/ddc-base/` contains nine original workflow JSON files from the [DDC CAD-to-data toolkit](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN), plus a README.
 
-```text
-workflows/ddc-base/
-```
-
-These files are retained as reference artefacts.
-
-They are preserved separately from the thesis-specific workflow because the repository should make it possible to distinguish:
-
-- original DDC workflow material,
-- external DDC conversion functionality, and
-- thesis-authored logic.
-
-The original DDC workflow collection should therefore be treated as upstream reference material rather than as a set of thesis-authored workflows.
-
-The DDC files are not presented here as five independent thesis workflows. The thesis uses the DDC IFC Exporter as one extraction component within a larger integrated workflow.
+They are kept as upstream reference material, separately from the thesis workflow, so that it stays clear which material is DDC's and which was written for the thesis. They are not thesis workflows and are not run in the experiments.
 
 ---
 
-## 3. External DDC IFC Exporter
+## 3. The DDC IFC Exporter
 
 ### 3.1 Function
 
-Pipeline A uses the DDC IFC Exporter to convert an IFC file into an Excel/tabular representation.
+The exporter converts an IFC file into an XLSX file with one row per entity. It belongs to the extraction stage only. It does not determine:
 
-In the thesis workflow, this conversion provides the source data used for comparison with Pipeline B.
+- the BQI rules, weights or aggregation;
+- the QTO comparison classes;
+- the SRCC analysis;
+- the risk proxies, uncertainty band or labels; or
+- the verdict and report.
 
-The exporter is therefore part of the extraction stage only.
-
-It does not determine:
-
-- BQI weights,
-- BQI aggregation,
-- QTO agreement thresholds,
-- SRCC sensitivity analysis,
-- risk-score propagation,
-- confidence labels,
-- model verdicts, or
-- final reporting rules.
-
-Those downstream functions belong to the thesis-specific analysis pipeline.
-
----
+All of these are thesis logic running after the extraction boundary.
 
 ### 3.2 Closed component boundary
-
-The DDC IFC Exporter is treated as a closed or externally provided component.
-
-This creates an explicit reproducibility boundary:
 
 ```text
 IFC source
    |
    v
-[DDC IFC Exporter]
+[DDC IFC Exporter]          external, closed binary, Windows
    |
    v
-tabular extraction
+XLSX table
    |
    v
-[thesis-controlled comparison and scoring]
+[thesis workflow]           parsing, filtering, comparison, scoring, screening
 ```
 
-The exporter affects the extraction result available to the thesis pipeline, but the transformation from extracted data to BQI and risk results is controlled by the thesis workflow and supporting scripts.
-
-Accordingly, the repository does not claim that the DDC exporter itself is fully reproducible from source code within this repository.
-
-The thesis reproducibility claim applies to the logic implemented after the extraction boundary and to the configuration and provenance needed to reproduce the analysis.
+The exporter's internal behaviour cannot be inspected or rebuilt from this repository. The reproducibility claim therefore covers the logic after the extraction boundary, together with the configuration, versions and hashes needed to repeat the analysis.
 
 ---
 
-## 4. Thesis-Specific Adaptation
+## 4. Pipeline A in the Thesis Workflow
 
-The thesis adaptation is primarily an integration and analysis layer around the DDC extraction output.
+Block 1 of `workflows/thesis/n8n_ifc_dual_pipeline.json` wraps the exporter:
 
-The thesis workflow adds the following functions after extraction:
-
-### 4.1 Normalisation
-
-The extracted DDC representation is transformed into the internal structure required for comparison with Pipeline B.
-
-The workflow identifies common element keys, particularly `GlobalId`, and maps relevant property and quantity information into the comparison structure.
-
----
-
-### 4.2 Spatial filtering
-
-Spatial or non-target records are filtered before element-level comparison.
-
-The purpose is to ensure that the comparison operates on the intended physical/model elements rather than treating project, site, building, storey, or other structural/spatial records as equivalent analytical elements.
-
-This filtering is part of the thesis pipeline and should not be interpreted as a modification of the original DDC exporter.
-
----
-
-### 4.3 Pipeline tagging
-
-Records from the two extraction paths are explicitly identified by pipeline.
-
-The workflow uses pipeline labels so that downstream processing can distinguish:
-
-```text
-A_ddc
-B_ifcopenshell
-```
-
-This makes the source of each extracted observation explicit during comparison and diagnostic analysis.
-
----
-
-### 4.4 Cross-pipeline matching
-
-The thesis matches corresponding elements between Pipeline A and Pipeline B using `GlobalId`.
-
-This creates the basis for cross-pipeline QTO comparison.
-
-For each relevant quantity, the workflow evaluates whether the values agree exactly, negligibly, or differ materially.
-
-The comparison is therefore performed after both extraction paths have produced their outputs.
-
----
-
-### 4.5 QTO comparison
-
-The DDC-derived quantity values are not treated as ground truth.
-
-Instead, they are compared with the corresponding values obtained independently through IfcOpenShell.
-
-The comparison supports the agreement dimension:
-
-\[
-D_4 = \frac{N_{\mathrm{agree}}}{N_{\mathrm{comparison}}}
-\]
-
-where agreement includes exact or negligible differences according to the thesis-defined comparison rules.
-
-This design is important because neither extraction path is assumed to be an authoritative ground-truth quantity source.
-
----
-
-## 5. What Was Not Adapted from DDC
-
-The following thesis components are not inherited from the original DDC workflow:
-
-| Thesis component | Status |
+| Node | Step |
 |---|---|
-| D1 property completeness | Thesis-specific |
-| D2 property validity | Thesis-specific |
-| D3 QTO coverage | Thesis-specific |
-| D4 cross-pipeline agreement | Thesis-specific |
-| BQI weights | Thesis-specific |
-| BQI aggregation | Thesis-specific |
-| QTO agreement thresholds | Thesis-specific |
-| SRCC sensitivity analysis | Thesis-specific |
-| Fault-injection framework | Thesis-specific |
-| Confidence categories | Thesis-specific |
-| BQI-driven risk dilation | Thesis-specific |
-| Risk ranking | Thesis-specific |
-| Model-level verdict | Thesis-specific |
-| Deterministic risk-register generation | Thesis-specific |
-| n8n orchestration of the full analysis | Thesis-specific |
+| 1.1 | Build the expected XLSX path: `<IFC file name>_ifc.xlsx` next to the input file |
+| 1.2, 1.3 | Check whether that XLSX already exists; if so, skip conversion and reuse it (1.3a) |
+| 1.3b | Otherwise run the DDC IFC Exporter |
+| 1.4 | Check the conversion result; a failure stops the run (1.4b) rather than continuing with partial data |
+| 1.5, 1.6 | Merge the two branches and set the XLSX path |
+| 1.7, 1.8 | Read the XLSX and parse its rows |
+| 1.9 | Filter out spatial rows such as `IfcProject`, `IfcSite`, `IfcBuilding` and `IfcBuildingStorey` |
+| 1.10 | Tag every item as `A_ddc` |
 
-The DDC contribution is therefore concentrated at the extraction interface used for Pipeline A.
+### 4.1 Parsing and filtering
+
+The XLSX rows are parsed into items keyed by `GlobalId`, with properties and quantities as bracketed fields such as `[Qto_WallBaseQuantities] NetVolume`. Spatial rows are removed so that only physical elements are compared. This filtering is part of the thesis workflow, not a modification of the exporter.
+
+### 4.2 Pipeline tagging
+
+Items from the two paths carry an explicit pipeline label, `A_ddc` or `B_ifcopenshell`, so every observation keeps its source through comparison and diagnostics.
+
+### 4.3 Cross-pipeline matching and comparison
+
+Node 3.1 merges the two pipelines, and Node 3.2 compares them element by element on `GlobalId`, after removing the set prefix from field names (so `[Qto_WallBaseQuantities] NetVolume` and `[BaseQuantities] NetVolume` are the same field). Rows are classified as `exact`, `negligible`, `minor`, `significant`, or, when a numeric value is not available in both pipelines, `only_in_A` / `only_in_B`.
+
+D4 is the share of an element's comparison rows classified `exact` or `negligible`. Neither pipeline is treated as ground truth: the relative difference is measured against Pipeline A only as a reference for scale. The full definition, including which rows enter the denominator, is in [`bqi-definition.md`](bqi-definition.md), Section 4.4.
+
+---
+
+## 5. What Is Not from DDC
+
+| Component | Origin |
+|---|---|
+| Dual-pipeline orchestration in n8n | Thesis |
+| IfcOpenShell extraction (`extract_ifc.py`) | Thesis |
+| D1–D4 definitions, rule tables, weights and aggregation | Thesis |
+| QTO comparison classes and element coverage verdict | Thesis |
+| SRCC analysis | Thesis |
+| Fault injection, including the dual-file configuration | Thesis |
+| Risk proxies, uncertainty band, ranking and labels | Thesis |
+| Screening verdict and risk-register report | Thesis |
+| Sensitivity analysis and α characterisation | Thesis |
+
+The DDC contribution is limited to the conversion used by Pipeline A, and to the original workflows kept as reference.
 
 ---
 
 ## 6. Relationship to the IfcOpenShell Pipeline
 
-The DDC exporter and IfcOpenShell are intentionally used as two independent extraction paths.
-
-Pipeline A:
+The two paths are deliberately independent:
 
 ```text
-IFC
-  ↓
-DDC IFC Exporter
-  ↓
-tabular representation
+Pipeline A:  IFC → DDC IFC Exporter → XLSX → parsed items
+Pipeline B:  IFC → IfcOpenShell → extract_ifc.py → JSON items
 ```
 
-Pipeline B:
-
-```text
-IFC
-  ↓
-IfcOpenShell
-  ↓
-thesis extraction script
-  ↓
-structured JSON
-```
-
-The purpose of maintaining two paths is not to establish that one library is correct and the other is incorrect.
-
-Instead, their outputs provide independent observations that can be compared downstream.
-
-This independence is especially important for D4 because a shared transformation error could otherwise appear as agreement.
+The aim is not to show that one tool is right and the other wrong. Two independent readings of the same file make disagreement observable, which a single tool cannot do. Independence matters for D4 in particular: an error shared by both paths would appear as agreement.
 
 ---
 
 ## 7. Single-File and Dual-File Operation
 
-The thesis workflow supports two experimental configurations.
-
 ### Single-file configuration
 
-The same IFC variant is provided to both extraction paths:
+The same IFC file is given to both pipelines (`project_file` only):
 
 ```text
-                    faulted IFC
-                    /         \
-                   /           \
-                  v             v
-              Pipeline A    Pipeline B
+            IFC file (baseline or faulted)
+                  /           \
+                 v             v
+            Pipeline A      Pipeline B
 ```
 
-This configuration is used for faults whose effects can be evaluated within each pipeline independently.
-
----
+This is used for the baselines and for all six faults. For F1, F2, F3 and F5 it is the test configuration; for F4 and F6 it is the control, in which the fault is invisible by construction because both pipelines read the same changed values.
 
 ### Dual-file configuration
 
-For faults designed to test cross-pipeline agreement, the baseline file is supplied to Pipeline A while the faulted variant is supplied to Pipeline B:
+The baseline file goes to Pipeline A and the faulted variant to Pipeline B (`project_file` and `project_file_b`):
 
 ```text
-                     baseline IFC
-                          |
-                          v
-                    Pipeline A
-
-
-                  faulted IFC
-                       |
-                       v
-                 Pipeline B
+      baseline IFC               faulted IFC
+           |                          |
+           v                          v
+      Pipeline A                 Pipeline B
 ```
 
-This configuration is used for the F4 and F6 experiments described in the thesis.
-
-It allows the injected difference to occur between the two extraction inputs, making an agreement-based effect observable.
-
-Without this separation, a shared mutation can propagate through both consumers and produce artificial agreement.
+This is used for F4 and F6. The injected change now exists between the two inputs, so the disagreement becomes observable in D4 and in element coverage.
 
 ---
 
-## 8. DDC Output and BQI Interpretation
+## 8. Interpreting DDC Output
 
-The DDC output is an observation of model information through one extraction path.
+The DDC output is one extraction path's view of the model. It is not:
 
-It should not be interpreted as:
+- a complete representation of IFC semantics;
+- a statement of model quality on its own;
+- a ground-truth quantity source; or
+- a measure of physical reliability.
 
-- a complete representation of IFC semantics,
-- a definitive statement of model quality,
-- a ground-truth quantity database, or
-- a calibrated measure of physical building reliability.
-
-The BQI instead measures the quality of information that can be extracted and compared at the point of analysis.
-
-Consequently, an agreement between DDC and IfcOpenShell increases confidence in the extracted information but does not prove that both pipelines are correct relative to an external ground truth.
-
-Similarly, disagreement does not automatically identify which pipeline is wrong.
+Agreement between DDC and IfcOpenShell increases confidence in the extracted information, but does not prove both are correct. Disagreement shows that the two readings differ, not which one is wrong.
 
 ---
 
 ## 9. Reproducibility Boundary
 
-The thesis workflow is designed so that the DDC dependency is visible rather than hidden.
-
-The reproducibility chain is:
-
 ```text
 source IFC
     |
-    +--> Pipeline A: DDC IFC Exporter
+    +--> Pipeline A: DDC IFC Exporter 17.1.1.0         (external)
     |
-    +--> Pipeline B: IfcOpenShell + extract_ifc.py
-    |
-    v
-cross-pipeline comparison
+    +--> Pipeline B: IfcOpenShell 0.8.5 + extract_ifc.py (thesis)
     |
     v
-BQI
-    |
-    v
-risk screening
-    |
-    v
-risk register / sensitivity outputs
+comparison → BQI → risk screening → register and sensitivity export   (thesis)
 ```
 
-The thesis-controlled stages include:
+Under thesis control:
 
-- experimental configuration,
-- fault definitions,
-- severity levels,
-- mutation manifests,
-- Pipeline B extraction,
-- comparison logic,
-- BQI calculation,
-- sensitivity analysis,
-- risk-screening rules,
-- confidence classification, and
+- the workflow configuration (node 0.1);
+- the fault definitions, severities and seed, with one manifest generated per faulted file;
+- Pipeline B extraction;
+- the comparison, BQI and risk rules;
+- the sensitivity and α analyses; and
 - report generation.
 
-The DDC exporter remains an external dependency at the Pipeline A extraction boundary.
+The DDC IFC Exporter remains an external dependency at the Pipeline A boundary.
 
 ---
 
 ## 10. Repository Organisation
 
-The repository separates DDC reference material from thesis-specific implementation:
-
 ```text
 workflows/
+├── README.md
 ├── ddc-base/
 │   ├── README.md
-│   └── original DDC workflow JSON files
-│
+│   └── 9 original DDC workflow JSON files
 └── thesis/
     ├── README.md
-    └── n8n_ifc_dual_pipeline_v16.json
+    └── n8n_ifc_dual_pipeline.json
 ```
 
-This separation is deliberate.
-
-`workflows/ddc-base/` preserves the upstream workflow artefacts used as the basis for the extraction path.
-
-`workflows/thesis/` contains the integrated workflow used for the thesis experiments.
-
-The two directories should not be merged because doing so would make provenance and authorship less transparent.
+`workflows/ddc-base/` preserves the upstream artefacts. `workflows/thesis/` holds the integrated workflow used for every experiment. The two are kept apart so that provenance stays visible.
 
 ---
 
 ## 11. Adaptation Principles
 
-The DDC adaptation follows four principles.
-
 ### 11.1 Preserve the upstream boundary
 
-The thesis does not rewrite the DDC exporter or represent its internal implementation as thesis-authored code.
+The exporter is used as supplied; its implementation is not rewritten or presented as thesis work.
 
 ### 11.2 Keep downstream logic deterministic
 
-Once extraction outputs are available, the comparison, BQI, risk, and reporting stages are controlled by explicit rules and configuration.
+After extraction, comparison, BQI, risk and reporting are controlled by explicit rules and configuration, with no generative model in the scoring path.
 
 ### 11.3 Record provenance
 
-The thesis records the configuration and software context needed to interpret Pipeline A results, while acknowledging the external exporter dependency.
+The exporter version, the workflow configuration and the SHA-256 hashes of the inputs and artefacts are recorded (thesis Annex III).
 
 ### 11.4 Avoid ground-truth assumptions
 
-DDC output is treated as one independent observation rather than an unquestioned reference dataset.
+DDC output is one independent observation, not a reference dataset.
 
 ---
 
 ## 12. Limitations
 
-The DDC adaptation introduces several limitations.
+### 12.1 External, closed dependency
 
-### 12.1 External conversion dependency
+The exporter's internal implementation is outside this repository, and results depend on the exporter version used (17.1.1.0).
 
-Because the DDC IFC Exporter is an external component, its internal implementation is outside the thesis repository.
+### 12.2 Windows only
 
-### 12.2 Extraction-specific behaviour
+The exporter is a Windows executable, so Pipeline A, and therefore the full workflow, runs on Windows. Porting is left to future work.
 
-Differences between Pipeline A and Pipeline B may arise from legitimate differences in schema interpretation, property extraction, quantity handling, or filtering.
+### 12.3 Extraction-specific behaviour
 
-Therefore, disagreement should be interpreted as an observable extraction discrepancy rather than automatically as an error.
+Differences between the pipelines can come from legitimate differences in schema interpretation, property and quantity handling, number formatting, or filtering. A disagreement is an observable extraction discrepancy, not automatically an error.
 
-### 12.3 No independent QTO ground truth
+### 12.4 No independent QTO ground truth
 
-The cross-pipeline comparison establishes agreement between two extraction paths, not absolute correctness against independently measured quantities.
+The comparison establishes agreement between two extraction paths, not correctness against measured quantities.
 
-### 12.4 Scope of supported rules
+### 12.5 Conversion cache
 
-The thesis validation and BQI rules operate on the explicitly defined property and quantity sets. They are not a universal validator for every IFC entity, property set, or infrastructure domain.
+Pipeline A reuses an existing XLSX with the expected name instead of converting again (nodes 1.2–1.3). This speeds up repeated runs; it is why dual-file runs, where Pipeline A reads the already-converted baseline, are faster (thesis Section 4.7). Because the cache is matched by file name (`<IFC file name>_ifc.xlsx`), a stale XLSX left from an earlier run would be read instead of converting the current file. `scripts/fault_analysis.py` warns if an F4 single-file run shows any BQI change, which would indicate this; the fix is to delete the stale XLSX files and re-run.
+
+### 12.6 Scope of supported rules
+
+The BQI rules cover the property and quantity sets defined in the rule tables (twelve building entities). They are not a universal validator for every IFC entity or infrastructure domain.
 
 ---
 
 ## 13. Practical Reproduction Notes
 
-To reproduce the thesis workflow:
-
-1. Use the corpus and fault variants described in `sample-models/`.
-2. Ensure the DDC IFC Exporter is available for Pipeline A.
-3. Use the thesis `n8n_ifc_dual_pipeline` workflow from `workflows/thesis/`.
-4. Use the repository's `scripts/extract_ifc.py` for Pipeline B.
-5. Apply the configuration defined in the workflow before execution.
-6. Preserve the same single-file or dual-file configuration used by the corresponding experiment.
-7. Record the resulting workflow configuration, repository commit, and input-file hashes for provenance.
-
-The exact software/version information and experiment provenance should be interpreted together with the thesis methodology and annexes.
+1. Use the corpus and fault variants in `sample-models/`.
+2. Install the DDC IFC Exporter 17.1.1.0 on a Windows machine.
+3. Import `workflows/thesis/n8n_ifc_dual_pipeline.json` into n8n 2.7.5.
+4. Install IfcOpenShell 0.8.5 for Pipeline B.
+5. In node **0.1 Config**, set `path_to_converter`, `project_file`, `project_file_b` (dual-file runs only), `output_dir` and `script_dir`.
+6. Clear old XLSX conversions of faulted files before a campaign (Section 12.5).
+7. Use the configuration that matches each experiment: single-file for baselines and all faults, dual-file for F4 and F6.
+8. Record the repository release, the Config values and the input-file hashes for provenance.
 
 ---
 
-## 14. Relationship to the Thesis
+## 14. Related Documents
 
-This document corresponds to the methodological boundary described in the thesis between the external DDC extraction component and the thesis-controlled validation, comparison, scoring, and screening stages.
-
-For the authoritative definitions of the implemented scoring system, use:
+Scoring definitions:
 
 - [`bqi-definition.md`](bqi-definition.md)
 - [`validation-ruleset.md`](validation-ruleset.md)
 - [`risk-rules-table.md`](risk-rules-table.md)
 
-For the experimental corpus and fault construction, use:
+Corpus and fault construction:
 
 - [`../sample-models/README.md`](../sample-models/README.md)
 - [`../sample-models/fault-injected/README.md`](../sample-models/fault-injected/README.md)
 
-For the integrated workflow description, use:
+Integrated workflow:
 
 - [`../workflows/thesis/README.md`](../workflows/thesis/README.md)
+
+Thesis references: Section 3.2 (dual-pipeline architecture), Section 3.5.3 (dual-file design), Section 3.7 (n8n implementation), Annex III (provenance).
 
 ---
 
 ## 15. Provenance Statement
 
-The DDC workflow and IFC exporter are treated as external/upstream components of the thesis pipeline.
-
-The repository therefore distinguishes clearly between:
-
 ```text
 UPSTREAM / EXTERNAL
-    DDC workflow
-    DDC IFC Exporter
+    DDC IFC Exporter (Pipeline A conversion)
+    Original DDC workflows (reference only, workflows/ddc-base/)
           |
           v
-THESIS-CONTROLLED
-    normalisation
-    matching
-    QTO comparison
+THESIS
+    orchestration and configuration
+    IfcOpenShell extraction
+    parsing, filtering and matching
+    QTO comparison and element coverage
     BQI
-    sensitivity analysis
-    risk screening
-    reporting
+    risk screening and reporting
+    fault injection and sensitivity analysis
 ```
 
-This separation is part of the reproducibility design of the thesis.
-
-The goal is not to remove external dependencies, but to make their location, function, and limits explicit.
+The goal is not to remove the external dependency, but to make its location, function and limits explicit. This document describes repository release `v1.0.2`.
