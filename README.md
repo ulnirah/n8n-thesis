@@ -238,9 +238,9 @@ n8n-thesis/
 
 ## Reproducing the Study
 
-1. **Get the thesis release.**
+1. **Get the release.**
    ```bash
-   git clone --branch v1.0.1 https://github.com/ulnirah/n8n-thesis.git
+   git clone --branch v1.0.2 https://github.com/ulnirah/n8n-thesis.git
    ```
 
 2. **Install IfcOpenShell** for Pipeline B and fault injection.
@@ -288,6 +288,7 @@ n8n-thesis/
 
 | Tag | Status |
 |---|---|
+| `v1.0.2` | Current release: documentation completed and checked against the final thesis. Computational content is the same as `v1.0.1` |
 | `v1.0.1` | Release cited in the thesis (Annex III), with SHA-256 hashes of the workflow, scripts and IFC inputs |
 | `v1.0-thesis` | Early test tag created before the repository was complete; not used for the thesis results |
 
@@ -326,7 +327,7 @@ Please cite the thesis:
 
 and, when using the code, the software release:
 
-> Rahmatillah, A. A. (2026). *n8n-thesis* (Version v1.0.1) [Computer software]. https://github.com/ulnirah/n8n-thesis
+> Rahmatillah, A. A. (2026). *n8n-thesis* (Version v1.0.2) [Computer software]. https://github.com/ulnirah/n8n-thesis
 
 ---
 
