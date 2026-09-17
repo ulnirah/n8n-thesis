@@ -1,257 +1,202 @@
 # Scripts
 
-This directory contains the Python and PowerShell scripts supporting the computational experiments in the thesis.
+This folder contains the Python and PowerShell scripts used alongside the n8n workflow.
 
-The scripts provide functionality that is externalised from the n8n workflow, including IFC extraction, fault injection, fault-response analysis, parameter sensitivity analysis, uncertainty-coefficient characterisation, output verification, and report aggregation.
-
-The scripts are version-controlled together with the thesis workflow so that the computational logic used in the reported experiments is inspectable and reproducible.
+Only one script runs **inside** the workflow: `extract_ifc.py`, which is Pipeline B. All the others run **offline**, before the workflow (fault injection) or on its outputs (verification and analysis). The BQI and risk logic itself runs in the workflow's Code nodes, not in these scripts.
 
 ---
 
 ## Script Inventory
 
-| Script | Purpose |
-|---|---|
-| `extract_ifc.py` | Independent Pipeline B IFC extraction using IfcOpenShell |
-| `fault_injection.py` | Generates controlled fault-injected IFC variants |
-| `fault_analysis.py` | Analyses BQI responses to injected faults |
-| `sensitivity_analysis.py` | Evaluates parameter sensitivity and ranking stability |
-| `alpha_characterization.py` | Characterises the uncertainty coefficient α |
-| `verify_exports.py` | Verifies the structural integrity of sensitivity JSON exports |
-| `verify_exports.ps1` | PowerShell wrapper for export verification |
-| `harvest_reports.ps1` | Aggregates information from generated risk-register reports |
+| Script | Runs | Input | Output | Needs |
+|---|---|---|---|---|
+| `extract_ifc.py` | Inside the workflow (nodes 2.1–2.3) | One IFC file | JSON on standard output | IfcOpenShell |
+| `fault_injection.py` | Before the campaign | Baseline IFC | Faulted IFC + manifest JSON | IfcOpenShell |
+| `verify_exports.py` | After the campaign | `sensitivity-*.json` | Console report only | Standard library |
+| `verify_exports.ps1` | After the campaign | `sensitivity-*.json` | Console report only | Windows PowerShell |
+| `harvest_reports.ps1` | After the campaign | `risk-register-*.html` | `report_summary.csv` | Windows PowerShell |
+| `fault_analysis.py` | After the campaign | Baseline and faulted `sensitivity-*.json` | `fault_analysis.csv` | Standard library |
+| `sensitivity_analysis.py` | After the baselines | Baseline `sensitivity-*.json` | `sensitivity_results.csv` | Standard library |
+| `alpha_characterization.py` | After the baselines | Baseline `sensitivity-*.json` | `alpha_characterization.csv` | Standard library |
 
 ---
 
-## IFC Extraction
+## Requirements
 
-### `extract_ifc.py`
+- **Python 3.** Four of the six Python scripts use the standard library only.
+- **IfcOpenShell 0.8.5**, for `extract_ifc.py` and `fault_injection.py`:
 
-This script implements the independent IFC extraction pathway used as **Pipeline B** in the thesis workflow.
+  ```bash
+  pip install ifcopenshell==0.8.5
+  ```
 
-It uses IfcOpenShell to extract structured information from IFC files, including:
+- **Windows PowerShell 5.1 or later**, for the two `.ps1` scripts.
 
-- IFC schema metadata;
-- IFC elements;
-- element properties;
-- quantities;
-- materials; and
-- spatial hierarchy information.
-
-The extracted data are returned as JSON and consumed by the n8n workflow for schema detection, domain detection, QTO comparison, BQI scoring, and risk screening.
-
-The script is retrieved by the n8n workflow at run time and is therefore treated as a version-controlled thesis artefact.
+No other packages (such as pandas or SciPy) are needed.
 
 ---
 
-## Fault Injection
+## `extract_ifc.py` — Pipeline B
 
-### `fault_injection.py`
+Reads an IFC file with IfcOpenShell and prints one JSON document containing:
 
-Generates controlled IFC fault variants from the baseline corpus.
+- `elements`: GlobalId, name, category, description, object type, tag and `is_external`;
+- `quantities`: every quantity of every element;
+- `properties` (with `--include-properties`): every property of every element, including quantity-set values;
+- `materials` (with `--include-materials`): the material name of each element;
+- `spatial`: the spatial hierarchy, using the IFC 4 or IFC 4.3 spatial types depending on the detected schema; and
+- `metadata`: source file, schema, timestamp and counts.
 
-The fault-injection framework implements the six fault classes used in the thesis:
-
-```text
-F1
-F2
-F3
-F4
-F5
-F6
-```
-
-The generated variants are parameterised according to the experimental design, including the fault severity/injection level and random seed where applicable.
-
-The resulting IFC files are stored under:
-
-```text
-sample-models/fault-injected/
-```
-
----
-
-## Fault Analysis
-
-### `fault_analysis.py`
-
-Processes the results of the fault-injection experiments.
-
-The analysis supports the evaluation of:
-
-- fault detection;
-- BQI monotonicity;
-- selectivity;
-- inter-dimensional coupling; and
-- fault-specific response patterns.
-
-The outputs support the fault-injection results reported in the thesis.
-
----
-
-## Sensitivity Analysis
-
-### `sensitivity_analysis.py`
-
-Performs the offline sensitivity analysis used to evaluate how the screening results respond to changes in selected framework parameters.
-
-The analysis includes ranking-stability assessment using rank correlation metrics and supports the parameter-sensitivity results reported in the thesis.
-
----
-
-## α Characterisation
-
-### `alpha_characterization.py`
-
-Characterises the uncertainty coefficient **α** used in the uncertainty-aware risk propagation step.
-
-The script evaluates the defined α range and supports the characterisation reported in the thesis.
-
----
-
-## Output Verification
-
-### `verify_exports.py`
-
-Performs structural verification of the generated sensitivity JSON exports.
-
-The checks include:
-
-- valid JSON structure;
-- required element fields;
-- unique `GlobalId` values;
-- expected element counts;
-- F6 element-reduction behaviour; and
-- recomputation of model-level BQI values.
-
-The verification script does not modify the source sensitivity files.
-
-### `verify_exports.ps1`
-
-PowerShell wrapper used to run the export-verification process in the Windows environment used for the experiments.
-
----
-
-## Report Aggregation
-
-### `harvest_reports.ps1`
-
-Harvests information from the generated HTML risk-register reports and aggregates the extracted information into a summary dataset for downstream analysis.
-
----
-
-## Dependencies
-
-The Python scripts use the following main packages:
-
-```text
-ifcopenshell
-pandas
-scipy
-openpyxl
-```
-
-Typical installation:
+Only the physical element types listed in `ELEMENT_TYPES` are extracted. `IfcZone` and `IfcSpatialZone` are deliberately left out, and types such as `IfcDiscreteAccessory` are not in the list (see [`../docs/validation-ruleset.md`](../docs/validation-ruleset.md), Section 18).
 
 ```bash
-pip install ifcopenshell pandas scipy openpyxl
+python scripts/extract_ifc.py sample-models/baseline/IFC4-Building-Structural.ifc --include-properties --include-materials
 ```
 
-### Package roles
-
-- **ifcopenshell** – IFC reading, extraction, and manipulation
-- **pandas** – tabular data processing and export
-- **scipy** – statistical analysis, including Spearman rank correlation
-- **openpyxl** – Excel/XLSX handling where required
-
-The exact dependency requirements may differ between scripts. Refer to the script source and execution environment when reproducing a specific analysis.
+**How the workflow uses it.** Node 2.1 downloads the script from the `main` branch of this repository, Node 2.2 checks Python, and Node 2.3 runs it with both flags on `project_file_b` (dual-file runs) or `project_file`. On a new machine, edit the download folder in Node 2.1, which contains a fixed Windows path from the original workstation, so that it matches `script_dir` in Node 0.1 Config.
 
 ---
 
-## General Usage
+## `fault_injection.py` — Faulted Variants
 
-Scripts are intended to be executed from the repository root or with paths adjusted to the local environment.
-
-### IFC extraction
-
-Example:
+Generates the six fault types (F1–F6) at a chosen rate, with a fixed seed, and writes a manifest JSON next to each variant.
 
 ```bash
-python scripts/extract_ifc.py \
-  sample-models/baseline/IFC4-Building-Structural.ifc \
-  --include-properties \
-  --include-materials
+# all 6 faults × 3 rates for one model
+python scripts/fault_injection.py sample-models/baseline/IFC4-Building-Architecture.ifc --all --seed 42 --outdir faulted
+
+# one fault at one rate
+python scripts/fault_injection.py sample-models/baseline/IFC4-Building-Architecture.ifc --fault F1 --rate 0.25 --seed 42 --outdir faulted
 ```
 
-### Fault injection
+| Option | Meaning | Default |
+|---|---|---|
+| `--all` | All six faults at 10%, 25% and 50% | — |
+| `--fault F1`…`F6` | One fault type | — |
+| `--rate` | Share of eligible elements to fault, e.g. `0.25` | — |
+| `--seed` | Random seed | `42` |
+| `--intensity light\|heavy` | Change the first matching field or all of them (F1–F3) | `light` |
+| `--outdir` | Output folder | `faulted` |
 
-The exact command-line arguments depend on the experiment configuration and are defined in the script and thesis methodology.
+F4 and F6 variants get the `_PIPELINE-B-ONLY` suffix. The fault definitions, target selection and a reproducibility check of the committed variants are in [`../sample-models/fault-injected/README.md`](../sample-models/fault-injected/README.md).
 
-The generated fault-injected models are stored under:
+---
 
-```text
-sample-models/fault-injected/
-```
+## `verify_exports.py` and `verify_exports.ps1` — Export Checks
 
-### Verification
+Both scripts perform the same structural checks on every `sensitivity-*.json` found under a folder, recursively:
 
-Example:
+- the file parses as a JSON list of element records;
+- every record has a `GlobalId` and the four dimension scores;
+- no `GlobalId` is duplicated within a file;
+- the element count matches the model's baseline count from thesis Table 3.1, with fewer elements expected in F6 runs; and
+- the model-level BQI recomputed from the element scores.
+
+They print failures and a summary and write nothing to disk. The PowerShell version is a standalone implementation for machines without Python, not a wrapper around the Python script.
 
 ```bash
-python scripts/verify_exports.py <campaign-root>
+python scripts/verify_exports.py "<campaign_root>"
+powershell -ExecutionPolicy Bypass -File scripts/verify_exports.ps1 "<campaign_root>"
 ```
 
-For the Windows PowerShell workflow:
+`<campaign_root>` is the folder holding the run outputs, for example with sub-folders `Baseline`, `Single File (F1..)`, `Single File (F4, F6)` and `Dual File (F4, F6)`. Both default to the current folder.
+
+---
+
+## `harvest_reports.ps1` — Report Summary
+
+Reads every `risk-register-*.html` under a folder and writes one CSV row per run: model, fault, rate, configuration, model BQI, element coverage and its verdict, High and Medium counts, elements scored, average SRCC and screening verdict.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/verify_exports.ps1
+powershell -ExecutionPolicy Bypass -File scripts/harvest_reports.ps1 -Root "<campaign_root>" -Out report_summary.csv
 ```
-
-### Report harvesting
-
-The report-harvesting script is intended to be run over the directory containing the generated experimental reports.
 
 ---
 
-## Relationship to the n8n Workflow
+## `fault_analysis.py` — Fault Response
 
-The scripts in this directory are not a replacement for the n8n workflow.
+Pairs every faulted run with its baseline by file name, using run identity `(model, fault, rate, configuration)`, and computes from full-precision values:
 
-The workflow provides the end-to-end orchestration, while the scripts provide externalised computational components and offline analysis utilities.
+- ΔBQI and ΔD1–ΔD4 at each rate;
+- the most affected dimension and whether it is the targeted one (selectivity);
+- a monotonicity check per model, fault and configuration;
+- a list of borderline selectivity calls, where the margin over the runner-up is below 0.002;
+- the F2 most-affected-dimension tally; and
+- a guard for the F4 single-file runs, which must show ΔBQI = 0. A non-zero value means Pipeline A read a stale XLSX instead of converting the faulted file.
 
-The main relationship is:
+```bash
+python scripts/fault_analysis.py "sensitivity-*.json"
+```
+
+It needs the baseline exports and the faulted-run exports in the same set of files, so it can only be run after the campaign. Output: `fault_analysis.csv`. Thesis Sections 4.2 and 4.3.
+
+---
+
+## `sensitivity_analysis.py` — Ranking Stability
+
+Recomputes BQI, `R_adj` and the High/Medium/Low labels offline from each baseline export, for many parameter variants, and compares every variant with the baseline (weights 0.35/0.25/0.20/0.20, α = 0.55):
+
+| Experiment | Variants per model |
+|---|---|
+| α sweep: 0.00, 0.25, 0.50, 0.75, 1.00 | 5 |
+| Named weight schemes: baseline, equal weights, D4 downweighted, rank-order centroid | 4 |
+| Pairwise weight shifts of ±0.05 | 12 |
+| Random weight vectors on the simplex (seed 42) | 500 |
+
+For each variant it reports the rank-stability SRCC, the number of label flips and the top-10 Jaccard overlap.
+
+```bash
+python scripts/sensitivity_analysis.py "sensitivity-*.json" --baselines-only
+```
+
+Output: `sensitivity_results.csv`. Thesis Section 4.4 and Table 4.7. It can be run directly on the files in [`../examples/`](../examples/).
+
+---
+
+## `alpha_characterization.py` — Choosing α
+
+Sweeps α from 0.00 to 1.00 in steps of 0.05 and applies two criteria:
+
+1. **Effectiveness:** α must escalate at least one element to a higher label in at least one model, compared with α = 0.
+2. **Information preservation:** at most 5% of the elements in any model may be clamped at `R_adj = 1`.
+
+The admissible interval is where both hold, and the recommended α is its midpoint, rounded to 0.05.
+
+```bash
+python scripts/alpha_characterization.py "sensitivity-*.json" --baselines-only
+```
+
+Output: `alpha_characterization.csv`, with escalations, clamp fraction and mean band width per model and α. On the files in [`../examples/`](../examples/) it gives the interval [0.10, 1.00] and α = 0.55 reported in thesis Sections 3.6.4 and 4.4.2.
+
+---
+
+## Relationship to the Workflow
 
 ```text
-IFC inputs
-    |
-    v
-n8n workflow
-    |
-    +--> extract_ifc.py
-    |
-    +--> BQI / risk processing
-    |
-    +--> HTML risk register
-    |
-    +--> sensitivity JSON
-              |
-              +--> fault_analysis.py
-              +--> sensitivity_analysis.py
-              +--> alpha_characterization.py
-              +--> verify_exports.py
-              +--> harvest_reports.ps1
+sample-models/baseline/*.ifc
+        │
+        ├── fault_injection.py ──► sample-models/fault-injected/*.ifc
+        │
+        ▼
+n8n workflow  (extract_ifc.py runs inside, as Pipeline B)
+        │
+        ├── risk-register-*.html ──► harvest_reports.ps1 ──► report_summary.csv
+        │
+        └── sensitivity-*.json ────► verify_exports.py / .ps1
+                                 ├─► fault_analysis.py ──────────► fault_analysis.csv
+                                 ├─► sensitivity_analysis.py ────► sensitivity_results.csv
+                                 └─► alpha_characterization.py ──► alpha_characterization.csv
 ```
 
 ---
 
-## Reproducibility and Provenance
+## Notes on the Source Code
 
-The scripts are version-controlled as part of the thesis repository.
+- Some scripts contain comments marked `CORRECTED VERSION` or `CHANGED (C1)`–`(C6)`. They record fixes made during development, such as aligning the label percentiles with Node 4.5 and setting α to 0.55. All reported results use the corrected versions.
+- Because Node 2.1 downloads `extract_ifc.py` from `main`, any change to that file on `main` affects future workflow runs. To reproduce the thesis exactly, use the script from the thesis release or keep a local copy in `script_dir`.
 
-The final thesis release identifies the exact repository state using:
+---
 
-- the Git release tag;
-- the associated commit SHA; and
-- SHA-256 hashes of the principal software artefacts.
+## Versions
 
-The script versions used for the reported experiments should therefore be taken from the frozen thesis release rather than from a later development state.
+The thesis cites release `v1.0.1`, whose script hashes are listed in Annex III. The scripts are unchanged in `v1.0.2`; only this README changes.
