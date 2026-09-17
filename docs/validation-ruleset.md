@@ -1,895 +1,483 @@
 # Validation Ruleset
 
-This document defines the IFC information-quality rules used by the thesis workflow to evaluate the data available for downstream BQI scoring.
+This document defines the IFC information-quality rules the thesis workflow applies to extracted data before BQI scoring.
 
-The ruleset is an **external scoring layer** applied to extracted IFC data. It does not modify the IFC schema and does not attempt to certify general IFC compliance. Instead, it asks whether the information required by the thesis screening workflow is present and usable at the point of consumption.
+The ruleset is an **external scoring layer**. It does not modify the IFC schema and does not certify general IFC compliance. It asks whether the information the screening workflow needs is present and usable at the point of consumption.
 
-The ruleset supports the four BQI dimensions:
+It supports the four BQI dimensions:
 
 - **D1 — Property completeness**
 - **D2 — Property validity**
 - **D3 — QTO coverage**
 - **D4 — Cross-pipeline agreement**
 
-D1–D3 are evaluated from the extracted element data. D4 is evaluated from the comparison between the two independent extraction pipelines.
+D1–D3 are evaluated on each element's extracted data. D4 is evaluated on the comparison between the two extraction pipelines. Element coverage is a separate check (Section 17).
 
 ---
 
 ## 1. Scope
 
-The thesis evaluates:
+The thesis evaluates **IFC 4.0.2.1** (IFC 4) and **IFC 4.3.2.0** (IFC 4.3). IFC 2x3 is out of scope.
 
-- **IFC 4.0.2.1**, referred to as **IFC 4**
-- **IFC 4.3.2.0**, referred to as **IFC 4.3**
-
-IFC 2x3 is outside the scope of the study.
-
-The ruleset is intended for the physical IFC element types relevant to the thesis screening workflow. Spatial hierarchy entities such as `IfcProject`, `IfcSite`, `IfcBuilding`, and infrastructure facility containers are handled separately from scored physical elements.
+The rules apply to physical IFC elements. Spatial hierarchy entities such as `IfcProject`, `IfcSite`, `IfcBuilding` and infrastructure facility containers are removed before scoring (Section 18).
 
 ---
 
 ## 2. Validation Philosophy
 
-The ruleset does not produce a single pass/fail result.
-
-Instead, each applicable element is evaluated along several dimensions.
+The ruleset does not produce a single pass/fail result. Each element is evaluated along several dimensions:
 
 ```text
 IFC element
     │
     ├── Required properties ───────► D1 Completeness
-    │
     ├── Property values ────────────► D2 Validity
-    │
     ├── Expected quantities ────────► D3 QTO Coverage
-    │
     └── Pipeline A vs Pipeline B ──► D4 Agreement
 ```
 
-The resulting dimension scores are combined into the BQI according to the rules documented in `bqi-definition.md`.
+The dimension scores are combined into the BQI as documented in [`bqi-definition.md`](bqi-definition.md).
 
-This separation is intentional. A model can therefore be:
+Keeping the dimensions separate means a model can be:
 
-- structurally complete but semantically empty;
+- broad in element coverage but empty of information;
 - rich in properties but poor in quantities;
-- quantitatively complete but inconsistent between extraction tools; or
-- broad in element coverage while carrying little usable information.
+- complete in quantities but inconsistent between extraction tools.
 
 ---
 
 ## 3. Rule Selection by IFC Category
 
-Validation rules are associated with the IFC `Category` reported by the extraction pipelines.
+Rules are selected by the IFC `Category` reported by the extraction pipelines, for example `IfcWall`, `IfcSlab`, `IfcBeam`, `IfcColumn`, `IfcDoor`, `IfcWindow`, `IfcRoof` and `IfcSpace`.
 
-Examples include:
+IFC 4.3 infrastructure models also contain infrastructure entities such as `IfcBridgePart`, `IfcBearing`, `IfcRoadPart`, `IfcCourse`, `IfcKerb`, `IfcPavement`, `IfcRail`, `IfcTrackElement` and `IfcFacilityPart`. These have no explicit quality rules and are scored through the fallback rules.
 
-```text
-IfcWall
-IfcSlab
-IfcBeam
-IfcColumn
-IfcDoor
-IfcWindow
-IfcRoof
-IfcSpace
-```
-
-For IFC 4.3 infrastructure models, the workflow can also encounter infrastructure-specific entities such as:
-
-```text
-IfcBridgePart
-IfcBearing
-IfcRoadPart
-IfcCourse
-IfcKerb
-IfcPavement
-IfcRail
-IfcTrackElement
-IfcFacilityPart
-```
-
-The parser detects the IFC schema before downstream scoring.
-
-Schema-aware processing is required because IFC 4 and IFC 4.3 expose different domain-specific entity structures. The thesis therefore treats the schema identifier as part of the validation context rather than assuming that one universal rule table is appropriate for every IFC version.
+The parser detects the IFC schema before downstream scoring. In the thesis release, the same rule table is applied to IFC 4 and IFC 4.3 models; the schema identifier selects the spatial types used in extraction and the domain used for the risk lookup tables (Section 20). Schema-specific rule tables for infrastructure entities are further work.
 
 ---
 
-# 4. Required Property Rules
-
-D1 completeness is based on the required-property set assigned to an IFC category.
-
-The current explicit required-property rules are:
+## 4. Required Property Rules
 
 | IFC Category | Required Properties |
 |---|---|
-| `IfcWall` | `IsExternal`, `LoadBearing` |
-| `IfcWallStandardCase` | `IsExternal`, `LoadBearing` |
-| `IfcSlab` | `IsExternal`, `LoadBearing` |
-| `IfcSlabStandardCase` | `IsExternal`, `LoadBearing` |
-| `IfcBeam` | `IsExternal`, `LoadBearing` |
-| `IfcBeamStandardCase` | `IsExternal`, `LoadBearing` |
-| `IfcColumn` | `IsExternal`, `LoadBearing` |
-| `IfcColumnStandardCase` | `IsExternal`, `LoadBearing` |
+| `IfcWall`, `IfcWallStandardCase` | `IsExternal`, `LoadBearing` |
+| `IfcSlab`, `IfcSlabStandardCase` | `IsExternal`, `LoadBearing` |
+| `IfcBeam`, `IfcBeamStandardCase` | `IsExternal`, `LoadBearing` |
+| `IfcColumn`, `IfcColumnStandardCase` | `IsExternal`, `LoadBearing` |
 | `IfcRoof` | `IsExternal` |
 | `IfcDoor` | `IsExternal`, `FireRating` |
 | `IfcWindow` | `IsExternal` |
 | `IfcSpace` | `IsExternal`, `GrossPlannedArea` |
 
-These properties were selected from the relevant IFC property-set definitions as the screening fields required by the thesis implementation.
-
-They should not be interpreted as a claim that these are the only properties that can be validly present on the corresponding IFC entity.
+These properties were selected from the corresponding `Pset_*Common` definitions as the fields the screening workflow needs. They are not the only properties an entity can validly carry.
 
 ---
 
 ## 5. Property Matching
 
-Property names are stored by the extraction pipelines using a bracketed key format such as:
+The extraction pipelines store properties and quantities as bracketed keys:
 
 ```text
 [Pset_WallCommon] IsExternal
-[Pset_WallCommon] LoadBearing
+[Qto_WallBaseQuantities] NetVolume
 ```
 
-The validation logic compares the property name after the property-set prefix.
+D1 and D3 match the name after the bracketed set prefix and the following space, exactly:
 
-For example:
+- `[Pset_WallCommon] IsExternal` satisfies `IsExternal`.
+- `Area` does not match `NetArea`, and `GrossArea` does not match `NetArea`.
 
-```text
-[Pset_WallCommon] IsExternal
-```
-
-satisfies:
-
-```text
-IsExternal
-```
-
-The matching is exact after extraction of the property name.
-
-This prevents accidental matches such as:
-
-```text
-Area
-```
-
-being treated as equivalent to:
-
-```text
-NetArea
-```
+A required field counts as present only if its value is not empty and not null. Matching looks at every bracketed key of the element, whichever property or quantity set it comes from.
 
 ---
 
-# 6. D1 — Property Completeness
-
-For an element `e`:
+## 6. D1 — Property Completeness
 
 ```text
-D1 =
-(|P_req| − |P_missing|)
------------------------
-|P_req|
+D1 = (|P_req| − |P_missing|) / |P_req|
 ```
 
-where:
+- `P_req` = required properties for the IFC category
+- `P_missing` = required properties absent, or present with an empty value
 
-- `P_req` = required property set for the IFC category;
-- `P_missing` = required properties not found with usable values.
-
-Example:
-
-```text
-IfcWall
-Required:
-    IsExternal
-    LoadBearing
-
-Found:
-    IsExternal
-    LoadBearing
-
-D1 = 2 / 2 = 1.000
-```
-
-If only one property is present:
-
-```text
-D1 = 1 / 2 = 0.500
-```
+Example: `IfcWall` requires `IsExternal` and `LoadBearing`. If both are present, `D1 = 2 / 2 = 1.000`; if one is present, `D1 = 1 / 2 = 0.500`.
 
 ---
 
-# 7. D1 Fallback Rule
+## 7. D1 Fallback Rule
 
-Not every IFC category has an explicit required-property table entry.
-
-When no explicit rule exists, the implementation uses a conservative evidence-based fallback:
+For a category with no explicit required-property rule:
 
 ```text
-IF element has any bracketed property/quantity data:
+IF the element has any bracketed property or quantity key:
     D1 = 1.0
 ELSE:
     D1 = 0.0
 ```
 
-The purpose of this rule is to prevent an element from receiving a perfect score merely because the ruleset does not contain an explicit category-specific requirement.
-
-An unsupported category is therefore not automatically treated as fully complete.
+This prevents an element from receiving a perfect score merely because no rule exists for its category.
 
 ---
 
-# 8. D2 — Property Validity
-
-D2 evaluates whether extracted values are usable.
-
-The property-key set is:
+## 8. D2 — Property Validity
 
 ```text
-K = all extracted bracketed property/quantity keys
+K  = all bracketed property and quantity keys of the element
+D2 = (|K| − |K_invalid|) / |K|
 ```
 
-Invalid values are those whose values are:
+`K_invalid` contains the keys whose value is invalid (Section 9).
 
-```text
-empty string
-null
-UNSET
-N/A
-```
+Example: 7 keys, 1 invalid → `D2 = 6 / 7 = 0.857`.
 
-The score is:
-
-```text
-D2 =
-(|K| − |K_invalid|)
--------------------
-|K|
-```
-
-where `K_invalid` is the subset containing invalid values.
-
-Example:
-
-```text
-Total extracted values = 7
-Invalid values         = 1
-
-D2 = (7 − 1) / 7
-   = 0.857
-```
-
-An element with no extracted property data receives:
-
-```text
-D2 = 0.0
-```
-
-This prevents absence of evidence from being interpreted as valid information.
+An element with no bracketed keys receives `D2 = 0.0`, so absence of evidence is not treated as valid information.
 
 ---
 
-# 9. Validity of Special Values
+## 9. Invalid and Valid Values
 
-The following values are explicitly treated as invalid:
-
-| Value | Interpretation |
+| Value | Treated as |
 |---|---|
-| `""` | Empty |
-| `null` | Missing value |
-| `UNSET` | IFC value unavailable / unset |
-| `N/A` | Explicitly unavailable |
+| `""` (empty string) | Invalid |
+| `null` or missing | Invalid |
+| `UNSET` (also `['UNSET']` as exported by IfcOpenShell) | Invalid |
+| `N/A` | Invalid |
+| `0`, `0.0`, `false` | Valid |
 
-Values such as:
-
-```text
-0
-false
-0.0
-```
-
-remain valid values.
-
-In particular, zero must not be confused with absence. This is important for numerical IFC properties and quantities where zero is a legitimate value.
+Zero and false are legitimate values and are not confused with absence.
 
 ---
 
-# 10. Expected Quantity Rules
-
-D3 QTO coverage uses an expected quantity set for each explicitly supported IFC category.
-
-The current expected quantity rules are:
+## 10. Expected Quantity Rules
 
 | IFC Category | Expected Quantity Fields |
 |---|---|
-| `IfcWall` | `NetVolume`, `Width`, `Length`, `NetSideArea` |
-| `IfcWallStandardCase` | `NetVolume`, `Width`, `Length`, `NetSideArea` |
-| `IfcSlab` | `NetVolume`, `Depth`, `NetArea` |
-| `IfcSlabStandardCase` | `NetVolume`, `Depth`, `NetArea` |
-| `IfcBeam` | `NetVolume`, `Length` |
-| `IfcBeamStandardCase` | `NetVolume`, `Length` |
-| `IfcColumn` | `NetVolume`, `Length` |
-| `IfcColumnStandardCase` | `NetVolume`, `Length` |
+| `IfcWall`, `IfcWallStandardCase` | `NetVolume`, `Width`, `Length`, `NetSideArea` |
+| `IfcSlab`, `IfcSlabStandardCase` | `NetVolume`, `Depth`, `NetArea` |
+| `IfcBeam`, `IfcBeamStandardCase` | `NetVolume`, `Length` |
+| `IfcColumn`, `IfcColumnStandardCase` | `NetVolume`, `Length` |
 | `IfcRoof` | `NetVolume` |
 | `IfcSpace` | `NetFloorArea`, `GrossFloorArea`, `Height` |
 | `IfcDoor` | `Area`, `Height`, `Width` |
 | `IfcWindow` | `Area`, `Height`, `Width` |
 
-These fields represent the quantity information selected for the thesis QTO and risk-screening use case. They are not intended to describe every possible quantity available in IFC.
+Most fields come from the corresponding `Qto_*BaseQuantities` definitions. `Qto_RoofBaseQuantities` defines `GrossArea`, `NetArea` and `ProjectedArea` but no volume, so `IfcRoof NetVolume` is an author choice rather than a schema definition.
 
 ---
 
-# 11. Quantity Matching
+## 11. Quantity Name Normalisation
 
-Quantities are extracted using keys such as:
-
-```text
-[BaseQuantities] NetVolume
-[Qto_WallBaseQuantities] NetVolume
-```
-
-For comparison and rule matching, the quantity-set prefix is removed.
-
-Thus:
+For the cross-pipeline comparison (D4), Node 3.2 removes the set prefix from every bracketed key, whether it is followed by a space or a dot:
 
 ```text
-[BaseQuantities] NetVolume
+[BaseQuantities] NetVolume          → NetVolume
+[Qto_WallBaseQuantities] NetVolume  → NetVolume
 ```
 
-and:
-
-```text
-[Qto_WallBaseQuantities] NetVolume
-```
-
-are both normalised to:
-
-```text
-NetVolume
-```
-
-This allows semantically corresponding quantities to be compared across extraction pipelines even when their quantity-set names differ.
+This lets the same measurement be compared even when the two pipelines report it under different set names. If an element carries the same field name in two sets, the first occurrence is used.
 
 ---
 
-# 12. D3 — QTO Coverage
-
-For an element `e`:
+## 12. D3 — QTO Coverage
 
 ```text
-D3 =
-(|Q_exp| − |Q_missing|)
------------------------
-|Q_exp|
+D3 = (|Q_exp| − |Q_missing|) / |Q_exp|
 ```
 
-where:
+- `Q_exp` = expected quantity fields for the IFC category
+- `Q_missing` = expected fields not found with a non-empty value
 
-- `Q_exp` = expected quantity fields for the IFC category;
-- `Q_missing` = expected quantity fields not found.
-
-Example:
-
-```text
-IfcWall
-
-Expected:
-    NetVolume
-    Width
-    Length
-    NetSideArea
-
-Present:
-    NetVolume
-    Width
-    Length
-
-D3 = 3 / 4 = 0.750
-```
-
-The quantity field must match exactly after normalisation.
-
-For example:
-
-```text
-Expected: NetArea
-Available: GrossArea
-```
-
-does not satisfy the expected field.
+Example: `IfcWall` with `NetVolume`, `Width` and `Length` present but no `NetSideArea` → `D3 = 3 / 4 = 0.750`.
 
 ---
 
-# 13. D3 Fallback Rule
+## 13. D3 Fallback Rule
 
-For an IFC category with no explicit expected-QTO rule:
+For a category with no explicit expected-quantity rule:
 
 ```text
-IF element has any bracketed property/quantity data:
+IF the element has any bracketed property or quantity key:
     D3 = 1.0
 ELSE:
     D3 = 0.0
 ```
 
-As with D1, the fallback prevents a missing rule definition from being interpreted as evidence of perfect quality.
+---
+
+## 14. Quantity Value Handling
+
+For the comparison, values are parsed as numbers. A numeric `0` is kept as a valid value, distinct from a missing value.
+
+Two behaviours of the released implementation matter when reading D4:
+
+- A value that does not parse as a number, such as `True` or `UNSET`, is treated as not available for that pipeline (Section 15.1).
+- The relative difference is measured against Pipeline A. If Pipeline A returns `0` and Pipeline B a non-zero value, the relative difference is taken as zero, so the row is classified `negligible`.
 
 ---
 
-# 14. Quantity Value Handling
+## 15. D4 — Cross-Pipeline Agreement
 
-Numeric quantity values are converted to numerical values before comparison.
+D4 checks whether two independent extraction pipelines return the same values:
 
-A value of:
+- **Pipeline A:** DDC IFC Exporter
+- **Pipeline B:** IfcOpenShell (`scripts/extract_ifc.py`)
 
-```text
-0
-```
+Elements are matched on `GlobalId`. For each shared element, Node 3.2 builds one comparison row for every normalised field name found in either pipeline.
 
-is preserved as a valid numerical value.
+### 15.1 Comparison Classes
 
-The implementation therefore distinguishes:
-
-```text
-0
-```
-
-from:
+If both pipelines return a numeric value:
 
 ```text
-missing
+Delta   = Value_B − Value_A
+PctDiff = |Delta| / |Value_A| × 100
 ```
 
-or:
-
-```text
-null
-```
-
-This distinction is necessary because zero can be a legitimate quantity value.
-
----
-
-# 15. D4 — Cross-Pipeline Agreement
-
-D4 is not a conventional single-file validation rule.
-
-It evaluates whether two independent extraction pipelines agree on comparable quantities.
-
-The thesis uses:
-
-```text
-Pipeline A
-DDC-based extraction
-
-Pipeline B
-IfcOpenShell extraction
-```
-
-Elements are matched using:
-
-```text
-GlobalId
-```
-
-For each shared element, quantity fields are normalised and compared.
-
----
-
-## 15.1 Quantity Comparison Classes
-
-For a quantity existing in both pipelines:
-
-```text
-Delta = Value_B − Value_A
-```
-
-and the relative difference is calculated against Pipeline A:
-
-```text
-PctDiff =
-|Delta|
--------
-|Value_A|
-× 100
-```
-
-The comparison classification is:
-
-| Condition | Classification |
+| Condition | Class |
 |---|---|
-| `|Delta| < 10^-10` | `exact` |
+| `|Delta| < 10⁻¹⁰` | `exact` |
 | `PctDiff < 0.01%` | `negligible` |
 | `0.01% ≤ PctDiff < 1%` | `minor` |
 | `PctDiff ≥ 1%` | `significant` |
 
-For D4:
+Otherwise the row is recorded as `only_in_A` or `only_in_B`. This covers fields missing from one pipeline and fields whose values are not numeric in either.
 
-```text
-exact
-```
-
-and:
-
-```text
-negligible
-```
-
-count as agreement.
-
-The `minor` and `significant` classes count as disagreement.
-
-The `1%` boundary therefore separates disagreement severity, while the `0.01%` boundary determines the operational agreement threshold.
+`exact` and `negligible` count as agreement. The 0.01% boundary is therefore the operational agreement threshold; the 1% boundary only separates two disagreement classes.
 
 ---
 
-# 16. D4 Calculation
-
-For an element:
+## 16. D4 Calculation
 
 ```text
-D4 =
-number of exact or negligible comparisons
-------------------------------------------
-total comparable quantity comparisons
+D4 = (rows classified exact or negligible) / (all comparison rows for the element)
 ```
 
-For example:
+All other rows, including `only_in_A` and `only_in_B`, count against agreement. Non-numeric property fields such as `IsExternal` are part of the denominator.
+
+Example (thesis worked example, `IfcWall` in M1): 7 rows, of which the 4 quantities agree and the 3 property fields `Status`, `IsExternal` and `LoadBearing` are non-numeric → `D4 = 4 / 7 = 0.571`.
+
+See [`bqi-definition.md`](bqi-definition.md), Sections 4.4 and 12.6, for the consequences of this definition.
+
+### 16.1 No Comparison Rows
 
 ```text
-8 comparable quantity fields
-6 exact/negligible
-2 disagreement
-
-D4 = 6 / 8
-   = 0.750
-```
-
----
-
-## 16.1 No Comparison Rows
-
-If no comparison rows are available for an element:
-
-```text
-IF quantities were expected:
+IF quantities are expected for the category:
     D4 = 0.5
 ELSE:
-    use the evidence-based fallback
+    D4 = 1.0 if the element has any bracketed key, otherwise 0.0
 ```
 
-The `0.5` value is a conservative middle score.
-
-It represents:
-
-> insufficient comparison evidence
-
-rather than:
-
-> complete agreement
-
-This prevents an absence of comparison data from being interpreted as perfect cross-pipeline agreement.
+0.5 represents insufficient comparison evidence, not agreement.
 
 ---
 
-# 17. Element Coverage
+## 17. Element Coverage
 
-Element coverage is evaluated separately from D1–D4.
-
-The workflow constructs the sets of `GlobalId` values from:
-
-- Pipeline A; and
-- Pipeline B.
-
-The coverage measure is:
+Element coverage is evaluated separately from D1–D4, in Node 3.3, from the two pipelines' `GlobalId` sets:
 
 ```text
-Coverage =
-shared GlobalIds
----------------
-union of GlobalIds
-× 100
+Coverage (%) = shared GlobalIds / union of GlobalIds × 100
 ```
 
-The configured screening threshold is:
+It is kept separate from the BQI because an element present in only one pipeline cannot be compared.
 
-```text
-95%
-```
+### 17.1 Severity Classes
 
-This measure is intentionally separate from BQI because an element that exists in one pipeline but not the other cannot receive a conventional element-level D4 comparison.
+Each unmatched element is classified by type:
+
+| Class | Types |
+|---|---|
+| **Critical** | `IfcWall`, `IfcSlab`, `IfcBeam`, `IfcColumn` (with StandardCase variants), `IfcRoof`, `IfcDoor`, `IfcWindow`, `IfcSpace`, `IfcStair`, `IfcStairFlight`, `IfcRamp`, `IfcRampFlight`, `IfcFooting`, `IfcPile` |
+| **Needs review** | `IfcCovering`, `IfcPlate`, `IfcMember`, `IfcRailing`, `IfcCurtainWall`, `IfcFurnishingElement`, `IfcFurniture`, `IfcBuildingElementProxy`, and any type not listed elsewhere |
+| **Probably harmless** | `IfcOpeningElement`, `IfcOpeningStandardCase`, `IfcAnnotation`, `IfcGrid`, `IfcGridAxis`, `IfcVirtualElement` |
+
+### 17.2 Coverage Verdict
+
+| Condition | Verdict |
+|---|---|
+| At least one **critical** element is unmatched | **FAIL** |
+| Otherwise, at least one **needs-review** element is unmatched, or coverage is below 95% | **REVIEW** |
+| Otherwise | **PASS** |
+
+The 95% threshold is an author-defined convention and was not swept.
+
+### 17.3 Coverage in the Thesis Corpus
+
+In the committed baseline reports, the unmatched elements are:
+
+| Models | Unmatched elements | Verdict |
+|---|---|---|
+| M1, M2 (building architecture) | `IfcSpace` (2), `IfcSpatialZone` (1), `IfcFurniture` (1) | FAIL, 77.78% |
+| M3, M4 (building structural) | `IfcDiscreteAccessory` (2) | REVIEW, 88.89% |
+| M5–M8 | none | PASS, 100% |
+
+All of these elements are present only in Pipeline A because of the extraction scope of Pipeline B (Section 18): `IfcSpace` and `IfcFurniture` are removed by Node 2.6, and `IfcSpatialZone` and `IfcDiscreteAccessory` are not in the type list of `extract_ifc.py`. The baseline coverage shortfalls therefore reflect differences in the two pipelines' filters, not differences in how the two tools read the same elements. The coverage response to element deletion in the dual-file F6 runs is unaffected, because those deletions act on elements both pipelines extract.
 
 ---
 
-## 17.1 Coverage Severity
+## 18. Elements Excluded from Scoring
 
-Missing elements are classified into three groups:
+The two pipelines remove non-element records at different points.
 
-### Critical
-
-Element categories whose absence can materially affect quantities or structural risk screening.
-
-### Needs Review
-
-Secondary or ambiguous categories where a mismatch should be investigated.
-
-### Probably Harmless
-
-Non-physical or annotation-level entities whose absence does not materially change the quantity or risk calculation.
-
-Unknown types default conservatively to:
+**Pipeline A**, Node 1.9, removes rows whose category is:
 
 ```text
-needs_review
+IfcProject, IfcSite, IfcBuilding, IfcBuildingStorey, IfcZone,
+IfcBridge, IfcRoad, IfcFacility, IfcRailway
 ```
+
+It also removes rows whose category reads `Advertisement: For an ad-free version…`, a notice row present in the converter output.
+
+**Pipeline B** extracts only the physical element types listed in `scripts/extract_ifc.py`, which excludes `IfcZone` and `IfcSpatialZone`. Spatial entities are extracted separately for context. Node 2.6 then removes metadata items and the categories:
+
+```text
+IfcProject, IfcSite, IfcBuilding, IfcBuildingStorey, IfcSpace, IfcFurniture
+```
+
+Spatial entities remain available for schema detection, domain inference and spatial context, but are not scored.
 
 ---
 
-# 18. Elements Excluded from Scoring
+## 19. Material Information
 
-The workflow excludes project and spatial hierarchy records from the element-level analysis.
+Pipeline B extracts material names (`extract_ifc.py --include-materials`, as called by Node 2.3), and the material string is carried on each element.
 
-Examples include:
-
-```text
-IfcProject
-IfcSite
-IfcBuilding
-IfcBuildingStorey
-IfcZone
-IfcBridge
-IfcRoad
-IfcFacility
-IfcRailway
-```
-
-These entities are useful for:
-
-- schema detection;
-- domain inference;
-- spatial context; and
-- infrastructure classification.
-
-They are not treated as ordinary physical risk-screening elements.
+Material is not a BQI dimension. It is used by the risk-screening block as a susceptibility modifier ([`risk-rules-table.md`](risk-rules-table.md), Section 3.3). A missing material is recorded as a diagnostic `no_material` flag on the element, but it does not change the BQI.
 
 ---
 
-# 19. Material Information
+## 20. Schema and Domain Detection
 
-Material names are extracted by Pipeline B and retained in the element data.
+Node 2.5 reads the IFC schema from the parser metadata.
 
-Material information is not itself a BQI dimension.
+**IFC 4 files** are assigned the `Building` domain, since IFC 4 has no infrastructure spatial entities.
 
-Instead, it is consumed downstream by the risk-screening model as a modifier of susceptibility.
+**IFC 4.3 files** are classified by checking for indicator types:
 
-Therefore:
+| Domain | Indicators |
+|---|---|
+| Rail | `IfcRail`, `IfcTrackElement`, spatial `IfcRailway` |
+| Road | `IfcPavement`, `IfcKerb`, spatial `IfcRoad` |
+| Bridge | `IfcBearing`, `IfcDeepFoundation`, spatial `IfcBridge` |
+| Building | spatial `IfcBuilding`, `IfcWall`, `IfcSlab` |
 
-```text
-Material presence
-    ≠
-automatic BQI penalty
-```
+If more than one domain matches, the model is `Mixed`; if none matches, `Unknown`. `Mixed` models are scored with the Building lookup tables and flagged with a domain warning.
 
-The absence of a readable material is recorded as a diagnostic penalty in the current workflow, but material itself is not one of the four BQI scoring dimensions.
+In the corpus, M1–M5 and M7 are Building, M6 (IFC 4.3 bridge, which also contains walls and slabs) is Mixed, and M8 (IFC 4.3 road) is Road.
 
----
-
-# 20. Schema and Domain Detection
-
-The workflow detects:
-
-```text
-IFC schema
-```
-
-from parser metadata.
-
-For IFC 4.3, characteristic entity and spatial types are then used to infer the domain:
-
-```text
-Building
-Bridge
-Road
-Rail
-Mixed
-Unknown
-```
-
-Examples of domain indicators include:
-
-### Rail
-
-```text
-IfcRail
-IfcTrackElement
-IfcRailway
-```
-
-### Road
-
-```text
-IfcPavement
-IfcKerb
-IfcRoadPart
-IfcRoad
-```
-
-### Bridge
-
-```text
-IfcBearing
-IfcDeepFoundation
-IfcBridgePart
-IfcBridge
-```
-
-### Building
-
-```text
-IfcBuilding
-IfcWall
-IfcSlab
-```
-
-A model containing indicators from more than one domain is classified as:
-
-```text
-Mixed
-```
-
-when the detection logic identifies multiple domain matches.
+The domain affects only the risk lookup tables, not the validation rules.
 
 ---
 
-# 21. Relationship Between Validation and BQI
-
-The validation rules produce the evidence used by BQI.
+## 21. Relationship Between Validation and BQI
 
 ```text
 Validation rules
        │
        ├── Required properties ──► D1
        ├── Value usability ──────► D2
-       ├── Expected QTO ─────────► D3
+       ├── Expected quantities ──► D3
        └── Pipeline comparison ──► D4
                                 │
                                 ▼
                               BQI
 ```
 
-The BQI calculation and weighting are documented separately in:
-
-`docs/bqi-definition.md`
-
-This separation is intentional. The validation rules describe the evidence being measured, while the BQI document defines how those measurements are combined.
+This document describes the evidence being measured; [`bqi-definition.md`](bqi-definition.md) defines how it is combined.
 
 ---
 
-# 22. Rule Coverage
+## 22. Rule Coverage
 
-The explicit `REQUIRED_PROPS` and `EXPECTED_QTO` tables currently cover twelve IFC categories:
+The `REQUIRED_PROPS` and `EXPECTED_QTO` tables cover twelve building entities:
 
 ```text
-IfcWall
-IfcWallStandardCase
-IfcSlab
-IfcSlabStandardCase
-IfcBeam
-IfcBeamStandardCase
-IfcColumn
-IfcColumnStandardCase
-IfcRoof
-IfcDoor
-IfcWindow
-IfcSpace
+IfcWall, IfcWallStandardCase, IfcSlab, IfcSlabStandardCase,
+IfcBeam, IfcBeamStandardCase, IfcColumn, IfcColumnStandardCase,
+IfcRoof, IfcDoor, IfcWindow, IfcSpace
 ```
 
-Other IFC categories can still be processed by the workflow, but they rely on the documented fallback behaviour when no explicit completeness or QTO rule exists.
+Other categories are processed with the fallback rules. Across the 240 baseline elements of M1–M7 (thesis Table 5.1):
 
-This is a deliberate limitation of the current implementation rather than an assumption that unsupported categories are irrelevant.
+| Assessment | Elements | Share |
+|---|---:|---:|
+| Against the rule tables | 114 | 47.5% |
+| Through the fallback rules | 29 | 12.1% |
+| Zero in all four dimensions | 97 | 40.4% |
+
+This is a deliberate limitation of the current rules, not an assumption that other categories are irrelevant.
 
 ---
 
-# 23. Parameter Provenance
+## 23. Parameter Provenance
 
-| Rule / Parameter | Value / Definition | Provenance |
+| Rule / Parameter | Value | Provenance |
 |---|---|---|
-| IFC schemas | IFC 4.0.2.1 / IFC 4.3.2.0 | Study scope |
-| Required-property membership | Per IFC Category | Author-defined selection from schema-defined property sets |
-| Expected-QTO membership | Per IFC Category | Author-defined selection from schema-defined quantity sets |
+| IFC schemas | IFC 4.0.2.1, IFC 4.3.2.0 | Study scope |
+| Required-property membership | Per category | Author-defined selection from `Pset_*Common` definitions |
+| Expected-quantity membership | Per category | Author-defined selection from `Qto_*BaseQuantities`; `IfcRoof NetVolume` is not schema-defined |
 | Invalid values | Empty, null, UNSET, N/A | Implementation rule |
-| D1 fallback | 1.0 if data present, otherwise 0.0 | Author-defined conservative convention |
-| D3 fallback | 1.0 if data present, otherwise 0.0 | Author-defined conservative convention |
-| D4 fallback | 0.5 when comparison is expected but unavailable | Author-defined conservative convention |
-| Exact tolerance | `10^-10` | Fixed implementation constant |
-| Negligible threshold | `0.01%` | Fixed implementation constant |
-| Significant threshold | `1%` | Fixed implementation constant |
-| Coverage threshold | `95%` | Author-defined screening convention |
-
-These parameters are version-controlled with the workflow.
+| D1 and D3 fallback | 1.0 with data, 0.0 without | Author-defined conservative convention |
+| D4 fallback | 0.5 when quantities are expected | Author-defined conservative convention |
+| Comparison boundaries | 10⁻¹⁰, 0.01%, 1% | Fixed constants in Node 3.2; not swept |
+| Coverage severity classes | Section 17.1 | Author-defined |
+| Coverage threshold | 95% | Author-defined convention; not swept |
 
 ---
 
-# 24. Limitations
+## 24. Limitations
 
-The validation ruleset should be interpreted as a **purpose-specific screening ruleset**, not a universal IFC compliance validator.
+This is a **purpose-specific screening ruleset**, not a universal IFC compliance validator.
 
-### Rule coverage is incomplete
+**Rule coverage is incomplete.** Only twelve building entities have explicit D1 and D3 rules; infrastructure entities rely on the fallback rules.
 
-Only twelve IFC categories have explicit D1 and D3 rule tables.
+**Extractable quality is not fitness for purpose.** A high score means the information this workflow needs is present and usable; it does not prove the authoring model is correct or fit for other uses.
 
-### Extractable quality is not fitness-for-purpose
+**Fallback behaviour limits fault detectability.** A fault on a property or quantity outside the rule tables may leave the BQI unchanged.
 
-A high score means that the information required by this downstream workflow is present and usable. It does not prove that the original authoring model was correct or that the model is fit for every other application.
+**Name matching is strict.** Related but differently named fields remain unmatched.
 
-### Fallback behaviour can limit fault detectability
+**D4 counts all bracketed fields.** Non-numeric properties and fields present in only one pipeline count against agreement, so baseline D4 is lower than agreement on quantities alone (Section 16).
 
-A fault targeting a property or quantity outside the explicit rule tables may have little or no effect on BQI.
+**The two pipelines filter differently.** Pipeline B excludes some types that Pipeline A keeps (Section 18), and these differences produce the baseline coverage shortfalls of the building models (Section 17.3). `IfcSpace` carries BQI rules and is a critical coverage type, but is removed from Pipeline B.
 
-### Quantity-name matching is intentionally strict
-
-Semantically related but differently named quantities can remain unmatched.
-
-### Coverage is separate from BQI
-
-An element absent from one pipeline is not scored as a normal shared element, so breadth differences must be examined through the coverage instrument.
+**Coverage is separate from BQI.** An element absent from one pipeline is not scored against the other, so breadth differences are examined only through the coverage check.
 
 ---
 
-# 25. Repository Implementation
+## 25. Repository Implementation
 
-The validation logic is implemented primarily in:
+The rules are implemented in Code, Filter and Set nodes of `workflows/thesis/n8n_ifc_dual_pipeline.json`:
 
-`workflows/thesis/n8n_ifc_dual_pipeline.json`
+| Node | Role |
+|---|---|
+| 1.9 Filter spatial | Removes non-element rows from Pipeline A |
+| 2.5 Detect domain | Schema and domain detection |
+| 2.6 Filter elements | Removes metadata and excluded categories from Pipeline B |
+| 3.1 Merge A+B | Combines the two pipelines' items |
+| 3.2 QTO comparison | Builds and classifies the comparison rows |
+| 3.3 Coverage Analysis | Coverage percentage, severity classes and coverage verdict |
+| 3.4 BQI Scoring | D1–D4 and element-level BQI |
+| 3.5 SRCC Analysis | Cross-pipeline rank correlation per quantity field |
 
-Key workflow stages include:
-
-```text
-2.5: Detect domain
-2.6: Filter elements
-3.2: QTO comparison
-3.3: Coverage Analysis
-3.4: BQI Scoring
-3.5: SRCC Analysis
-```
-
-The extracted IFC data used by Pipeline B are produced by:
-
-`scripts/extract_ifc.py`
-
-The corresponding BQI and risk calculations are externalised in the version-controlled workflow rather than embedded in the IFC files themselves.
+Pipeline B data are produced by `scripts/extract_ifc.py`.
 
 ---
 
-# 26. Verification
+## 26. Verification
 
-The repository's verification scripts can be used to check the consistency of the exported scoring data.
+`scripts/verify_exports.py` checks the sensitivity exports and recomputes the model-level BQI from the exported element scores (`score_completeness`, `score_validity`, `score_qto_coverage`, `score_qto_agreement`). `scripts/fault_analysis.py` checks that controlled defects change the targeted dimensions as expected.
 
-In particular, the exported element-level scores should support reconstruction of:
-
-```text
-D1
-D2
-D3
-D4
-BQI_element
-BQI_model
-```
-
-The fault-analysis workflow then evaluates whether controlled information defects produce the expected change in the measured dimensions.
-
-The validation ruleset should therefore be treated as part of the measurement instrument and versioned together with the workflow.
+The ruleset is part of the measurement instrument and is versioned together with the workflow.
 
 ---
 
 ## Canonical Sources
 
-The methodological definition of the validation rules appears in:
+- Thesis Section 3.3: BIM Quality Index, including Section 3.3.4, Rule Tables and Schema Handling
+- Thesis Section 3.4: QTO Comparison and SRCC Robustness Protocol
+- Thesis Section 3.7.4: Verdict Logic and Report
+- Thesis Section 5.5: Threats to Validity and Limitations
+- Thesis Annex I: BQI Rule Tables
 
-- **Thesis Chapter 3, Section 3.3 — BQI**
-- **Section 3.3.4 — Schema-Conditional Rule Selection**
-- **Annex I — BQI Rule Tables**
-
-The corresponding executable implementation is:
-
-`workflows/thesis/n8n_ifc_dual_pipeline.json`
-
-The rules in this document should remain synchronized with the workflow and with the repository release associated with the final thesis.
+This document describes the behaviour of repository release `v1.0.2`.
