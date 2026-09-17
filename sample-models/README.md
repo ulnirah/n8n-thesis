@@ -1,248 +1,178 @@
 # Sample Models
 
-This folder contains the IFC model corpus used in the thesis experiments.
+This folder contains the IFC corpus used in the thesis experiments: the eight unmodified baseline models and the 126 fault-injected variants generated from them.
 
-The corpus consists of eight models selected from the official **buildingSMART Sample Test Files** repository:
-
-- **M1–M7**: valid models used for baseline characterisation, QTO comparison, fault injection, sensitivity analysis, and risk-screening evaluation.
-- **M8**: a deliberately retained negative-control model with zero property and quantity data, used to demonstrate the distinction between model breadth (element coverage) and data depth (information quality).
-
-All corpus files were retrieved in 2026. The thesis records the corresponding source commit information and SHA-256 file hashes in **Annex III: Corpus Provenance**.
+```text
+sample-models/
+├── README.md
+├── baseline/          8 original buildingSMART IFC files
+└── fault-injected/    126 faulted IFC variants (M1–M7)
+```
 
 ---
 
-## Corpus Selection
+## Source
 
-The corpus was selected from the official buildingSMART Sample Test Files repository because the files are:
+All eight models come from the official [buildingSMART Sample-Test-Files](https://github.com/buildingSMART/Sample-Test-Files) repository (PCERT sample scene), at commit `703fafe1132c1b80bad052123e8b134e93cbad7f`. They were first retrieved on 1 April 2026 and re-retrieved on 8 July 2026 at the same commit (thesis Annex III).
 
-- openly accessible and citable;
-- intended as reference examples of IFC schema use; and
-- available in matched IFC 4 / IFC 4.3 design pairs.
+They were chosen because they are:
 
-The initial screening considered **18 candidate files** using two inclusion criteria:
+- openly licensed and citable;
+- published by buildingSMART as reference examples of IFC use; and
+- available as matched IFC 4 / IFC 4.3 pairs of the same design.
+
+---
+
+## Selection
+
+Eighteen candidate files were assessed against two inclusion criteria (thesis Section 3.1.1):
 
 1. property count > 0; and
 2. quantity count > 0.
 
-Seven models satisfied both criteria and were retained as the valid experimental corpus (M1–M7).
+Seven models met both criteria (M1–M7). A model without property data scores trivially zero, and faults cannot manifest on dimensions that are already at zero.
 
-One additional model, **M8**, did not satisfy the inclusion criteria because it contains zero property and zero quantity data. Rather than discarding it, the model was intentionally retained as a **negative control** for the breadth–depth analysis.
+The IFC 4.3 road model (M8) carries 81 elements but no property or quantity data, so it failed the criteria. It was kept deliberately as a **negative control**, completing the fourth design pair and showing the difference between breadth (element coverage) and depth (information quality).
 
 ---
 
 ## Model Inventory
 
-| ID | File / Model | IFC Schema | Domain | Elements | Properties | Quantities | Role |
+| ID | File in `baseline/` | Schema | Design | Elements | Property keys | Quantities | Role |
 |---|---|---|---|---:|---:|---:|---|
-| **M1** | Building-Architecture | IFC 4.0.2.1 (IFC 4) | Building | 14 | 62 | 25 | Valid experimental model |
-| **M2** | Building-Architecture | IFC 4.3.2.0 (IFC 4.3) | Building | 14 | 30 | 25 | Valid experimental model |
-| **M3** | Building-Structural | IFC 4.0.2.1 (IFC 4) | Building | 16 | 65 | 34 | Valid experimental model |
-| **M4** | Building-Structural | IFC 4.3.2.0 (IFC 4.3) | Building | 16 | 34 | 34 | Valid experimental model |
-| **M5** | Infra-Bridge | IFC 4.0.2.1 (IFC 4) | Bridge | 57 | 48 | 27 | Valid experimental model |
-| **M6** | Infra-Bridge | IFC 4.3.2.0 (IFC 4.3) | Bridge | 68 | 27 | 27 | Valid experimental model |
-| **M7** | Infra-Road | IFC 4.0.2.1 (IFC 4) | Road | 55 | 174 | 78 | Valid experimental model |
-| **M8** | Infra-Road | IFC 4.3.2.0 (IFC 4.3) | Road | 81 | 0 | 0 | Negative control |
+| M1 | `IFC4-Building-Architecture.ifc` | IFC 4.0.2.1 | Building architecture | 14 | 62 | 25 | Valid |
+| M2 | `IFC43-Building-Architecture.ifc` | IFC 4.3.2.0 | Building architecture | 14 | 30 | 25 | Valid |
+| M3 | `IFC4-Building-Structural.ifc` | IFC 4.0.2.1 | Building structural | 16 | 65 | 34 | Valid |
+| M4 | `IFC43-Building-Structural.ifc` | IFC 4.3.2.0 | Building structural | 16 | 34 | 34 | Valid |
+| M5 | `IFC4-Infra-Bridge.ifc` | IFC 4.0.2.1 | Bridge | 57 | 48 | 27 | Valid |
+| M6 | `IFC43-Infra-Bridge.ifc` | IFC 4.3.2.0 | Bridge | 68 | 27 | 27 | Valid |
+| M7 | `IFC4-Infra-Road.ifc` | IFC 4.0.2.1 | Road | 55 | 174 | 78 | Valid |
+| M8 | `IFC43-Infra-Road.ifc` | IFC 4.3.2.0 | Road | 81 | 0 | 0 | Negative control |
 
-The element count reported here refers to **valued elements**, meaning elements whose IFC type is covered by the thesis scoring rules.
+**Elements** are the valued elements: all elements scored by the BQI engine, whether against an explicit rule, through the fallback rules, or at zero.
 
-The property count represents the extracted property-key namespace used by the pipeline, including keys originating from both `IfcPropertySet` and `IfcElementQuantity`.
+**Property keys** count the extracted key namespace, which includes keys from both `IfcPropertySet` and `IfcElementQuantity`. This is why IFC 4.3 variants whose data sit only in quantity sets, such as M4 and M6, show equal property and quantity counts.
+
+**Design** is what the file represents. The domain used for the risk lookup tables can differ: IFC 4 files are assigned the Building domain, and M6 is classed as Mixed because it also contains walls and slabs, so only M8 is scored with an infrastructure table. See [`../docs/risk-rules-table.md`](../docs/risk-rules-table.md), Section 2.
+
+The large differences in information content between some IFC 4 and IFC 4.3 variants of the same design are properties of the source files, not extraction artefacts (thesis Section 4.1).
 
 ---
 
-## IFC 4 / IFC 4.3 Design Pairs
+## Integrity Check
 
-The corpus deliberately contains four matched design pairs across IFC 4 and IFC 4.3:
+SHA-256 of the baseline files, as listed in thesis Annex III:
 
-| Design | IFC 4 | IFC 4.3 |
+| ID | SHA-256 | Size (KB) |
+|---|---|---:|
+| M1 | `3FF9B10BD00C7B96DDED51E7CA5A6B69EFBEA38B049ADCDD05FCD247DE7E70D5` | 220 |
+| M2 | `A42962F9E2068040AC96636B1E7F6117150B6C0E3371F81088721B22796E463F` | 216 |
+| M3 | `68BE722391E7AAA53BB9278645A02AA4B6382F13CC07548A1612E9B1DC3DEF67` | 290 |
+| M4 | `0343D5222D38E6BE8AC7C31045C692E62C6018C80EA60D2F6023E73B846247AB` | 285 |
+| M5 | `3D1273BB60BDA11373E0BCBD8A73C409F49C097B98867573C9493888D8626FCC` | 1,845 |
+| M6 | `241E6576A3A554086D3D2AE87415C5BA98A0123D329245810E7D42ECC504C183` | 1,839 |
+| M7 | `B0F842B07A41490274F3D8485DD59B9818941B804D1B85F8AFD0BB7969A66502` | 429 |
+| M8 | `AFC312BE9931345C381D8D1855DBF9072E13A3F46526D4CF0F9325BDBDA23201` | 407 |
+
+To check a file:
+
+```bash
+sha256sum baseline/IFC4-Building-Architecture.ifc                      # Linux / macOS
+Get-FileHash baseline\IFC4-Building-Architecture.ifc -Algorithm SHA256  # Windows PowerShell
+```
+
+The baseline files must not be edited. Every faulted variant is generated from them, so each experimental condition traces back to a known reference file.
+
+---
+
+## Fault Injection
+
+Faults are injected into the seven valid models, M1–M7. M8 is excluded, because with no property or quantity data most faults could not manifest; it is analysed separately.
+
+| Fault | Mutation | Targeted instrument |
 |---|---|---|
-| Building-Architecture | M1 | M2 |
-| Building-Structural | M3 | M4 |
-| Infra-Bridge | M5 | M6 |
-| Infra-Road | M7 | M8 |
+| F1 | Remove a required property | D1 |
+| F2 | Blank a property value to UNSET | D1 + D2 |
+| F3 | Remove a quantity field | D3 |
+| F4 | Perturb quantity magnitudes by +10% | D4 |
+| F5 | Remove an entire property set | D1 + D2 |
+| F6 | Delete whole elements | Element coverage |
 
-This pairing allows schema-version comparisons while keeping the underlying design domain consistent.
+The variants are generated by [`../scripts/fault_injection.py`](../scripts/fault_injection.py).
 
-The comparison also revealed substantial differences in information content between some IFC 4 and IFC 4.3 variants. These differences are treated as properties of the source models rather than as extraction artefacts.
+### Severity
 
----
+Each fault is applied at three injection rates: **10%, 25% and 50%** of the eligible elements. Elements are ordered by `GlobalId` and then sampled uniformly with a fixed seed (**42**).
 
-## Baseline Models
+The eligible population is the sixteen types defined in thesis Section 3.5.1: the twelve rule-table types (`IfcWall`, `IfcSlab`, `IfcBeam`, `IfcColumn` with their StandardCase variants, `IfcRoof`, `IfcDoor`, `IfcWindow`, `IfcSpace`) plus `IfcStair`, `IfcStairFlight`, `IfcFooting` and `IfcPile`, which are scored through the fallback rules. `IfcElementAssembly` is not eligible.
 
-The baseline models are the original, unmodified buildingSMART IFC files.
+### Intensity
 
-They form the reference state for:
+All reported results use **light** intensity:
 
-- dual-pipeline extraction;
-- QTO comparison;
-- BQI calculation;
-- risk screening;
-- fault-injection experiments; and
-- sensitivity analysis.
+- F1, F2 and F3 change one matching field per target element (heavy mode would change every matching field);
+- F4 perturbs every quantity value of the target element;
+- F5 removes exactly one property set;
+- F6 removes the whole element.
 
-Baseline files must remain unchanged throughout the experiments. Faulted variants are generated separately from the baseline inputs so that each experimental condition can be traced back to a known reference model.
+The severity therefore controls how many elements are affected, not how deeply each element is altered.
 
-The exact original **bSI filenames**, repository provenance, commit information, and SHA-256 hashes are documented in **Annex III: Corpus Provenance** of the thesis.
+### Configurations
 
----
+| Configuration | Faults | Pipeline A reads | Pipeline B reads | Runs |
+|---|---|---|---|---:|
+| Baseline | — | Baseline | Baseline | 8 |
+| Single file | F1, F2, F3, F5 | Faulted | Faulted | 84 |
+| Single file | F4, F6 | Faulted | Faulted | 42 |
+| Dual file | F4, F6 | Baseline | Faulted | 42 |
+| **Total** | | | | **176** |
 
-## Fault-Injected Models
+With a single file, both pipelines read the same perturbed values, so a disagreement fault such as F4 is invisible by construction. The dual-file configuration gives the faulted file to Pipeline B only, which exposes the D4 response to F4 and the coverage response to F6.
 
-Fault injection is performed on the **seven valid models, M1–M7**.
-
-The negative control **M8 is excluded from fault injection** because its zero property and quantity content would prevent several fault mechanisms from manifesting. M8 is instead analysed separately as a breadth–depth negative control.
-
-The fault taxonomy contains six controlled defect classes:
-
-| Fault | Description | Primary Target |
-|---|---|---|
-| **F1** | Mandatory property deletion | D1: property completeness |
-| **F2** | Value emptying to `UNSET` | D1 and D2: completeness and validity |
-| **F3** | Quantity field deletion | D3: QTO coverage |
-| **F4** | Quantity magnitude perturbation by +10% | D4: cross-pipeline agreement |
-| **F5** | Property-set deletion | D1 and D2 |
-| **F6** | Element deletion | Element coverage |
-
-The fault variants are generated programmatically using:
-
-`scripts/fault_injection.py`
+The deepest per-dimension analysis in the thesis (Section 4.2) is presented for M1.
 
 ---
 
-## Fault Severity
+## Fault-Injected Files
 
-Three injection severities are used:
+`fault-injected/` contains 126 files, 18 per valid model (6 faults × 3 rates):
 
-| Severity | Injection Rate |
-|---|---:|
-| Light | 10% |
-| Intermediate | 25% |
-| Substantial | 50% |
+```text
+<model>__F<n>-r<rate>-s42.ifc                   F1, F2, F3, F5
+<model>__F<n>-r<rate>-s42_PIPELINE-B-ONLY.ifc   F4, F6
+```
 
-The injection rate represents the fraction of eligible target elements affected.
-
-Target elements are sampled uniformly using a **fixed random seed (42)** after deterministic ordering by `GlobalId`.
-
-The injection-eligible population covers the sixteen IFC entity types defined in the thesis methodology:
-
-- `IfcWall`
-- `IfcWallStandardCase`
-- `IfcSlab`
-- `IfcSlabStandardCase`
-- `IfcBeam`
-- `IfcBeamStandardCase`
-- `IfcColumn`
-- `IfcColumnStandardCase`
-- `IfcRoof`
-- `IfcDoor`
-- `IfcWindow`
-- `IfcSpace`
-- `IfcStair`
-- `IfcStairFlight`
-- `IfcFooting`
-- `IfcPile`
-
-`IfcElementAssembly` is not part of the injection-eligible population.
-
----
-
-## Fault Configuration
-
-Two experimental configurations are used.
-
-### Single-file configuration
-
-For **F1, F2, F3, F5, and F6**, the faulted IFC file is supplied to both extraction pipelines.
-
-For F4 in a single-file configuration, both pipelines also receive the same perturbed quantities. Consequently, both pipelines observe the same values and no cross-pipeline disagreement is produced.
-
-### Dual-file configuration
-
-**F4 and F6 are additionally evaluated using a dual-file configuration.**
-
-In this configuration:
-
-- Pipeline A receives the original baseline IFC file.
-- Pipeline B receives the fault-injected variant.
-
-This isolates disagreement between the two independent data consumers.
-
-The dual-file configuration is essential for exposing the intended D4 response to F4. F6 is also evaluated in this configuration to examine its effect on element coverage across the two pipelines.
-
----
-
-## Fault Injection Intensity
-
-The default injection mode used for the reported results is **light mode**.
-
-For F1, F2, and F3:
-
-- light mode changes one matching field per target element;
-- heavy mode changes all matching fields.
-
-For F4, every quantity value of the targeted element is perturbed by construction.
-
-For F5, exactly one property set is removed.
-
-For F6, the complete element is removed.
-
-The three severity levels therefore control the **number of affected elements**, rather than the depth of alteration within an individual element.
-
----
-
-## Experimental Coverage
-
-The seven valid models receive the full fault-injection evaluation:
-
-**7 models × 6 fault types × 3 severity levels = 126 single-file fault variants**
-
-The dual-file F4 and F6 configurations are additionally run across all seven valid models.
-
-The deepest fault-response decomposition is presented for **M1**, which has the healthiest baseline information content and therefore provides the clearest manifestation of the injected defects.
-
-M8 is not part of the fault-injection benchmark.
+The F4 and F6 files carry the `_PIPELINE-B-ONLY` suffix because they are the variants given to Pipeline B in the dual-file runs; the same files are also used in the single-file runs. Details are in [`fault-injected/README.md`](fault-injected/README.md).
 
 ---
 
 ## Traceability
 
-Each generated fault variant is accompanied by provenance information sufficient to identify:
+`fault_injection.py` writes a JSON manifest next to every variant, recording the baseline model, fault type, rate, seed, selected target elements and the modifications applied. The manifests are regenerated with the variants and are not committed.
 
-- baseline model;
-- fault type;
-- injection rate;
-- random seed;
-- selected target elements; and
-- modifications applied.
+Thesis Annex IV reports the per-run SRCC testability and element coverage of the dual-file runs.
 
-Fault-injection manifests are documented in **Annex IV: Fault Injection Manifests** of the thesis.
-
-The general computational chain is:
-
-**Baseline IFC → fault injection → dual extraction → QTO comparison → BQI → risk screening → analysis**
+```text
+Baseline IFC → fault injection → dual extraction → QTO comparison → BQI → risk screening → analysis
+```
 
 ---
 
 ## Derived Files
 
-The IFC files are the primary corpus inputs.
+The IFC files are the only primary inputs. Everything else is a derived artefact that can be regenerated from them with the workflow and scripts:
 
-Other files generated during processing, such as:
-
-- DDC-generated XLSX files;
-- Pipeline B JSON extraction files;
+- DDC-generated XLSX files (`<IFC file name>_ifc.xlsx`, created next to the input file);
+- Pipeline B extraction output;
 - fault-injection manifests; and
-- analysis exports
+- risk registers and sensitivity exports.
 
-are treated as **derived computational artefacts**.
+Baseline outputs for all eight models are in [`../examples/`](../examples/).
 
-They can be regenerated from the versioned IFC inputs and repository scripts/workflows and are therefore not treated as independent source models.
-
-Representative final outputs are provided separately under [`../examples/`](../examples/).
+Before a campaign, delete any old `_ifc.xlsx` conversions of faulted files: Pipeline A reuses an existing XLSX with the expected name instead of converting again (see [`../docs/ddc-adaptation-notes.md`](../docs/ddc-adaptation-notes.md), Section 12.5).
 
 ---
 
-## Reproducibility
+## Versions
 
-The baseline corpus, fault-injection methodology, workflow definition, and analysis scripts together define the reproducible experimental environment.
-
-For the final thesis release, the repository should preserve the exact versioned state used for the reported experiments through the corresponding Git commit and release tag.
+The thesis cites repository release `v1.0.1` (Annex III). In `v1.0.2` only this README changes; the IFC files are identical.
