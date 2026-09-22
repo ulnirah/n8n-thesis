@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
 """
 Fault injection for IFC files — validation experiment for the BQI pipeline.
-EMJM NORISK thesis: Uncertainty-Aware Risk Screening from Imperfect BIM.
+NORISK MSc thesis (UPC, 2026): Uncertainty-Aware Risk Screening from
+Imperfect Building Information Models.
 
 Fault model (Natella et al. framing):
-  WHAT  - six fault types, each targeting one BQI dimension:
+  WHAT  - six fault types, each targeting one or two BQI dimensions:
       F1  remove a required property            -> D1 completeness
-      F2  blank a property value to UNSET       -> D2 validity
+      F2  blank a property value to UNSET       -> D1 + D2
       F3  remove a quantity field               -> D3 QTO coverage
       F4  perturb quantity magnitudes (+delta)  -> D4 agreement (dual-file, see below)
       F5  remove an entire property set         -> D1 + D2 combined
       F6  remove whole elements                 -> element coverage (dual-file)
-  WHERE - elements sampled uniformly at random (fixed seed) from types that
-          have scoring rules (walls, slabs, beams, columns, roofs, doors,
-          windows, spaces, stairs, footings).
+  WHERE - elements sampled uniformly at random (fixed seed) from the 16
+          TARGET_TYPES: the twelve rule-table types plus IfcStair,
+          IfcStairFlight, IfcFooting and IfcPile (scored by fallback).
   HOW MUCH - severity = fraction of eligible elements faulted (0.10/0.25/0.50).
 
 DUAL-FILE NOTE (F4, F6): both extraction pipelines read the same file, so a
@@ -24,7 +25,7 @@ tool/version divergence. F1, F2, F3, F5 are single-file faults (feed the
 faulted file to both pipelines as usual).
 
 Every run writes a manifest JSON recording seed, targets, and every change,
-so each faulted file is fully traceable in the thesis appendix.
+so each faulted file is fully traceable.
 
 Usage:
   python fault_injection.py model.ifc --fault F1 --rate 0.25 --seed 42 --outdir faulted
