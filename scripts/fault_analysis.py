@@ -3,19 +3,13 @@
 Fault-injection analysis: aggregates the per-run sensitivity exports into the
 baseline-vs-faulted comparison that the report itself never shows.
 
-=============================================================================
-CORRECTED VERSION — two changes vs the July 2026 script. Search "CHANGED".
-  C4  KEY COLLISION. The run dictionary was keyed (model, fault, rate), and
-      the "_PIPELINE-B-ONLY" part of the filename was a non-capturing group
-      that was discarded. F4 and F6 exist in BOTH configurations at the same
-      model and rate, so the second run loaded silently overwrote the first.
-      The key is now (model, fault, rate, config) and "config" is reported as
-      its own CSV column.
-  C5  The single-file and dual-file runs of F4/F6 read the SAME variant file,
-      so their export filenames were identical and one overwrote the other on
-      disk. The Sensitivity Analysis node must append "_DUALFILE" when
-      project_file_b is set. This script now recognises that suffix.
-=============================================================================
+Run identity
+------------
+A run is identified by (model, fault, rate, configuration). F4 and F6 exist in
+both configurations at the same model and rate, so the configuration is kept
+as its own CSV column. Dual-file exports carry the "_DUALFILE" suffix, which
+the Sensitivity Analysis node appends when project_file_b is set. All
+comparisons use full-precision values; rounding is for display only.
 
 How it fits the experiment:
   1. fault_injection.py generates the faulted IFC files.
@@ -43,8 +37,8 @@ DIMS = ["D1", "D2", "D3", "D4"]
 FIELD = {"D1": "score_completeness", "D2": "score_validity",
          "D3": "score_qto_coverage", "D4": "score_qto_agreement"}
 
-# CHANGED (C4/C5): the pipeline-B marker and the dual-file marker are now
-# CAPTURED rather than discarded, so the two configurations stay distinct.
+# The pipeline-B marker and the dual-file marker are captured, so the two
+# configurations stay distinct.
 #   sensitivity-<model>.json                                      -> baseline
 #   sensitivity-<model>__F4-r25-s42_PIPELINE-B-ONLY.json          -> single-file
 #   sensitivity-<model>__F4-r25-s42_PIPELINE-B-ONLY_DUALFILE.json -> dual-file
@@ -67,9 +61,9 @@ def load_run(path):
     avg = {d: sum(e[FIELD[d]] for e in elements) / n for d in DIMS}
     bqi = (WEIGHTS["w1"] * avg["D1"] + WEIGHTS["w2"] * avg["D2"]
            + WEIGHTS["w3"] * avg["D3"] + WEIGHTS["w4"] * avg["D4"])
-    # CHANGED (C6): carry FULL precision for every comparison; round only for
-    # display. Deciding most_affected_dim from 3 dp values can swap two
-    # dimensions that differ by ~0.001 - exactly the M1/F2/r10 case.
+    # Full precision is carried for every comparison and rounded only for
+    # display: deciding most_affected_dim from 3 dp values can swap two
+    # dimensions that differ by ~0.001.
     return {"n": n,
             "full": avg, "bqi_full": bqi,
             **{d: round(avg[d], 3) for d in DIMS},
@@ -95,7 +89,7 @@ def main(patterns):
         model = m.group("model")
         fault = m.group("fault")            # None for baseline
         rate = int(m.group("rate")) / 100 if m.group("rate") else 0.0
-        # CHANGED (C4): configuration is part of the identity of a run
+        # configuration is part of the identity of a run
         config = "dual-file" if m.group("dual") else ("single-file" if fault else "-")
         key = (model, fault, rate, config)
         if key in runs:
@@ -120,7 +114,7 @@ def main(patterns):
                "rate": rate, "n_elements": v["n"],
                **{d: v[d] for d in DIMS}, "BQI": v["BQI"]}
         if base and fault:
-            # CHANGED (C6): deltas and selectivity from FULL-precision values
+            # deltas and selectivity from full-precision values
             for d in DIMS:
                 row[f"d{d}"] = round(v["full"][d] - base["full"][d], 4)
             row["dBQI"] = round(v["bqi_full"] - base["bqi_full"], 4)
@@ -174,19 +168,19 @@ def main(patterns):
     print(f"\n{len(by_mf)} model x fault x config combinations checked, "
           f"{violations} violation(s).")
 
-    # CHANGED (C6): borderline selectivity calls decided by < 0.002
+    # borderline selectivity calls: margin over the runner-up < 0.002
     close = [r for r in rows
              if isinstance(r.get("margin_over_2nd"), float)
              and r["margin_over_2nd"] < 0.002]
     if close:
         print("\nBORDERLINE selectivity calls (margin < 0.002 over runner-up).")
-        print("Do not report these as decisive in the thesis:")
+        print("Treat these as near-ties rather than decisive calls:")
         for r in close:
             print(f"   {r['model'][:28]:<30}{r['fault']} r{r['rate']:.2f} "
                   f"{r['config']:<12} {r['most_affected_dim']} over "
                   f"{r['runner_up_dim']} by {r['margin_over_2nd']:.5f}")
 
-    # F2 target-dimension tally: settles the abstract's selectivity claim
+    # F2 target-dimension tally across manifesting runs
     f2 = [r for r in rows if r["fault"] == "F2"
           and r.get("most_affected_dim") not in (None, "", "none")]
     if f2:
