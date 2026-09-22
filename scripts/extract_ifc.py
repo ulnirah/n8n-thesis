@@ -1,3 +1,11 @@
+"""
+Pipeline B extraction: reads an IFC file with IfcOpenShell and prints one JSON
+document with elements, quantities, and optionally properties and materials.
+
+Usage:
+    python extract_ifc.py model.ifc [--include-properties] [--include-materials]
+"""
+
 import sys
 import json
 import os
@@ -30,7 +38,7 @@ ELEMENT_TYPES = [
     "IfcElementAssembly",
     "IfcFurniture", "IfcFurnishingElement",
     "IfcSpace",
-    # ✅ Removed IfcSpatialZone and IfcZone — no QTO, causes A/B coverage asymmetry
+    # IfcSpatialZone and IfcZone are excluded: no QTO, and they cause A/B coverage asymmetry
     "IfcTendon", "IfcTendonAnchor", "IfcTendonConduit",
     "IfcReinforcingBar", "IfcReinforcingMesh",
     # IFC4x3 infrastructure elements
@@ -44,7 +52,7 @@ ELEMENT_TYPES = [
     "IfcSignal", "IfcSign",
 ]
 
-# ✅ IFC4x3-aware spatial hierarchy
+# Spatial hierarchy per schema (IFC 4 and IFC 4.3)
 SPATIAL_TYPES_IFC4 = [
     "IfcProject", "IfcSite", "IfcBuilding", "IfcBuildingStorey", "IfcSpace",
 ]
@@ -100,7 +108,7 @@ def main():
             name  = el.Name or ""
             etype = el.is_a()
 
-            # ✅ Extract IsExternal as flat field for zone assignment
+            # IsExternal as a flat field, used for exposure zone assignment
             is_external = False
             try:
                 all_psets = ifcopenshell.util.element.get_psets(el)
@@ -111,7 +119,7 @@ def main():
             except Exception:
                 pass
 
-            # ✅ Category instead of Type — matches Pipeline A + all downstream nodes
+            # 'Category' (not 'Type') matches Pipeline A and all downstream nodes
             elements_rows.append({
                 "GlobalId":    gid,
                 "Name":        name,
@@ -122,7 +130,7 @@ def main():
                 "is_external": is_external,
             })
 
-            # ✅ Properties only if flag set — avoids memory issues on large models
+            # Properties only with --include-properties, to limit memory on large models
             if INCLUDE_PROPERTIES:
                 try:
                     for pset_name, props in ifcopenshell.util.element.get_psets(el).items():
@@ -138,10 +146,10 @@ def main():
                                 "Value":       safe_value(prop_val),
                             })
                 except Exception as e:
-                    # 🔍 DEBUG — remove after diagnosing
+                    # Log to stderr and continue: one malformed element must not stop extraction
                     print(f"PROPERTIES ERROR on {gid} ({etype}): {e}", file=sys.stderr)
 
-            # ✅ Always extract quantities — needed for QTO comparison in Node 3
+            # Quantities are always extracted: required for the QTO comparison (Block 3)
             try:
                 for qset_name, qs in ifcopenshell.util.element.get_psets(
                     el, qtos_only=True
@@ -158,10 +166,10 @@ def main():
                             "Value":       safe_value(q_val),
                         })
             except Exception as e:
-                # 🔍 DEBUG — remove after diagnosing
+                # Log to stderr and continue: one malformed element must not stop extraction
                 print(f"QUANTITIES ERROR on {gid} ({etype}): {e}", file=sys.stderr)
 
-            # ✅ Materials only if flag set
+            # Materials only with --include-materials
             if INCLUDE_MATERIALS:
                 try:
                     material = ifcopenshell.util.element.get_material(el)
@@ -175,7 +183,7 @@ def main():
                 except Exception:
                     pass
 
-    # ✅ Schema-aware spatial extraction
+    # Spatial extraction uses the type list for the detected schema
     is_ifc4x3 = schema.upper().startswith("IFC4X3") or schema.upper() == "IFC4X3_ADD2"
     spatial_query_types = SPATIAL_TYPES_IFC4X3 if is_ifc4x3 else SPATIAL_TYPES_IFC4
 
