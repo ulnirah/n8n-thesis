@@ -288,8 +288,8 @@ n8n-thesis/
 
 | Tag | Status |
 |---|---|
-| `v1.0.2` | Current release: documentation completed and checked against the final thesis. Computational content is the same as `v1.0.1` |
-| `v1.0.1` | Release cited in the thesis (Annex III), with SHA-256 hashes of the workflow, scripts and IFC inputs |
+| `v1.0.2` | Release cited in the thesis (Annex III), with SHA-256 hashes of the workflow, scripts and IFC inputs; documentation checked against the final thesis |
+| `v1.0.1` | Earlier release with the same workflow, scripts and IFC files; documentation not yet complete |
 | `v1.0-thesis` | Early test tag created before the repository was complete; not used for the thesis results |
 
 ---
