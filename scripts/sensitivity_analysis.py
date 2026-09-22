@@ -1,25 +1,19 @@
 #!/usr/bin/env python3
 """
 Sensitivity analysis for the BQI risk screening pipeline.
-EMJM NORISK thesis: Uncertainty-Aware Risk Screening from Imperfect BIM.
+NORISK MSc thesis (UPC, 2026): Uncertainty-Aware Risk Screening from
+Imperfect Building Information Models.
 
-=============================================================================
-CORRECTED VERSION — three changes vs the July 2026 script. Search "CHANGED".
-  C1  BASE_ALPHA 0.5 -> 0.55 to match Config node 0.1 (alpha = 0.55).
-  C2  label_thresholds(): percentiles were inverted relative to Node 4.5.
-      The list was sorted DESCENDING, so s[int(n*0.75)] returned the 25th
-      percentile and s[int(n*0.25)] returned the 75th. Node 4.5 sorts
-      ASCENDING. Effect: HIGH_T was built from P25 and LOW_T collapsed to
-      HIGH_T - 0.01, leaving a Medium band 0.01 wide. SRCC is computed from
-      ranks and is UNAFFECTED; label_flips were wrong.
-  C3  Label boundary: Node 4.5 assigns Low only when score < LOW_T. The
-      script used "<= low", so an element sitting exactly on LOW_T was
-      classified Low here and Medium in the pipeline.
-=============================================================================
+Label rule
+----------
+Labels replicate Node 4.5 exactly: scores are sorted ascending,
+HIGH_T = max(P75, 0.40) and LOW_T = min(max(P25, 0.15), HIGH_T - 0.01).
+An element is High if score >= HIGH_T, Medium if score >= LOW_T, else Low.
+BASE_ALPHA matches the Config node (alpha = 0.55).
 
 Purpose
 -------
-The BQI weights (w1..w4) and the uncertainty coefficient alpha are expert-set
+The BQI weights (w1..w4) and the uncertainty coefficient alpha are author-set
 constants. This script characterizes how sensitive the SCREENING DECISION
 (the risk ranking and High/Medium/Low labels) is to those constants.
 
@@ -44,18 +38,16 @@ from itertools import combinations
 
 # ---------------------------------------------------------------- baseline --
 BASE_WEIGHTS = {"w1": 0.35, "w2": 0.25, "w3": 0.20, "w4": 0.20}
-BASE_ALPHA = 0.55                      # CHANGED (C1): was 0.5; Config uses 0.55
+BASE_ALPHA = 0.55                      # Config node 0.1: alpha = 0.55
 
-# The five alpha values of the ranking-stability sweep. NOTE for the thesis:
-# this is a 5-point sweep, not a 0.05-step sweep. 5 alphas x 7 models = 35
-# rows, which is the "35 variants" figure in Table 4.3. The 0.05-step sweep
-# belongs to alpha_characterization.py.
+# The five alpha values of the ranking-stability sweep: 5 alphas x 7 models =
+# 35 variants (Table 4.7). The 0.05-step sweep is in alpha_characterization.py.
 ALPHA_SWEEP = [0.00, 0.25, 0.50, 0.75, 1.00]
 
 
 def label_thresholds(scores):
     """Replicate Node 4.5 exactly: ascending sort, P75/P25, absolute floors."""
-    s = sorted(scores)                 # CHANGED (C2): ascending, as in Node 4.5
+    s = sorted(scores)                 # ascending, as in Node 4.5
     n = len(s)
     if n == 0:
         return 0.40, 0.15
@@ -83,8 +75,8 @@ def compute(elements, weights, alpha):
     high_t, low_t = label_thresholds([s[1] for s in scored])
     out = []
     for gid, r in scored:
-        # CHANGED (C3): Node 4.5 order is High >= HIGH_T, else Medium >= LOW_T,
-        # else Low. An element exactly on LOW_T is Medium, not Low.
+        # Node 4.5 order: High >= HIGH_T, else Medium >= LOW_T, else Low.
+        # An element exactly on LOW_T is Medium, not Low.
         lbl = "High" if r >= high_t else ("Medium" if r >= low_t else "Low")
         out.append((gid, r, lbl))
     return out
@@ -239,7 +231,7 @@ if __name__ == "__main__":
     print(f"\nWritten: sensitivity_results.csv "
           f"({len(all_rows)} rows across {len(paths)} models — one combined file, "
           f"model in first column; pivot in Excel per model)")
-    # corpus-wide worst case for the thesis sentence
+    # corpus-wide worst case across all variants
     srccs = [float(r[3]) for r in all_rows
              if isinstance(r[3], float) or str(r[3]).replace('.', '', 1).isdigit()]
     if srccs:
