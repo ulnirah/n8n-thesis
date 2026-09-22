@@ -175,4 +175,4 @@ Before a campaign, delete any old `_ifc.xlsx` conversions of faulted files: Pipe
 
 ## Versions
 
-The thesis cites repository release `v1.0.1` (Annex III). In `v1.0.2` only this README changes; the IFC files are identical.
+The thesis cites repository release `v1.0.2` (Annex III). The IFC files are identical in `v1.0.1` and `v1.0.2`.
