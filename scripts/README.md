@@ -199,4 +199,4 @@ n8n workflow  (extract_ifc.py runs inside, as Pipeline B)
 
 ## Versions
 
-The thesis cites release `v1.0.1`, whose script hashes are listed in Annex III. The scripts are unchanged in `v1.0.2`; only this README changes.
+The thesis cites release `v1.0.2`, whose script hashes are listed in Annex III. The scripts are identical in `v1.0.1` and `v1.0.2`.
