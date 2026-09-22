@@ -3,20 +3,13 @@
 Alpha characterization: derive a justified value of the uncertainty
 coefficient alpha from corpus data, instead of asserting it.
 
-=============================================================================
-CORRECTED VERSION — two changes vs the July 2026 script. Search "CHANGED".
-  C2  labels_for(): percentiles were inverted relative to Node 4.5. The list
-      was sorted DESCENDING, so s[int(n*0.75)] returned the 25th percentile
-      and s[int(n*0.25)] returned the 75th. Node 4.5 sorts ASCENDING.
-  C3  Label boundary: Node 4.5 assigns Low only when score < LOW_T; the
-      script used "<= low".
-
-WHY THIS MATTERS HERE MORE THAN ANYWHERE ELSE: the effectiveness criterion
-counts LABEL ESCALATIONS, so it depends directly on the thresholds. The
-admissible interval and the recommended alpha are therefore both affected,
-and must be re-derived with this corrected version. The clamp-fraction
-criterion and the mean band width do not use labels and are unaffected.
-=============================================================================
+Label rule
+----------
+Labels replicate Node 4.5 exactly: scores are sorted ascending,
+HIGH_T = max(P75, 0.40) and LOW_T = min(max(P25, 0.15), HIGH_T - 0.01).
+An element is High if score >= HIGH_T, Medium if score >= LOW_T, else Low.
+The effectiveness criterion counts label escalations, so it depends directly
+on this rule. The clamp fraction and the mean band width do not use labels.
 
 There is no external ground truth for alpha, so "optimal" must be defined
 against a declared criterion. This script uses two requirements:
@@ -29,7 +22,7 @@ against a declared criterion. This script uses two requirements:
       <= CLAMP_LIMIT in every model.
 
 The admissible interval is [alpha_min, alpha_max]. The recommended alpha is
-the midpoint, rounded to 0.05. Report the full table in the thesis, not only
+the midpoint, rounded to 0.05. The full table is written to the CSV, not only
 the recommendation.
 
 Usage:
@@ -53,14 +46,14 @@ def clamp01(x):
 
 def labels_for(scores):
     """Replicate Node 4.5 exactly: ascending sort, P75/P25, absolute floors."""
-    s = sorted(scores)                 # CHANGED (C2): ascending, as in Node 4.5
+    s = sorted(scores)                 # ascending, as in Node 4.5
     n = len(s)
     if n == 0:
         return []
     high = max(s[int(n * 0.75)] if int(n * 0.75) < n else 0.0, 0.40)
     low = min(max(s[int(n * 0.25)] if int(n * 0.25) < n else 0.0, 0.15),
               high - 0.01)
-    # CHANGED (C3): High >= HIGH_T, else Medium >= LOW_T, else Low
+    # High >= HIGH_T, else Medium >= LOW_T, else Low (as in Node 4.5)
     return ["High" if x >= high else ("Medium" if x >= low else "Low")
             for x in scores]
 
@@ -136,8 +129,7 @@ def main(paths):
         if r[1] in (0.0, 0.25, 0.5, 0.55, 0.75, 1.0):   # condensed view
             print(f"{r[0][:27]:<28}{r[1]:>6}{r[2]:>8}{r[3]*100:>7.1f}%{r[4]:>8}")
 
-    # Per-model first-effective alpha — reported in the thesis as the spread
-    # from 0.10 (data-poor models) to 0.70 (data-healthy models).
+    # Per-model first effective alpha (the spread is discussed in Section 4.4.2).
     print("\nFirst effective alpha per model:")
     for name in corpus:
         eff = sorted(effective_at[name])
