@@ -15,10 +15,11 @@ For every sensitivity-*.json it checks:
   - no GlobalId is duplicated within a file
   - the element count matches the model's baseline count
     (F6 runs are expected to have FEWER elements, by design)
-  - the model-level BQI recomputed from the element scores
 
-It prints a per-file table only for files that fail a check, then a
-summary. Nothing is written to disk.
+It also recomputes the model-level BQI from the element scores and prints it
+for every baseline export, for comparison with thesis Table 4.1. Files that
+fail a check are listed with the reason, followed by a summary. Nothing is
+written to disk.
 """
 
 import json
@@ -105,6 +106,7 @@ def main():
     f6_reduced = 0
     f6_total = 0
     shown = False
+    baseline_bqi = []
 
     for path in files:
         if not shown:
@@ -124,12 +126,19 @@ def main():
             f6_reduced += 1
         if not ok:
             failures.append((path, model, n, expected, note))
+        elif "__F" not in path.name:
+            baseline_bqi.append((model, bqi))
 
     print(f"Scanned {len(files)} export(s) under {root.resolve()}\n")
     print("Files per folder:")
     for folder, count in sorted(by_folder.items()):
         print(f"  {count:>4}  {folder}")
     print(f"\n{f6_reduced} of {f6_total} F6 run(s) show a reduced element count, as expected by design.")
+
+    if baseline_bqi:
+        print("\nModel BQI recomputed from the element scores (baseline exports):")
+        for model, bqi in sorted(baseline_bqi):
+            print(f"  {model:<30}{bqi:.3f}")
 
     if failures:
         print(f"\n{len(failures)} file(s) FAILED. First 15:\n")
