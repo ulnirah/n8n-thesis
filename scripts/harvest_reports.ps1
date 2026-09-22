@@ -4,9 +4,11 @@
 # CSV row per run: model, fault, rate, configuration, BQI, element coverage,
 # coverage verdict, high/medium counts, elements scored, avg SRCC, verdict.
 #
-#     powershell -ExecutionPolicy Bypass -File .\harvest_reports.ps1
+#     powershell -ExecutionPolicy Bypass -File .\harvest_reports.ps1 -Root "<campaign_root>"
+#     powershell -ExecutionPolicy Bypass -File .\harvest_reports.ps1 -Root "<campaign_root>" -Out summary.csv
 #
-# Output: report_summary.csv in the current folder. Open it in Excel.
+# -Root defaults to the current folder and is searched recursively.
+# Output: report_summary.csv (or -Out) in the current folder. Open it in Excel.
 
 param([string]$Root = ".", [string]$Out = "report_summary.csv")
 
@@ -81,7 +83,7 @@ $rows | Sort-Object Model, Fault, Config, Rate |
 
 Write-Host "Wrote $($rows.Count) row(s) to $Out"
 Write-Host ""
-Write-Host "Quick check, avg SRCC by fault and configuration:"
+Write-Host "Runs per fault and configuration:"
 $rows | Where-Object { $_.Fault -ne "baseline" } |
     Group-Object Fault, Config |
     ForEach-Object { Write-Host ("  {0,-22} {1,3} run(s)" -f $_.Name, $_.Count) }
