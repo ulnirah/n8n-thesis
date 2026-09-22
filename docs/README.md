@@ -105,4 +105,4 @@ If a document and the executable artefact disagree, the workflow export and scri
 
 ## Versioning
 
-The documents are versioned together with the workflow and scripts. The current release is **`v1.0.2`**, which completes the documentation; its computational content is the same as **`v1.0.1`**, the release cited in the thesis (Annex III). All values in these documents (weights, α, thresholds and lookup tables) match the thesis.
+The documents are versioned together with the workflow and scripts. The thesis cites release **`v1.0.2`** (Annex III), and all values in these documents (weights, α, thresholds and lookup tables) match the thesis.
