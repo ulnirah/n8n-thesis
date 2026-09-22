@@ -155,4 +155,4 @@ Regenerating all 126 variants from the baseline files with the commands above re
 - Interpret each variant together with its baseline file, `fault_injection.py`, its manifest, and the workflow configuration that assigns it to the pipelines.
 - The baseline files are never modified.
 - Before a campaign, delete old `<file name>_ifc.xlsx` conversions next to the faulted files: Pipeline A reuses an existing conversion instead of converting again (see [`../../docs/ddc-adaptation-notes.md`](../../docs/ddc-adaptation-notes.md), Section 12.5).
-- The files in this folder are identical in releases `v1.0.1`, cited in the thesis, and `v1.0.2`.
+- The files in this folder are identical in releases `v1.0.1` and `v1.0.2`; the thesis cites `v1.0.2`.
