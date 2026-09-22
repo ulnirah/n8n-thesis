@@ -84,15 +84,16 @@ F4 and F6 variants get the `_PIPELINE-B-ONLY` suffix. The fault definitions, tar
 
 ## `verify_exports.py` and `verify_exports.ps1` — Export Checks
 
-Both scripts perform the same structural checks on every `sensitivity-*.json` found under a folder, recursively:
+Both scripts check every `sensitivity-*.json` found under a folder, recursively:
 
 - the file parses as a JSON list of element records;
 - every record has a `GlobalId` and the four dimension scores;
-- no `GlobalId` is duplicated within a file;
-- the element count matches the model's baseline count from thesis Table 3.1, with fewer elements expected in F6 runs; and
-- the model-level BQI recomputed from the element scores.
+- no `GlobalId` is duplicated within a file; and
+- the element count matches the model's baseline count from thesis Table 3.1, with fewer elements expected in F6 runs.
 
-They print failures and a summary and write nothing to disk. The PowerShell version is a standalone implementation for machines without Python, not a wrapper around the Python script.
+`verify_exports.py` also recomputes the model-level BQI of every baseline export from its element scores and prints it, for comparison with thesis Table 4.1. On the files in [`../examples/`](../examples/) it gives exactly the Table 4.1 values (0.471, 0.350, 0.561, 0.413, 0.281, 0.140, 0.462, 0.000).
+
+Both print the files that fail and a summary, and write nothing to disk. The PowerShell version is a standalone implementation of the structural checks for machines without Python; it does not recompute the BQI.
 
 ```bash
 python scripts/verify_exports.py "<campaign_root>"
@@ -192,11 +193,11 @@ n8n workflow  (extract_ifc.py runs inside, as Pipeline B)
 
 ## Notes on the Source Code
 
-- Some scripts contain comments marked `CORRECTED VERSION` or `CHANGED (C1)`–`(C6)`. They record fixes made during development, such as aligning the label percentiles with Node 4.5 and setting α to 0.55. All reported results use the corrected versions.
+- During development, the label percentiles in `sensitivity_analysis.py` and `alpha_characterization.py` were aligned with Node 4.5, α was set to 0.55, and `fault_analysis.py` was changed to keep single-file and dual-file runs apart and to compare full-precision values. All reported results use these corrected versions. The development notes recording those fixes were removed in `v1.0.2`; they are still visible in the `v1.0.1` scripts.
 - Node 2.1 downloads `extract_ifc.py` from the `v1.0.2` release, so later changes on `main` do not affect runs of this workflow. (In the export used for the thesis runs, kept in `v1.0.1`, it downloaded from `main`; the script has not changed since 3 July 2026, before the campaign.)
 
 ---
 
 ## Versions
 
-The thesis cites release `v1.0.2`, whose script hashes are listed in Annex III. The scripts are identical in `v1.0.1` and `v1.0.2`.
+The thesis cites release `v1.0.2`. In `v1.0.2` the comments and docstrings of the scripts were cleaned, one console message in `fault_analysis.py` was reworded, and `verify_exports.py` now prints the model BQI it already recomputed. Otherwise the code is unchanged: running both versions on the same inputs gives identical results. The SHA-256 of the scripts listed in Annex III are those of the `v1.0.1` versions.
