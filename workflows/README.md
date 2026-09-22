@@ -41,23 +41,25 @@ Everything from Block 2 onwards (IfcOpenShell extraction, comparison, BQI, risk 
 
 Requirements: Windows, n8n 2.7.5, DDC IFC Exporter 17.1.1.0, Python 3 with IfcOpenShell 0.8.5.
 
-1. In n8n, open **Workflows → Import from File** and select `thesis/n8n_ifc_dual_pipeline.json`.
-2. Open node **0.1 Config** and set:
+1. Clone the repository to `C:\n8n-thesis` and create the folder `C:\n8n-thesis\output`.
+2. In n8n, open **Workflows → Import from File** and select `thesis/n8n_ifc_dual_pipeline.json`.
+3. Open node **0.1 Config** and check:
 
    | Field | Value |
    |---|---|
-   | `path_to_converter` | Full path to `IfcExporter.exe` |
-   | `project_file` | IFC file for Pipeline A, and for Pipeline B in single-file runs |
-   | `project_file_b` | Faulted variant for Pipeline B in dual-file runs; **leave empty for single-file and baseline runs** |
-   | `output_dir` | Folder for the reports and exports |
-   | `script_dir` | Local folder for `extract_ifc.py` |
+   | `path_to_converter` | Full path to `IfcExporter.exe` (set to `C:\DDC_Converters_Windows_Packages\DDC_CONVERTER_IFC\IfcExporter.exe`) |
+   | `project_file` | IFC file for Pipeline A, and for Pipeline B in single-file runs (set to M1 in `C:\n8n-thesis`) |
+   | `project_file_b` | Faulted variant for Pipeline B in dual-file runs; **empty by default, leave it empty for single-file and baseline runs** |
+   | `output_dir` | Folder for the reports and exports (`C:\n8n-thesis\output`) |
+   | `script_dir` | Folder for `extract_ifc.py` (`C:\n8n-thesis\scripts`) |
+
+   Change these only if your folders differ.
 
    The other Config values (BQI weights, α = 0.55, coverage threshold 95%) are the thesis parameters and should stay unchanged to reproduce the results.
-3. Open node **2.1 Download script** and change the download folder in its command to match `script_dir`.
 4. Delete any old `<file name>_ifc.xlsx` next to the input file, so that Pipeline A converts the current file instead of reusing a stale conversion.
 5. Click **Execute Workflow**.
 
-> **Important.** The exported workflow still contains paths from the original workstation (`C:\Users\milad.komary\...`) in node 0.1 and node 2.1, and `project_file_b` is pre-filled with an F4 variant. Update both nodes before running, or the run will fail or silently use the dual-file configuration.
+Node 2.1 downloads `extract_ifc.py` from release `v1.0.2` into `script_dir`, so no other node needs editing.
 
 ---
 
@@ -69,4 +71,4 @@ The nine files in `ddc-base/` are kept exactly as published by DDC, to record wh
 
 ## Versions
 
-The thesis cites repository release `v1.0.2`, which lists the SHA-256 of `n8n_ifc_dual_pipeline.json` in Annex III. The workflow files are identical in `v1.0.1` and `v1.0.2`.
+The thesis cites repository release `v1.0.2`. In `v1.0.2` the workflow export was prepared for reuse (portable paths, empty `project_file_b`, script download pinned to the release, corrected notes and comments); its computation is identical to the export used for the thesis runs. The SHA-256 of `n8n_ifc_dual_pipeline.json` listed in Annex III is that of the export in `v1.0.1`. See [`thesis/README.md`](thesis/README.md) for the full list of changes.
