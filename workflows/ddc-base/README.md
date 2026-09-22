@@ -1,245 +1,105 @@
 # DDC Base Workflows
 
-This folder contains the original workflow JSON files from the
+This folder contains the nine original n8n workflow files from the
 [DataDrivenConstruction (DDC) CAD-to-data toolkit](https://github.com/datadrivenconstruction/cad2data-Revit-IFC-DWG-DGN).
 
-They are preserved as **external reference artefacts** documenting the DDC workflow infrastructure on which the thesis Pipeline A is based.
+They are kept as **external reference material**. They document the DDC tooling behind Pipeline A, but none of them is run in the thesis experiments.
 
 > **Do not modify these files.**
 >
-> The thesis-specific workflow is stored separately under
-> [`workflows/thesis/`](../thesis/).
+> The workflow used for every thesis result is in [`../thesis/`](../thesis/).
 
 ---
 
 ## Role in the Thesis
 
-The DDC toolkit provides the external conversion infrastructure used by
-**Pipeline A** of the thesis workflow.
-
-In the thesis workflow:
+The thesis uses one DDC component directly: the **DDC IFC Exporter 17.1.1.0** (`IfcExporter.exe`), which converts an IFC file into an XLSX table for **Pipeline A**. **Pipeline B** reads the same file independently with **IfcOpenShell 0.8.5** and [`scripts/extract_ifc.py`](../../scripts/extract_ifc.py).
 
 ```text
-IFC model
-   │
-   ▼
-DDC IfcExporter
-   │
-   ▼
-XLSX
-   │
-   ▼
-Parsed tabular element data
-   │
-   ▼
-Pipeline A
-```
-
-Pipeline A is then compared against the independent **Pipeline B**, which uses
-IfcOpenShell and the thesis-controlled `scripts/extract_ifc.py` extractor.
-
-```text
-                 ┌──────────────────────┐
-                 │      IFC input       │
-                 └──────────┬───────────┘
+                         IFC input
                             │
               ┌─────────────┴─────────────┐
               │                           │
               ▼                           ▼
-       Pipeline A                  Pipeline B
-     DDC IfcExporter              IfcOpenShell
-              │                           │
-              ▼                           ▼
-           XLSX                         JSON
+         Pipeline A                  Pipeline B
+     DDC IFC Exporter               IfcOpenShell
+      (IFC → XLSX)            (extract_ifc.py → JSON)
               │                           │
               └─────────────┬─────────────┘
                             ▼
-                 QTO comparison + BQI
+          Merge by GlobalId, QTO comparison, BQI
                             │
                             ▼
-                     Risk screening
+                      Risk screening
                             │
                             ▼
-                   Report + sensitivity
+              Risk register + sensitivity JSON
 ```
 
-The thesis uses **DDC IFC Exporter v17.1.1.0** as Pipeline A. The independent
-Pipeline B uses **IfcOpenShell 0.8.5** and `extract_ifc.py`. :contentReference[oaicite:1]{index=1}
-
 ---
 
-## Original DDC Workflow Files
+## Files in This Folder
 
-The original DDC toolkit contains the following workflow families:
-
-| File | DDC Workflow | Relationship to Thesis |
+| File | DDC workflow | Relationship to the thesis |
 |---|---|---|
-| `n8n_1_basic_conversion.json` | Basic Conversion | Reference for the IFC/CAD-to-tabular conversion pathway represented by Pipeline A |
-| `n8n_2_all_settings_conversion.json` | Advanced Settings Conversion | External DDC variant; not a thesis-specific workflow |
-| `n8n_3_batch_converter.json` | Batch Conversion + Reporting | External DDC batch-processing functionality; not part of the core thesis workflow architecture |
-| `n8n_4_validation.json` | BIM Validation | External DDC validation functionality; thesis BQI scoring is implemented separately |
-| `n8n_5_classification_llm.json` | AI Classification / RAG | Outside the computational scope of the thesis |
-| `n8n_6_cost_estimation.json` | Construction Cost Estimation | Outside the thesis scope |
-| `n8n_7_carbon_footprint.json` | Carbon Footprint Estimation | Outside the thesis scope |
-| `n8n_8_etl_extract.json` | ETL / XLSX extraction | Reference for tabular extraction and downstream processing concepts |
-| `n8n_9_qto_html_report.json` | QTO reporting | Reference for DDC-based quantity extraction/reporting concepts |
+| `n8n_1_Revit_IFC_DWG_Conversation_simple.json` | Basic conversion | Reference for the IFC-to-table conversion used in Pipeline A |
+| `n8n_2_All_Settings_Revit_IFC_DWG_Conversation_simple.json` | Conversion with all settings | DDC variant; not used |
+| `n8n_3_CAD-BIM-Batch-Converter-Pipeline.json` | Batch conversion and reporting | DDC batch processing; not used |
+| `n8n_4_Validation_CAD_BIM_Revit_IFC_DWG.json` | BIM validation | DDC validation; the thesis BQI is implemented separately |
+| `n8n_5_CAD_BIM_Automatic_Classification_with_LLM_and_RAG.json` | Classification with LLM and RAG | Outside the thesis scope |
+| `n8n_6_Construction_Price_Estimation_with_LLM_for_Revt_and_IFC.json` | Cost estimation with LLM | Outside the thesis scope |
+| `n8n_7_Carbon_Footprint_CO2_Estimator_for_Revit and_IFC.json` | Carbon footprint estimation | Outside the thesis scope |
+| `n8n_8_Revit_IFC_DWG_Conversation_EXTRACT_Phase_with_Parse_XLSX.json` | Conversion and XLSX parsing | Reference for reading and parsing the XLSX output |
+| `n8n_9_CAD_BIM_Quantity_TakeOff_HTML_Report_Generator.json` | QTO HTML report | Reference for quantity extraction and reporting |
 
-These files are preserved to make the external provenance of the DDC
-infrastructure explicit. They should not be interpreted as nine thesis
-contributions or as nine workflows executed unchanged in the final
-experimental pipeline.
+The file names are DDC's own, including "Conversation" (for "Conversion") and the space in the `n8n_7` name.
 
----
-
-## What Was Adapted for the Thesis
-
-The thesis workflow does **not** simply execute the original DDC workflows
-unchanged.
-
-Instead, the DDC infrastructure is incorporated into **Block 1: Pipeline A**,
-where the workflow:
-
-1. receives an IFC input;
-2. checks whether the expected XLSX conversion already exists;
-3. executes `IfcExporter.exe` when conversion is required;
-4. reads the generated XLSX file;
-5. parses the tabular records;
-6. removes spatial entities from the analysis stream; and
-7. tags the resulting records as `A_ddc`.
-
-The thesis workflow then combines these records with the independently extracted
-Pipeline B data.
+These files make the external provenance visible. They are not thesis contributions, and none is executed in the experimental pipeline.
 
 ---
 
-## Thesis-Specific Logic
+## What the Thesis Workflow Does with DDC
 
-The following components are implemented in the thesis workflow rather than
-being claimed as original DDC functionality:
+The thesis does not run the original DDC workflows. It wraps the DDC IFC Exporter in **Block 1 (Pipeline A)** of [`../thesis/n8n_ifc_dual_pipeline.json`](../thesis/n8n_ifc_dual_pipeline.json), which:
 
-### Block 0 — Configuration
+1. builds the expected XLSX path for the input IFC file;
+2. reuses that XLSX if it already exists, and otherwise runs `IfcExporter.exe`;
+3. stops the run if the conversion fails;
+4. reads and parses the XLSX rows;
+5. removes spatial rows such as `IfcProject`, `IfcSite`, `IfcBuilding` and `IfcBuildingStorey`; and
+6. tags every remaining item as `A_ddc`.
 
-Centralises:
+Everything after that is thesis logic:
 
-- input IFC paths;
-- DDC converter path;
-- output directory;
-- BQI dimension weights;
-- uncertainty coefficient `α`;
-- coverage threshold; and
-- optional second IFC input for dual-file experiments.
+| Block | Role |
+|---|---|
+| 0 Configuration | Paths (`path_to_converter`, `project_file`, `project_file_b`, `output_dir`, `script_dir`), `group_by`, BQI weights, α and the coverage threshold |
+| 1 Pipeline A | DDC conversion and XLSX parsing, as above |
+| 2 Pipeline B | Downloads `extract_ifc.py` and extracts elements, properties, quantities, materials, spatial structure and schema with IfcOpenShell |
+| 3 QTO comparison and BQI | GlobalId matching, quantity comparison, element coverage, D1–D4, element BQI, SRCC |
+| 4 Risk screening | Exposure, likelihood, consequence, raw risk, uncertainty band, ranking and labels |
+| 5 Output generation | HTML risk register, per-element sensitivity JSON and diagnostic outputs |
 
-### Block 1 — Pipeline A
-
-Uses the DDC IFC conversion pathway to create and parse the XLSX representation.
-
-### Block 2 — Pipeline B
-
-Downloads the version-controlled `extract_ifc.py` script and uses IfcOpenShell
-to extract:
-
-- IFC elements;
-- properties;
-- quantities;
-- materials;
-- spatial information; and
-- schema metadata.
-
-### Block 3 — QTO Comparison and BQI
-
-This is thesis-specific processing.
-
-It performs:
-
-- `GlobalId` matching between Pipeline A and Pipeline B;
-- quantity comparison;
-- element coverage analysis;
-- BQI dimension scoring;
-- model-level BQI aggregation; and
-- SRCC-based cross-pipeline analysis.
-
-The four BQI dimensions are:
-
-- **D1:** property completeness;
-- **D2:** property validity;
-- **D3:** QTO coverage;
-- **D4:** cross-pipeline QTO agreement.
-
-### Block 4 — Risk Screening
-
-Uses the thesis risk-screening formulation to derive:
-
-- exposure;
-- likelihood;
-- consequence;
-- raw risk;
-- BQI-dependent uncertainty widening;
-- adjusted risk; and
-- final risk ranking.
-
-### Block 5 — Output Generation
-
-Produces the thesis reporting artefacts, including:
-
-- HTML risk register;
-- per-element sensitivity JSON; and
-- diagnostic outputs.
+The adaptation is documented in detail in [`../../docs/ddc-adaptation-notes.md`](../../docs/ddc-adaptation-notes.md).
 
 ---
 
-## External versus Original Components
+## External versus Thesis Components
 
-The repository distinguishes the external DDC infrastructure from the original
-thesis contribution.
-
-### External / adapted
-
-- DDC IFC conversion infrastructure;
-- DDC `IfcExporter.exe`;
-- DDC tabular/XLSX extraction pathway;
-- selected concepts from the original DDC n8n workflows.
-
-### Thesis-specific
-
-- dual-pipeline architecture;
-- BQI framework;
-- schema-aware scoring rules;
-- GlobalId-based cross-pipeline comparison;
-- element coverage analysis;
-- SRCC protocol;
-- controlled F1–F6 fault-injection evaluation;
-- uncertainty-aware risk screening;
-- sensitivity analysis;
-- deterministic reporting; and
-- n8n orchestration of the complete chain.
-
-This distinction is important for provenance and authorship: the DDC toolkit is an
-external dependency, while the quality-assessment, uncertainty, comparison,
-and screening framework constitutes the computational contribution of the thesis.
+| External (DDC) | Thesis |
+|---|---|
+| DDC IFC Exporter (`IfcExporter.exe`), used as a closed binary | Dual-pipeline architecture and n8n orchestration |
+| The nine original workflows in this folder, as reference | IfcOpenShell extraction (`extract_ifc.py`) |
+| | BQI framework and rule tables |
+| | GlobalId matching, QTO comparison, element coverage and SRCC |
+| | Fault injection (F1–F6), including the dual-file configuration |
+| | Uncertainty-aware risk screening and reporting |
+| | Sensitivity analysis and α characterisation |
 
 ---
 
-## Adaptation Documentation
+## Notes on These Files
 
-The changes made when incorporating the DDC infrastructure into the thesis
-workflow are documented separately in:
-
-[`docs/ddc-adaptation-notes.md`](../../docs/ddc-adaptation-notes.md)
-
-That document should be treated as the detailed record of configuration,
-environment, and workflow adaptations.
-
----
-
-## Preservation Policy
-
-The files in this folder are retained as **reference copies** of the external
-DDC workflow infrastructure.
-
-They should remain unchanged after being added to the repository.
-
-The reproducible thesis workflow is:
-
-[`workflows/thesis/`](../thesis/)
-
-rather than the individual base DDC workflow files.
+- **Paths.** The workflows contain the local file paths of their original author and will not run without editing. They are kept unedited as reference copies.
+- **Licence.** The files remain subject to DataDrivenConstruction's licence terms; see the DDC repository linked above.
+- **Preservation.** Keep the files unchanged. The reproducible thesis workflow is [`../thesis/n8n_ifc_dual_pipeline.json`](../thesis/n8n_ifc_dual_pipeline.json), not the files in this folder.
