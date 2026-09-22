@@ -4,9 +4,11 @@ This folder contains the n8n workflow that produced every result in the thesis:
 
 **IFC input → dual extraction → QTO comparison → BQI → risk screening → risk register and sensitivity export**
 
-| File | Role | SHA-256 (thesis Annex III) |
-|---|---|---|
-| `n8n_ifc_dual_pipeline.json` | Complete thesis workflow: 44 functional nodes in six blocks, plus 7 documentation notes | `4FC6B1A9B3881CC020EFA85B25270860DEBFA7CB1E62C9BF0E977F144A7410EC` |
+| File | Role |
+|---|---|
+| `n8n_ifc_dual_pipeline.json` | Complete thesis workflow: 44 functional nodes in six blocks, plus 7 documentation notes, prepared to run from a clone of the repository |
+
+This is the export used for the thesis runs, updated in release `v1.0.2` for reuse: portable paths, an empty `project_file_b`, the script download pinned to the release, and corrected notes and comments. Its computation is unchanged (see [Changes in v1.0.2](#changes-in-v102)). The SHA-256 listed in thesis Annex III, `4FC6B1A9B3881CC020EFA85B25270860DEBFA7CB1E62C9BF0E977F144A7410EC`, is that of the original export, which is kept in release `v1.0.1`.
 
 It was built and run with **n8n 2.7.5** on Windows. It uses the external **DDC IFC Exporter 17.1.1.0** for Pipeline A and **IfcOpenShell 0.8.5** for Pipeline B. The original DDC workflows are kept separately in [`../ddc-base/`](../ddc-base/) as reference.
 
@@ -43,7 +45,7 @@ Node **0.1 Config** holds every run parameter:
 | `alpha` | Uncertainty coefficient α | 0.55 |
 | `coverage_threshold` | Element coverage threshold | 95% |
 
-The exported file still contains the paths of the original workstation, and `project_file_b` is filled in. Clear `project_file_b` for single-file runs; otherwise Pipeline B reads that file and the run becomes a dual-file run.
+The paths assume the repository is cloned to `C:\n8n-thesis` and the DDC converter is in `C:\DDC_Converters_Windows_Packages`. `project_file_b` is empty, so a run is single-file unless you set it.
 
 ---
 
@@ -63,7 +65,7 @@ Because of the cache in 1.2–1.3, delete old `_ifc.xlsx` files of faulted varia
 
 ## Block 2 — Pipeline B: IfcOpenShell Extraction
 
-1. **2.1** Downloads `scripts/extract_ifc.py` from the `main` branch of this repository into a local scripts folder.
+1. **2.1** Downloads `scripts/extract_ifc.py` from release `v1.0.2` of this repository into `script_dir`.
 2. **2.2** Verifies Python and IfcOpenShell.
 3. **2.3** Runs `extract_ifc.py` with `--include-properties --include-materials` on `project_file_b` if it is set, otherwise on `project_file`.
 4. **2.4** Parses the JSON output: elements, properties, quantities, materials, spatial structure and metadata.
@@ -128,13 +130,24 @@ The workflow does not generate the faulted files; they come from [`../../scripts
 
 ## Running the Workflow
 
-1. Install n8n, the DDC IFC Exporter (Windows) and IfcOpenShell 0.8.5.
-2. In n8n, choose **Import from File** and select `n8n_ifc_dual_pipeline.json`.
-3. In **0.1 Config**, set `path_to_converter`, `project_file`, `output_dir` and `script_dir`, and `project_file_b` for dual-file runs.
-4. In **2.1 Download script**, edit the download folder, which contains a fixed path from the original workstation, so that it matches `script_dir`.
-5. Execute the workflow. The report and the sensitivity JSON appear in `output_dir`.
+1. Install n8n, the DDC IFC Exporter (Windows), Python and IfcOpenShell 0.8.5.
+2. Clone the repository to `C:\n8n-thesis` and create the folder `C:\n8n-thesis\output`.
+3. In n8n, choose **Import from File** and select `n8n_ifc_dual_pipeline.json`.
+4. In **0.1 Config**, set `path_to_converter` to your `IfcExporter.exe`. If you cloned elsewhere, also change `project_file`, `output_dir` and `script_dir`.
+5. Execute the workflow. It runs M1 (`IFC4-Building-Architecture.ifc`) in the single-file configuration; the report and the sensitivity JSON appear in `output_dir`.
+6. For another model, change `project_file`. For a dual-file run, set `project_file` to the baseline and `project_file_b` to the faulted variant from `sample-models/fault-injected/`.
 
----
+## Changes in v1.0.2
+
+Compared with the export used for the thesis runs (release `v1.0.1`), the file in `v1.0.2` differs only in:
+
+- **Node 0.1 Config:** paths point to `C:\n8n-thesis\…` and `C:\DDC_Converters_Windows_Packages\…`; `project_file_b` is empty. Weights, α and the coverage threshold are unchanged.
+- **Node 2.1 Download script:** downloads `extract_ifc.py` from release `v1.0.2` into `script_dir`, instead of from `main` into a fixed folder.
+- **Sticky notes and node notes:** corrected text. The Block 2 note no longer says the schema selects the rule set, and the Block 3 note says every bracketed field is compared.
+- **Code comments:** updated in nodes 3.3–3.5, 4.3–4.5, 5.1, 5.3 and 5.6, including removal of an old development note in 5.6. Parsing both versions and comparing the code shows these nodes are identical apart from comments.
+- **Two non-computational code edits:** an unreachable second `return` removed from the Pipeline A diagnostic node, and the error message in 5.2 now points to Node 5.1.
+
+Node names, node types, positions and connections are unchanged, so every score, band and label is computed exactly as in the thesis.
 
 ## Relationship to the Scripts
 
@@ -144,8 +157,8 @@ Only `extract_ifc.py` runs inside the workflow. The BQI, risk and reporting logi
 
 ## Reproducibility
 
-- The thesis cites repository release `v1.0.2`; Annex III lists the SHA-256 of this workflow file and of the scripts. The workflow file is identical in `v1.0.1` and `v1.0.2`.
-- Node 2.1 downloads `extract_ifc.py` from `main`, not from a tagged release. The script has not changed since 3 July 2026, before the experimental campaign. To reproduce the thesis exactly, place the release copy of `extract_ifc.py` in `script_dir` and skip the download, or point Node 2.1 at the release tag in your own copy. Editing the workflow changes its SHA-256, so keep the published file unchanged.
+- The thesis cites repository release `v1.0.2`. The Annex III SHA-256 of the workflow is that of the original export in `v1.0.1`; the file in `v1.0.2` has the changes listed above and therefore a different hash. The scripts and IFC files are identical in both releases.
+- Node 2.1 downloads `extract_ifc.py` from the `v1.0.2` release, so later changes on `main` do not affect runs of this workflow. The original export downloaded it from `main`; the script has not changed since 3 July 2026, before the experimental campaign.
 - Behaviours worth knowing when reading the outputs are listed in the docs:
   - D4 counts every bracketed field, including non-numeric properties ([`bqi-definition.md`](../../docs/bqi-definition.md), Section 12.6);
   - the quantity-extent term is zero for every corpus element ([`risk-rules-table.md`](../../docs/risk-rules-table.md), Section 4.1);
