@@ -240,8 +240,11 @@ n8n-thesis/
 
 1. **Get the release.**
    ```bash
-   git clone --branch v1.0.2 https://github.com/ulnirah/n8n-thesis.git
+   git clone --branch v1.0.2 https://github.com/ulnirah/n8n-thesis.git C:\n8n-thesis
+   mkdir C:\n8n-thesis\output
    ```
+
+   The ready-to-use workflow expects the repository at `C:\n8n-thesis`.
 
 2. **Install IfcOpenShell** for Pipeline B and fault injection.
    ```bash
@@ -250,13 +253,13 @@ n8n-thesis/
 
 3. **Import the workflow** `workflows/thesis/n8n_ifc_dual_pipeline.json` into n8n.
 
-4. **Set the paths in node `0.1 Config`.** The export still contains paths from the original workstation; replace them with your own:
+4. **Check the paths in node `0.1 Config`.** Set `path_to_converter` to your `IfcExporter.exe`; the other paths already point to `C:\n8n-thesis`. If you cloned elsewhere, change them too:
 
    | Field | Value |
    |---|---|
    | `path_to_converter` | Full path to `IfcExporter.exe` |
    | `project_file` | IFC file read by Pipeline A (and by Pipeline B in single-file runs) |
-   | `project_file_b` | Faulted file for Pipeline B; set only for dual-file runs |
+   | `project_file_b` | Faulted file for Pipeline B; leave empty except for dual-file runs |
    | `output_dir` | Folder for reports and exports |
    | `script_dir` | Local `scripts/` folder |
 
@@ -288,8 +291,8 @@ n8n-thesis/
 
 | Tag | Status |
 |---|---|
-| `v1.0.2` | Release cited in the thesis (Annex III), with SHA-256 hashes of the workflow, scripts and IFC inputs; documentation checked against the final thesis |
-| `v1.0.1` | Earlier release with the same workflow, scripts and IFC files; documentation not yet complete |
+| `v1.0.2` | Release cited in the thesis (Annex III). Documentation checked against the final thesis; workflow export prepared for reuse (portable paths, empty `project_file_b`, script pinned to the release) and comments in the workflow and scripts cleaned. Every computed output is identical to `v1.0.1` |
+| `v1.0.1` | Workflow and scripts exactly as used for the thesis runs; their SHA-256 are the ones listed in Annex III. The IFC files are identical in both releases |
 | `v1.0-thesis` | Early test tag created before the repository was complete; not used for the thesis results |
 
 ---
