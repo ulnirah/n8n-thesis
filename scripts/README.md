@@ -53,7 +53,7 @@ Only the physical element types listed in `ELEMENT_TYPES` are extracted. `IfcZon
 python scripts/extract_ifc.py sample-models/baseline/IFC4-Building-Structural.ifc --include-properties --include-materials
 ```
 
-**How the workflow uses it.** Node 2.1 downloads the script from the `main` branch of this repository, Node 2.2 checks Python, and Node 2.3 runs it with both flags on `project_file_b` (dual-file runs) or `project_file`. On a new machine, edit the download folder in Node 2.1, which contains a fixed Windows path from the original workstation, so that it matches `script_dir` in Node 0.1 Config.
+**How the workflow uses it.** Node 2.1 downloads the script from release `v1.0.2` into `script_dir` (set in Node 0.1 Config), Node 2.2 checks Python, and Node 2.3 runs it with both flags on `project_file_b` (dual-file runs) or `project_file`.
 
 ---
 
@@ -193,7 +193,7 @@ n8n workflow  (extract_ifc.py runs inside, as Pipeline B)
 ## Notes on the Source Code
 
 - Some scripts contain comments marked `CORRECTED VERSION` or `CHANGED (C1)`–`(C6)`. They record fixes made during development, such as aligning the label percentiles with Node 4.5 and setting α to 0.55. All reported results use the corrected versions.
-- Because Node 2.1 downloads `extract_ifc.py` from `main`, any change to that file on `main` affects future workflow runs. To reproduce the thesis exactly, use the script from the thesis release or keep a local copy in `script_dir`.
+- Node 2.1 downloads `extract_ifc.py` from the `v1.0.2` release, so later changes on `main` do not affect runs of this workflow. (In the export used for the thesis runs, kept in `v1.0.1`, it downloaded from `main`; the script has not changed since 3 July 2026, before the campaign.)
 
 ---
 
