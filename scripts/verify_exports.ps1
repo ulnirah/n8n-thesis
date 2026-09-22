@@ -1,4 +1,4 @@
-# verify_exports.ps1  (v3)
+# verify_exports.ps1
 #
 # Structural verification of the sensitivity JSON exports produced by the
 # n8n pipeline. Requires nothing beyond Windows PowerShell.
